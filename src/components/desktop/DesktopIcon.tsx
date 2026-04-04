@@ -1,54 +1,61 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from "next/image";
+
+import type { StaticImageData } from "next/image";
+
 import { useWindowStore } from '@/store/useWindowStore';
+import type { WindowId } from "@/data/portfolio";
 
 interface DesktopIconProps {
-  id: string;
+  id: WindowId;
   label: string;
-  icon: string;
-  windowTitle?: string;
+  title: string;
+  icon: StaticImageData;
+  side: "left" | "right";
+  top: number;
   constraintsRef: React.RefObject<Element | null>;
-  initialX?: number;
-  initialY?: number;
 }
 
 export function DesktopIcon({
   id,
   label,
+  title,
   icon,
-  windowTitle,
+  side,
+  top,
   constraintsRef,
-  initialX = 0,
-  initialY = 0,
 }: DesktopIconProps) {
   const openWindow = useWindowStore((s) => s.openWindow);
 
   return (
-    <motion.div
+    <motion.button
       drag
       dragConstraints={constraintsRef}
       dragElastic={0}
       dragMomentum={false}
-      initial={{ x: initialX, y: initialY }}
       whileDrag={{ scale: 1.05, zIndex: 200 }}
-      onDoubleClick={() => openWindow(id, windowTitle ?? label)}
-      className="absolute flex flex-col items-center gap-1.5 cursor-default group z-[8] select-none"
-      style={{ top: 0, left: 0 }}
+      onDoubleClick={() => openWindow(id, title)}
+      className="absolute z-[8] flex w-44 cursor-default flex-col items-center gap-3 rounded-2xl px-3 py-2 text-center select-none"
+      style={side === "left" ? { left: 30, top } : { right: 36, top }}
     >
       <motion.div
         whileHover={{ scale: 1.08 }}
         transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-        className="w-16 h-16 group-hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.3)] transition-all"
+        className="group-hover:drop-shadow-[0_0_18px_rgba(255,255,255,0.22)] transition-all"
       >
-        <img src={icon} alt={label} className="w-full h-full object-contain drop-shadow-xl" />
+        <Image src={icon} alt={label} className="w-20 drop-shadow-2xl" sizes="80px" />
       </motion.div>
 
-      <div className="px-2 py-0.5 rounded-md text-center">
-        <span className="text-white text-[11px] font-medium drop-shadow-md leading-tight" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
+      <div className="px-2 py-0.5 text-center">
+        <span
+          className="text-[18px] font-medium leading-[1.12] text-white drop-shadow-md"
+          style={{ textShadow: '0 2px 6px rgba(0,0,0,0.8)' }}
+        >
           {label}
         </span>
       </div>
-    </motion.div>
+    </motion.button>
   );
 }

@@ -9,10 +9,11 @@ interface ThemeDropdownProps {
 }
 
 export function ThemeDropdown({ isOpen, onClose }: ThemeDropdownProps) {
-  const { theme, setTheme } = useSystemStore();
+  const theme = useSystemStore((state) => state.theme);
+  const setTheme = useSystemStore((state) => state.setTheme);
 
-  const handleSet = (t: 'light' | 'dark') => {
-    setTheme(t);
+  const handleSet = (nextTheme: 'light' | 'dark') => {
+    setTheme(nextTheme);
     onClose();
   };
 
@@ -20,7 +21,6 @@ export function ThemeDropdown({ isOpen, onClose }: ThemeDropdownProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Click-away overlay */}
           <div className="fixed inset-0 z-[9990]" onClick={onClose} />
 
           <motion.div
@@ -28,26 +28,21 @@ export function ThemeDropdown({ isOpen, onClose }: ThemeDropdownProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute top-8 right-2 z-[9991] w-44 rounded-xl overflow-hidden shadow-2xl"
-            style={{
-              background: 'rgba(30,30,30,0.92)',
-              backdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255,255,255,0.15)',
-            }}
+            className="absolute right-0 top-8 z-[9991] w-60 overflow-hidden rounded-2xl border border-white/35 bg-[#f1f2fb]/88 shadow-[0_20px_60px_rgba(6,7,20,0.35)] backdrop-blur-2xl"
           >
-            <div className="p-1 flex flex-col gap-0.5">
-              {(['light', 'dark'] as const).map((t) => (
+            <div className="p-2">
+              {(['light', 'dark'] as const).map((value) => (
                 <button
-                  key={t}
-                  onClick={() => handleSet(t)}
-                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-                    theme === t
+                  key={value}
+                  onClick={() => handleSet(value)}
+                  className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[16px] font-medium transition ${
+                    theme === value
                       ? 'bg-blue-500 text-white'
-                      : 'text-white/80 hover:bg-white/10'
+                      : 'text-slate-800 hover:bg-slate-900/5'
                   }`}
                 >
-                  <span className="capitalize">{t === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
-                  {theme === t && (
+                  <span>{value === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
+                  {theme === value && (
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                     </svg>

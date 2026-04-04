@@ -1,13 +1,10 @@
 import { create } from 'zustand';
-
-type Theme = 'dark' | 'light';
+import type { ThemeMode } from '@/data/portfolio';
 
 interface SystemStore {
-  theme: Theme;
-  wallpaper: string;
+  theme: ThemeMode;
   isSpotlightOpen: boolean;
-  setTheme: (theme: Theme) => void;
-  setWallpaper: (path: string) => void;
+  setTheme: (theme: ThemeMode) => void;
   toggleSpotlight: () => void;
   openSpotlight: () => void;
   closeSpotlight: () => void;
@@ -15,20 +12,15 @@ interface SystemStore {
 
 export const useSystemStore = create<SystemStore>((set) => ({
   theme: 'dark',
-  wallpaper: '/assets/Desktop Wallpaper.png',
   isSpotlightOpen: false,
 
   setTheme: (theme) => {
-    // Sync to DOM immediately
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.toggle('dark', theme === 'dark');
     }
     set({ theme });
   },
 
-  setWallpaper: (path) => set({ wallpaper: path }),
   toggleSpotlight: () => set((s) => ({ isSpotlightOpen: !s.isSpotlightOpen })),
   openSpotlight: () => set({ isSpotlightOpen: true }),
   closeSpotlight: () => set({ isSpotlightOpen: false }),

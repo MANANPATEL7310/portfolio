@@ -1,30 +1,83 @@
-const MOCK_PROJECTS = [
-  { id: 1, title: 'E-Commerce Platform', img: '/assets/Image-1.png' },
-  { id: 2, title: 'SaaS Dashboard', img: '/assets/Image-2.png' },
-  { id: 3, title: 'Mobile Social App', img: '/assets/Image-3.png' },
-  { id: 4, title: 'AI Chatbot', img: '/assets/Image-4.png' }
-];
+'use client';
+
+import Image from "next/image";
+import { ChevronLeft, ChevronRight, FileText, FolderOpen, Info, Search, Trash2 } from "lucide-react";
+
+import { portfolioAssets, projects } from "@/data/portfolio";
+import { useWindowStore } from "@/store/useWindowStore";
 
 export function ProjectsApp() {
-  return (
-    <div className="flex flex-col h-full w-full bg-white/90 dark:bg-black/60 backdrop-blur-md">
-      {/* Top Toolbar - Photos Style */}
-      <div className="h-14 border-b border-black/10 dark:border-white/10 flex items-center justify-center gap-3 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-md">
-        <button className="px-4 py-1 text-[13px] font-semibold bg-white dark:bg-gray-700 rounded-md shadow-sm border border-black/10 dark:border-white/10">All App</button>
-        <button className="px-4 py-1 text-[13px] font-medium text-black/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors">Web Tools</button>
-        <button className="px-4 py-1 text-[13px] font-medium text-black/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors">Mobile iOS</button>
-      </div>
+  const openWindow = useWindowStore((state) => state.openWindow);
 
-      {/* Grid Content */}
-      <div className="flex-[1_1_0%] overflow-y-auto p-4 sm:p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 pb-4">
-          {MOCK_PROJECTS.map((proj) => (
-            <div key={proj.id} className="group cursor-pointer flex flex-col gap-2">
-              <div className="aspect-[4/3] w-full rounded-xl bg-gray-200 dark:bg-gray-800 overflow-hidden shadow-sm border border-black/10 dark:border-white/10 transition-transform group-hover:scale-[1.03]">
-                <img src={proj.img} alt={proj.title} className="w-full h-full object-cover" onError={(e) => e.currentTarget.src = '/assets/Desktop Wallpaper.png'} />
-              </div>
-              <p className="text-xs font-semibold text-center text-black/90 dark:text-white/90">{proj.title}</p>
-            </div>
+  return (
+    <div className="flex h-full bg-[#1f1f22] text-white">
+      <aside className="hidden w-[206px] shrink-0 border-r border-white/10 bg-[#34343a] px-3 py-5 md:block">
+        <p className="px-3 text-[13px] font-semibold text-white/28">Favorites</p>
+        <div className="mt-2 space-y-1">
+          <button className="flex w-full items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-left text-[17px] text-white">
+            <FolderOpen className="h-4 w-4 text-blue-400" />
+            Work
+          </button>
+          <button
+            onClick={() => openWindow("about", "About Me")}
+            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] text-white/82 transition hover:bg-white/6"
+          >
+            <Info className="h-4 w-4 text-blue-400" />
+            About me
+          </button>
+          <button
+            onClick={() => openWindow("resume", "Resume.pdf")}
+            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] text-white/82 transition hover:bg-white/6"
+          >
+            <FileText className="h-4 w-4 text-blue-400" />
+            Resume
+          </button>
+          <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] text-white/82 transition hover:bg-white/6">
+            <Trash2 className="h-4 w-4 text-blue-400" />
+            Trash
+          </button>
+        </div>
+
+        <p className="mt-10 px-3 text-[13px] font-semibold text-white/28">Work</p>
+        <div className="mt-2 space-y-1">
+          {projects.map((project) => (
+            <button
+              key={project.slug}
+              onClick={() => openWindow(project.windowId, project.titleBar)}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] text-white/80 transition hover:bg-white/6"
+            >
+              <FileText className="h-4 w-4 text-blue-400" />
+              {project.folderLabel}
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex h-16 items-center justify-between border-b border-white/10 px-6">
+          <div className="flex items-center gap-4 text-white/45">
+            <ChevronLeft className="h-6 w-6" />
+            <ChevronRight className="h-6 w-6" />
+            <span className="ml-2 text-[22px] font-semibold text-white">Work</span>
+          </div>
+          <Search className="h-7 w-7 text-white/55" />
+        </div>
+
+        <div className="grid flex-1 grid-cols-1 gap-y-12 overflow-auto px-10 py-12 sm:grid-cols-2 sm:px-16 lg:px-24">
+          {projects.map((project) => (
+            <button
+              key={project.slug}
+              onClick={() => openWindow(project.windowId, project.titleBar)}
+              className="group flex flex-col items-center gap-3 justify-self-center text-center"
+            >
+              <Image
+                src={portfolioAssets.folderIcon}
+                alt={project.title}
+                className="w-28 transition duration-200 group-hover:scale-105"
+                sizes="112px"
+              />
+              <span className="text-[20px] text-white/92">{project.title}</span>
+            </button>
           ))}
         </div>
       </div>

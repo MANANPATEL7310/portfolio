@@ -1,60 +1,134 @@
+import {
+  Download,
+  Minus,
+  PanelLeft,
+  Plus,
+  Printer,
+  RotateCcw,
+  Search,
+} from "lucide-react";
+
 export function ResumeApp() {
   return (
-    <div className="flex flex-col h-full w-full bg-gray-200 dark:bg-gray-800">
-      {/* Top Toolbar - Preview Style */}
-      <div className="h-12 border-b border-black/10 dark:border-white/10 flex items-center justify-between px-4 bg-gray-100 dark:bg-gray-900 shadow-sm z-10 shrink-0">
-        <div className="flex items-center gap-2">
-          <button className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
-          </button>
-          <span className="text-xs font-medium text-black/60 dark:text-white/60">Page 1 of 1</span>
-          <button className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
-          </button>
+    <div className="flex h-full flex-col bg-[#2f2f33] text-white">
+      <div className="flex h-12 items-center justify-between border-b border-white/10 bg-[#232327] px-4 text-white/75">
+        <div className="flex items-center gap-3">
+          <PanelLeft className="h-4 w-4" />
+          <span className="text-[12px] font-semibold text-white/75">Resume</span>
         </div>
-        <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 rounded-md border border-black/10 dark:border-white/10 overflow-hidden">
-          <button className="px-2 py-1 text-xs font-medium hover:bg-black/10 dark:hover:bg-white/10 border-r border-black/5 dark:border-white/5">-</button>
-          <span className="px-3 text-xs font-medium bg-transparent">100%</span>
-          <button className="px-2 py-1 text-xs font-medium hover:bg-black/10 dark:hover:bg-white/10 border-l border-black/5 dark:border-white/5">+</button>
+
+        <div className="flex items-center gap-3 text-[12px]">
+          <span className="rounded border border-white/10 bg-black/30 px-1.5 py-0.5">1 / 2</span>
+          <Minus className="h-3.5 w-3.5" />
+          <span>100%</span>
+          <Plus className="h-3.5 w-3.5" />
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Search className="h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
+          <Download className="h-4 w-4" />
+          <Printer className="h-4 w-4" />
         </div>
       </div>
 
-      {/* PDF Viewport Area */}
-      <div className="flex-[1_1_0%] overflow-y-auto p-4 sm:p-8 flex justify-center h-full">
-        <div className="w-full sm:w-[85%] min-w-0 sm:min-w-[380px] max-w-[500px] bg-white text-black p-6 sm:p-8 shadow-xl border border-black/10 flex flex-col gap-4 mb-4 sm:mb-8">
-          <header className="border-b-2 border-black/10 pb-4 mb-2">
-            <h1 className="text-3xl font-serif font-bold uppercase tracking-wide text-gray-900">John Developer</h1>
-            <p className="text-[11px] text-gray-600 font-sans mt-1 uppercase tracking-wider">john@example.com | San Francisco, CA</p>
+      <div className="hide-scrollbar flex-1 overflow-auto bg-[#34343a] px-5 py-5">
+        <article className="mx-auto max-w-[560px] overflow-hidden rounded-[0.9rem] bg-white text-[#222] shadow-[0_30px_80px_rgba(0,0,0,0.34)]">
+          <header className="grid grid-cols-[1.2fr_1fr]">
+            <div className="bg-[#373332] px-11 py-11 text-white">
+              <h1 className="font-serif text-[32px] font-bold uppercase leading-[0.95] tracking-tight">
+                Ian
+                <br />
+                Hansson
+              </h1>
+            </div>
+            <div className="bg-[#0f8596] px-8 py-11 text-white">
+              <p className="text-[16px] font-medium">Graphic Designer</p>
+              <p className="mt-2 text-[16px] font-semibold">UI/UX Engineer</p>
+              <p className="mt-2 text-[16px]">Developer</p>
+            </div>
           </header>
-          
-          <section>
-            <h2 className="text-sm font-bold uppercase tracking-wider mb-2 text-gray-800 border-b border-gray-200 pb-1">Experience</h2>
-            <div className="mb-3">
-              <div className="flex justify-between items-baseline">
-                <h3 className="font-semibold text-sm text-gray-900">Senior Frontend Engineer</h3>
-                <span className="text-[10px] text-gray-500 uppercase tracking-widest font-mono">2021 - Present</span>
-              </div>
-              <ul className="list-[square] list-inside text-xs mt-1.5 text-gray-700 space-y-1">
-                <li>Spearheaded transition to Next.js resulting in 40% faster LCP.</li>
-                <li>Mentored 4 junior engineers resolving performance bottlenecks.</li>
-              </ul>
-            </div>
-            <div className="mb-2">
-              <div className="flex justify-between items-baseline">
-                <h3 className="font-semibold text-sm text-gray-900">UI/UX Developer</h3>
-                <span className="text-[10px] text-gray-500 uppercase tracking-widest font-mono">2019 - 2021</span>
-              </div>
-            </div>
-          </section>
 
-          <section className="mt-2">
-             <h2 className="text-sm font-bold uppercase tracking-wider mb-2 text-gray-800 border-b border-gray-200 pb-1">Education</h2>
-             <div className="flex justify-between items-baseline">
-                <h3 className="font-semibold text-sm text-gray-900">B.S. Computer Science</h3>
-                <span className="text-[10px] text-gray-500 uppercase tracking-widest font-mono">2017 - 2021</span>
+          <section className="grid grid-cols-[1.2fr_1fr]">
+            <div>
+              <div className="bg-[#0f8596] px-11 py-3 text-[14px] font-semibold uppercase tracking-wide text-white">
+                Profile
               </div>
+              <div className="px-11 py-7 text-[12px] leading-5 text-[#4b5563]">
+                Enthusiastic and creative graphic designer with a passion for translating ideas into visually compelling designs.
+                With experience in both print and digital mediums, I thrive on bringing concepts to life through innovative and impactful visuals.
+              </div>
+
+              <div className="bg-[#0f8596] px-11 py-3 text-[14px] font-semibold uppercase tracking-wide text-white">
+                Experience
+              </div>
+              <div className="space-y-6 px-11 py-6 text-[12px] leading-5 text-[#4b5563]">
+                <div>
+                  <p className="text-[14px] font-semibold text-[#303030]">Adatum Corporation</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[#0f8596]">20XX - Present</p>
+                  <p className="mt-2">
+                    Developed and evolved brand identities, crafted compelling collateral, oversaw end-to-end project lifecycles, and contributed to award-winning campaigns.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[14px] font-semibold text-[#303030]">Proseware, Inc.</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[#0f8596]">20XX - 20XX</p>
+                  <p className="mt-2">
+                    Collaborated across disciplines on typography systems, product visuals, and motion assets that improved clarity and presentation quality.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[14px] font-semibold text-[#303030]">Relecloud</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[#0f8596]">20XX - 20XX</p>
+                  <p className="mt-2">
+                    Built campaigns and design explorations that strengthened visual consistency and helped turn complex concepts into clear experiences.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="bg-[#4a4747] px-8 py-3 text-[14px] font-semibold uppercase tracking-wide text-white">
+                Contact
+              </div>
+              <div className="space-y-3 px-8 py-7 text-[12px] text-[#4b5563]">
+                <p>816-555-0146</p>
+                <p>ian_hansson</p>
+                <p className="text-[#0f8596]">hansson@example.com</p>
+                <p className="text-[#0f8596]">www.example.com</p>
+              </div>
+
+              <div className="bg-[#4a4747] px-8 py-3 text-[14px] font-semibold uppercase tracking-wide text-white">
+                Skills
+              </div>
+              <ul className="space-y-1 px-8 py-6 text-[12px] leading-5 text-[#0f8596]">
+                <li>Design software</li>
+                <li>Typography</li>
+                <li>UI/UX design</li>
+                <li>Print design</li>
+                <li>Project management</li>
+                <li>Creative problem solving</li>
+                <li>Communication skills</li>
+              </ul>
+
+              <div className="bg-[#4a4747] px-8 py-3 text-[14px] font-semibold uppercase tracking-wide text-white">
+                Education
+              </div>
+              <div className="space-y-5 px-8 py-6 text-[12px] leading-5 text-[#4b5563]">
+                <div>
+                  <p className="text-[14px] font-semibold text-[#303030]">Graphic Design Institute</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[#0f8596]">20XX - 20XX</p>
+                  <p>Master of Fine Arts, Graphic Design</p>
+                </div>
+                <div>
+                  <p className="text-[14px] font-semibold text-[#303030]">Jasper University</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[#0f8596]">20XX - 20XX</p>
+                  <p>Bachelor of Arts, Graphic Design</p>
+                </div>
+              </div>
+            </div>
           </section>
-        </div>
+        </article>
       </div>
     </div>
   );

@@ -1,9 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #f3f3f3;
+  --background: #edf2ff;
   --foreground: #171717;
+  --window-shell: rgba(245, 247, 255, 0.86);
+  --window-border: rgba(255, 255, 255, 0.55);
+  --window-toolbar: rgba(245, 247, 255, 0.72);
+  --panel-muted: rgba(226, 232, 240, 0.7);
+  --desktop-overlay: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.1) 45%, rgba(15,23,42,0.2) 100%);
 }
 
 @theme inline {
@@ -13,36 +17,83 @@
   --color-mac-yellow: #ffbd2e;
   --color-mac-green: #27c93f;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-script: "Snell Roundhand", "Apple Chancery", "Segoe Script", "Brush Script MT", cursive;
   
-  /* Additional variables */
   --blur-mac: 20px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000000;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #071026;
+  --foreground: #f8fafc;
+  --window-shell: rgba(26, 26, 31, 0.9);
+  --window-border: rgba(255, 255, 255, 0.12);
+  --window-toolbar: rgba(60, 60, 66, 0.82);
+  --panel-muted: rgba(38, 38, 45, 0.78);
+  --desktop-overlay: linear-gradient(180deg, rgba(9,12,31,0.2) 0%, rgba(9,12,31,0.05) 42%, rgba(2,6,23,0.45) 100%);
 }
 
+html,
 body {
+  margin: 0;
+  min-height: 100%;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  overflow: hidden; /* Desktop should not scroll */
 }
 
-/* Base Glassmorphism generic utility for broad applying */
+body {
+  overflow: hidden;
+}
+
 .mac-glass {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--window-shell);
   backdrop-filter: blur(var(--blur-mac));
   -webkit-backdrop-filter: blur(var(--blur-mac));
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--window-border);
 }
 
-@media (prefers-color-scheme: dark) {
-  .mac-glass {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.desktop-shadow {
+  box-shadow: 0 28px 90px rgba(10, 14, 32, 0.34);
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.window-surface {
+  background: var(--window-shell);
+  border: 1px solid var(--window-border);
+}
+
+.window-toolbar {
+  background: var(--window-toolbar);
+}
+
+.panel-muted {
+  background: var(--panel-muted);
+}
+
+.desktop-overlay {
+  background: var(--desktop-overlay);
+}
+
+.noise-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.selection-glow::selection {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+@media (max-width: 1023px) {
+  body {
+    overflow: auto;
   }
 }

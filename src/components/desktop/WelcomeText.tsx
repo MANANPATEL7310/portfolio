@@ -1,28 +1,19 @@
 'use client';
 
-import { useRef, useState, useSyncExternalStore } from 'react';
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
-// Linter-clean, idiomatic SSR guard: returns true only on the client
-// Prevents the "background vs backgroundClip" hydration blank-box bug
-function useIsClient() {
-  return useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
-}
+import { portfolioIdentity } from "@/data/portfolio";
+import { useSystemStore } from "@/store/useSystemStore";
 
 export function WelcomeText() {
+  const theme = useSystemStore((state) => state.theme);
   const ref = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const isMounted = useIsClient();
-
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const rotateX = useSpring(useTransform(mouseY, [-100, 100], [12, -12]), { stiffness: 150, damping: 20 });
-  const rotateY = useSpring(useTransform(mouseX, [-200, 200], [-12, 12]), { stiffness: 150, damping: 20 });
+  const rotateX = useSpring(useTransform(mouseY, [-140, 140], [10, -10]), { stiffness: 160, damping: 20 });
+  const rotateY = useSpring(useTransform(mouseX, [-220, 220], [-10, 10]), { stiffness: 160, damping: 20 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -36,62 +27,42 @@ export function WelcomeText() {
   const handleMouseLeave = () => {
     mouseX.set(0);
     mouseY.set(0);
-    setIsHovered(false);
   };
-
-  // Use backgroundImage (not background shorthand) to avoid React's
-  // shorthand vs longhand style conflict warning that caused the blank box bug
-  const gradientImage = isHovered
-    ? 'linear-gradient(135deg, #ffffff 0%, #a8d8ff 35%, #c084fc 65%, #ffffff 100%)'
-    : 'linear-gradient(135deg, #ffffff 0%, #ffffffcc 100%)';
 
   return (
     <div
-      className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none"
-      style={{ perspective: '800px' }}
+      className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center px-8 pt-12"
+      style={{ perspective: '900px' }}
     >
       <motion.div
         ref={ref}
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-        className="flex flex-col items-center gap-1 select-none pointer-events-auto cursor-default"
+        className="pointer-events-auto flex cursor-default flex-col items-center gap-1 text-center select-none"
       >
-        {/* Subtitle */}
-        <motion.p
-          animate={{
-            letterSpacing: isHovered ? '0.35em' : '0.2em',
-            color: isHovered ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.65)',
-          }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="text-xl md:text-2xl font-light drop-shadow-lg"
-          style={{ textShadow: isHovered ? '0 0 30px rgba(120,180,255,0.5)' : '0 2px 20px rgba(0,0,0,0.5)' }}
+        <p
+          className={`text-[clamp(2.2rem,4vw,5rem)] font-light tracking-[-0.05em] drop-shadow-lg ${
+            theme === "light" ? "text-slate-900/92" : "text-white/92"
+          }`}
+          style={{ textShadow: theme === "light" ? "0 12px 45px rgba(255,255,255,0.24)" : "0 18px 42px rgba(0,0,0,0.35)" }}
         >
-          Hey, welcome to my
-        </motion.p>
-
-        {/* Hero word — gradient text using backgroundImage (not background shorthand) */}
+          {portfolioIdentity.greeting}
+        </p>
         <motion.p
-          animate={{ scale: isHovered ? 1.04 : 1 }}
-          transition={{ duration: 0.45, ease: 'easeOut' }}
-          className="font-bold leading-none drop-shadow-2xl"
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="leading-none drop-shadow-2xl"
           style={{
-            fontFamily: "'Dancing Script', cursive",
-            fontSize: 'clamp(4rem, 12vw, 9rem)',
-            transform: 'translateZ(30px)',
-            // Only apply gradient clip after client mount to avoid hydration blank-box bug
-            backgroundImage: isMounted ? gradientImage : undefined,
-            WebkitBackgroundClip: isMounted ? 'text' : undefined,
-            WebkitTextFillColor: isMounted ? 'transparent' : 'white',
-            backgroundClip: isMounted ? 'text' : undefined,
-            color: isMounted ? undefined : 'white',
-            filter: isHovered
-              ? 'drop-shadow(0 0 30px rgba(168,216,255,0.7)) drop-shadow(0 0 60px rgba(192,132,252,0.4))'
-              : 'drop-shadow(0 4px 20px rgba(0,0,0,0.5))',
+            fontFamily: 'var(--font-script)',
+            fontSize: 'clamp(6rem, 13vw, 13rem)',
+            color: theme === "light" ? "#ffffff" : "#ffffff",
+            filter: theme === "light"
+              ? 'drop-shadow(0 16px 30px rgba(255,255,255,0.18)) drop-shadow(0 6px 22px rgba(30,64,175,0.18))'
+              : 'drop-shadow(0 22px 40px rgba(2,6,23,0.48))',
           }}
         >
-          portfolio
+          {portfolioIdentity.signature}
         </motion.p>
       </motion.div>
     </div>
