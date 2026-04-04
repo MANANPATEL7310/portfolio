@@ -23,13 +23,19 @@ Based on the explicit constraint "we only create protfolio app so may be some of
 
 ## Task Breakdown / Implementation Checklist
 
-- [ ] Project Initialization (Next.js, Tailwind, Framer Motion)
-- [ ] Atomic Design Systems Check (Imports isolated SVGs/Atoms from `all images/`)
-- [ ] Zustand Store Setup 
-- [ ] Base Desktop Layout (Background, Menu Bar)
-- [ ] Base Dock Component (GSAP implementations)
-- [ ] Window Shell Mechanism (Draggable)
-- [ ] Application Routes inside Windows (About, Projects, Resume)
+- [x] Project Initialization (Next.js, Tailwind, Framer Motion)
+- [x] Atomic Design Systems Check (Imports isolated SVGs/Atoms from `all images/`)
+- [x] Zustand Store Setup 
+- [x] Base Desktop Layout (Background, Menu Bar)
+- [x] Base Dock Component (GSAP implementations)
+- [x] Window Shell Mechanism (Draggable)
+- [x] Application Routes inside Windows (About, Projects, Resume)
+
+## Phase 5: Polish & Interactions (Days 8-10)
+- [x] Implement global GSAP timelines for site initialization (Boot sequence)
+- [x] Tie toggleMaximizeWindow, toggleMinimizeWindow to TrafficLights
+- [x] Handle responsive resizing for Window layers
+- [x] Post-build Lighthouse checks
 
 ## Socratic Verification / Verification Checklist
 - Are we building any backend? **NO** -> Scope strictly maintained on frontend visual orchestration.
