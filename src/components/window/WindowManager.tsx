@@ -5,15 +5,21 @@ import { windowRegistry } from "@/data/window-registry";
 import { useWindowStore } from '@/store/useWindowStore';
 import { WindowFrame } from './WindowFrame';
 import { AnimatePresence } from 'framer-motion';
+import { useMemo } from 'react';
 
 export function WindowManager({ constraintsRef }: { constraintsRef: React.RefObject<Element | null> }) {
   const windows = useWindowStore((state) => state.windows);
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
 
+  const visibleWindows = useMemo(
+    () => Object.values(windows).filter((windowState) => !windowState.isMinimized).sort((left, right) => left.zIndex - right.zIndex),
+    [windows],
+  );
+
   return (
     <div className="absolute inset-0 z-20 pointer-events-none">
-      <AnimatePresence>
-        {windows.map((w, index) => {
+      <AnimatePresence initial={false}>
+        {visibleWindows.map((w) => {
           const definition = windowRegistry[w.id as WindowId];
           if (!definition) return null;
 
@@ -23,14 +29,13 @@ export function WindowManager({ constraintsRef }: { constraintsRef: React.RefObj
               id={w.id}
               title={w.title}
               isActive={activeWindowId === w.id}
-              isMinimized={w.isMinimized}
               isMaximized={w.isMaximized}
               constraintsRef={constraintsRef}
-              initialPosition={definition.initialPosition}
-              sizeClassName={definition.sizeClassName}
+              position={w.position}
+              size={w.size}
               contentClassName={definition.contentClassName}
               showTitle={definition.showTitle}
-              zIndex={40 + index}
+              zIndex={w.zIndex}
             >
               {definition.content}
             </WindowFrame>

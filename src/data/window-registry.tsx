@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import dynamic from "next/dynamic";
 
 import {
   type ProjectDetailWindowId,
@@ -8,9 +9,7 @@ import {
   projects,
 } from "@/data/portfolio";
 import { AboutApp } from "@/features/about/AboutApp";
-import { BlogApp } from "@/features/blog/BlogApp";
 import { ContactApp } from "@/features/contact/ContactApp";
-import { TestimonialsApp } from "@/features/photos/TestimonialsApp";
 import { ProjectDetailApp } from "@/features/projects/ProjectDetailApp";
 import { ProjectNoteApp } from "@/features/projects/ProjectNoteApp";
 import { ProjectPreviewApp } from "@/features/projects/ProjectPreviewApp";
@@ -18,8 +17,19 @@ import { ProjectsApp } from "@/features/projects/ProjectsApp";
 import { ResumeApp } from "@/features/resume/ResumeApp";
 import { TerminalApp } from "@/features/terminal/TerminalApp";
 
+const BlogWindow = dynamic(() => import("@/features/blog/BlogApp").then((module) => module.BlogApp), {
+  ssr: false,
+});
+
+const PhotosWindow = dynamic(
+  () => import("@/features/photos/TestimonialsApp").then((module) => module.TestimonialsApp),
+  {
+    ssr: false,
+  },
+);
+
 export interface WindowDefinition {
-  initialPosition: { x: number; y: number };
+  defaultSize: { width: number; height: number };
   sizeClassName: string;
   contentClassName?: string;
   showTitle?: boolean;
@@ -27,10 +37,10 @@ export interface WindowDefinition {
 }
 
 const projectDetailWindows: Record<ProjectDetailWindowId, WindowDefinition> = Object.fromEntries(
-  projects.map((project, index) => [
+  projects.map((project) => [
     project.windowId,
     {
-      initialPosition: { x: 220 + index * 30, y: 150 + index * 24 },
+      defaultSize: { width: 980, height: 650 },
       sizeClassName: "w-[min(60vw,980px)] h-[min(60vh,650px)]",
       content: <ProjectDetailApp slug={project.slug} />,
     },
@@ -38,10 +48,10 @@ const projectDetailWindows: Record<ProjectDetailWindowId, WindowDefinition> = Ob
 ) as Record<ProjectDetailWindowId, WindowDefinition>;
 
 const projectPreviewWindows: Record<ProjectPreviewWindowId, WindowDefinition> = Object.fromEntries(
-  projects.map((project, index) => [
+  projects.map((project) => [
     project.previewWindowId,
     {
-      initialPosition: { x: 130 + index * 24, y: 170 + index * 20 },
+      defaultSize: { width: 1050, height: 620 },
       sizeClassName: "w-[min(58vw,1050px)] h-[min(58vh,620px)]",
       content: <ProjectPreviewApp slug={project.slug} />,
     },
@@ -49,10 +59,10 @@ const projectPreviewWindows: Record<ProjectPreviewWindowId, WindowDefinition> = 
 ) as Record<ProjectPreviewWindowId, WindowDefinition>;
 
 const projectNoteWindows: Record<ProjectNoteWindowId, WindowDefinition> = Object.fromEntries(
-  projects.map((project, index) => [
+  projects.map((project) => [
     project.noteWindowId,
     {
-      initialPosition: { x: 910 + index * 20, y: 270 + index * 18 },
+      defaultSize: { width: 500, height: 430 },
       sizeClassName: "w-[min(28vw,500px)] h-[min(38vh,430px)]",
       content: <ProjectNoteApp slug={project.slug} />,
     },
@@ -61,37 +71,37 @@ const projectNoteWindows: Record<ProjectNoteWindowId, WindowDefinition> = Object
 
 export const windowRegistry: Record<WindowId, WindowDefinition> = {
   projects: {
-    initialPosition: { x: 80, y: 110 },
+    defaultSize: { width: 1110, height: 665 },
     sizeClassName: "w-[min(72vw,1110px)] h-[min(63vh,665px)]",
     content: <ProjectsApp />,
   },
   resume: {
-    initialPosition: { x: 940, y: 70 },
+    defaultSize: { width: 540, height: 740 },
     sizeClassName: "w-[min(37vw,540px)] h-[min(78vh,740px)]",
     content: <ResumeApp />,
   },
   photos: {
-    initialPosition: { x: 250, y: 150 },
+    defaultSize: { width: 1110, height: 620 },
     sizeClassName: "w-[min(66vw,1110px)] h-[min(60vh,620px)]",
-    content: <TestimonialsApp />,
+    content: <PhotosWindow />,
   },
   about: {
-    initialPosition: { x: 420, y: 240 },
+    defaultSize: { width: 800, height: 470 },
     sizeClassName: "w-[min(48vw,800px)] h-[min(48vh,470px)]",
     content: <AboutApp />,
   },
   contact: {
-    initialPosition: { x: 610, y: 270 },
+    defaultSize: { width: 740, height: 420 },
     sizeClassName: "w-[min(42vw,740px)] h-[min(42vh,420px)]",
     content: <ContactApp />,
   },
   blog: {
-    initialPosition: { x: 420, y: 250 },
+    defaultSize: { width: 1100, height: 580 },
     sizeClassName: "w-[min(60vw,1100px)] h-[min(52vh,580px)]",
-    content: <BlogApp />,
+    content: <BlogWindow />,
   },
   terminal: {
-    initialPosition: { x: 610, y: 285 },
+    defaultSize: { width: 770, height: 420 },
     sizeClassName: "w-[min(40vw,770px)] h-[min(40vh,420px)]",
     content: <TerminalApp />,
   },

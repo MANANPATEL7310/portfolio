@@ -28,6 +28,27 @@ export function DesktopIcon({
   constraintsRef,
 }: DesktopIconProps) {
   const openWindow = useWindowStore((s) => s.openWindow);
+  const savedPosition = useWindowStore((s) => s.desktopIconPositions[id]);
+  const setDesktopIconPosition = useWindowStore((s) => s.setDesktopIconPosition);
+
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent) => {
+    const target = event.currentTarget as HTMLElement | null;
+    if (!target) {
+      return;
+    }
+
+    const rect = target.getBoundingClientRect();
+    setDesktopIconPosition(id, {
+      x: Math.round(rect.left),
+      y: Math.round(rect.top),
+    });
+  };
+
+  const positionStyle = savedPosition
+    ? { left: savedPosition.x, top: savedPosition.y }
+    : side === "left"
+      ? { left: 30, top }
+      : { right: 36, top };
 
   return (
     <motion.button
@@ -35,10 +56,11 @@ export function DesktopIcon({
       dragConstraints={constraintsRef}
       dragElastic={0}
       dragMomentum={false}
+      onDragEnd={handleDragEnd}
       whileDrag={{ scale: 1.05, zIndex: 200 }}
       onDoubleClick={() => openWindow(id, title)}
       className="absolute z-[8] flex w-44 cursor-default flex-col items-center gap-3 rounded-2xl px-3 py-2 text-center select-none"
-      style={side === "left" ? { left: 30, top } : { right: 36, top }}
+      style={positionStyle}
     >
       <motion.div
         whileHover={{ scale: 1.08 }}

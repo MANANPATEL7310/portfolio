@@ -10,6 +10,7 @@ export function Dock() {
   const openWindow = useWindowStore((s) => s.openWindow);
   const windows = useWindowStore((s) => s.windows);
   const theme = useSystemStore((state) => state.theme);
+  const openWindows = Object.values(windows);
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-6 z-[9999] flex justify-center">
@@ -23,7 +24,7 @@ export function Dock() {
         {dockApps.map((app) => {
           const isFinderFamily =
             app.id === "projects" &&
-            windows.some(
+            openWindows.some(
               (window) =>
                 window.id === "projects" ||
                 window.id.startsWith("project-") ||
@@ -32,9 +33,9 @@ export function Dock() {
                 window.id === "resume",
             );
 
-          const isOpen = app.id !== "trash" && (isFinderFamily || windows.some((window) => window.id === app.id));
+          const isOpen = app.id !== "trash" && (isFinderFamily || openWindows.some((window) => window.id === app.id));
           const icon =
-            app.id === "trash" && windows.length > 0
+            app.id === "trash" && openWindows.length > 0
               ? portfolioAssets.trashFullIcon
               : app.icon;
 
