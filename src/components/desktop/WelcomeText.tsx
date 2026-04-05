@@ -39,20 +39,23 @@ export function WelcomeText() {
           mouseY.set(0);
         }}
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-        className="pointer-events-auto flex cursor-default flex-col items-center gap-1 text-center select-none"
+        className="pointer-events-auto flex cursor-default flex-col items-center gap-2 text-center select-none"
       >
         <InteractiveTextLine
           text={profile.greeting}
           variant="greeting"
-          className="text-[clamp(2.2rem,4vw,5rem)] font-light tracking-[-0.05em] text-white/92"
+          className="max-w-[21ch] text-[clamp(1.55rem,2.9vw,3.35rem)] font-[220] tracking-[-0.045em] text-white/88 sm:max-w-none"
         />
         <InteractiveTextLine
           text={profile.signature}
           variant="signature"
-          className="leading-none text-white"
+          className="leading-[0.9] text-white"
           style={{
-            fontFamily: 'var(--font-script)',
-            fontSize: 'clamp(6rem, 13vw, 13rem)',
+            fontFamily: '"SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
+            fontStyle: 'italic',
+            fontWeight: 200,
+            letterSpacing: '-0.055em',
+            fontSize: 'clamp(4.15rem, 9.1vw, 7.9rem)',
           }}
         />
       </motion.div>
@@ -86,17 +89,17 @@ function InteractiveTextLine({
         const isNear = distance === 1;
         const isWave = distance === 2;
 
-        const y = hoveredIndex === null ? 0 : isActive ? -16 : isNear ? -9 : isWave ? -4 : 0;
+        const y = hoveredIndex === null ? 0 : variant === 'signature' ? isActive ? -6 : isNear ? -3 : isWave ? -1 : 0 : isActive ? -4 : isNear ? -2 : isWave ? -0.5 : 0;
         const rotate = variant === 'signature'
           ? hoveredIndex === null
             ? 0
             : isActive
-              ? -5
+              ? -2
               : isNear
-                ? -2
+                ? -0.5
                 : 0
           : 0;
-        const scale = hoveredIndex === null ? 1 : isActive ? 1.18 : isNear ? 1.09 : isWave ? 1.03 : 1;
+        const scale = hoveredIndex === null ? 1 : variant === 'signature' ? isActive ? 1.045 : isNear ? 1.02 : isWave ? 1.008 : 1 : isActive ? 1.035 : isNear ? 1.015 : 1.004;
 
         return (
           <motion.span
@@ -111,22 +114,30 @@ function InteractiveTextLine({
               textShadow:
                 variant === 'signature'
                   ? isActive
-                    ? '0 10px 28px rgba(255,255,255,0.28), 0 28px 48px rgba(2,6,23,0.5)'
+                    ? '0 4px 12px rgba(255,255,255,0.1), 0 18px 34px rgba(2,6,23,0.36)'
                     : isNear
-                      ? '0 8px 22px rgba(255,255,255,0.2), 0 22px 42px rgba(2,6,23,0.42)'
-                      : '0 22px 40px rgba(2,6,23,0.42)'
+                      ? '0 3px 10px rgba(255,255,255,0.08), 0 14px 28px rgba(2,6,23,0.3)'
+                      : '0 12px 24px rgba(2,6,23,0.27)'
                   : isActive
-                    ? '0 6px 18px rgba(255,255,255,0.22), 0 18px 42px rgba(0,0,0,0.38)'
-                    : '0 18px 42px rgba(0,0,0,0.32)',
+                    ? '0 3px 10px rgba(255,255,255,0.1), 0 12px 24px rgba(0,0,0,0.3)'
+                    : '0 10px 22px rgba(0,0,0,0.24)',
             }}
             transition={{
               type: 'spring',
-              stiffness: 360,
-              damping: 22,
-              mass: 0.55,
+              stiffness: 320,
+              damping: 26,
+              mass: 0.7,
             }}
             className={`inline-block origin-bottom will-change-transform ${
-              isActive ? 'font-semibold' : isNear ? 'font-medium' : ''
+              variant === 'signature'
+                ? isActive
+                  ? 'font-normal'
+                  : ''
+                : isActive
+                  ? 'font-medium'
+                  : isNear
+                    ? 'font-normal'
+                    : ''
             }`}
           >
             {character}
