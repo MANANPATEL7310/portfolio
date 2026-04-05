@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { LucideIcon, FolderOpen, Info, FileText, Trash2, Heart, Image as ImageIcon, MapPin, Users } from 'lucide-react';
-import { HoverText } from './HoverText';
 
 export interface SidebarItem {
   id: string;
@@ -65,7 +64,7 @@ export function Sidebar({ sections, width = 206 }: SidebarProps) {
                   }`}
                 >
                   <Icon className="h-4 w-4 text-blue-400 transition-transform duration-200 group-hover:scale-110" />
-                  <HoverText variant="underline">{item.label}</HoverText>
+                  {item.label}
                 </motion.button>
               );
             })}

@@ -15,7 +15,7 @@ export function Dock() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-6 z-[9999] flex justify-center">
       <div
-        className={`desktop-shadow pointer-events-auto flex items-end gap-3 rounded-[1.7rem] px-5 pb-3 pt-3 backdrop-blur-2xl ${
+        className={`desktop-shadow pointer-events-auto flex items-end gap-1 rounded-[1.7rem] px-5 pb-3 pt-3 backdrop-blur-2xl ${
           theme === 'light'
             ? 'border border-white/35 bg-[rgba(173,194,255,0.32)]'
             : 'border border-white/20 bg-white/12'

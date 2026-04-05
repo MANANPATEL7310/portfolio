@@ -9,7 +9,6 @@ import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 import { useWindowStore } from '@/store/useWindowStore';
 import { ThemeDropdown } from './ThemeDropdown';
-import { HoverText } from '@/components/ui/HoverText';
 
 export function MenuBar() {
   const [time, setTime] = useState('');
@@ -70,7 +69,7 @@ export function MenuBar() {
             whileHover="hover"
             initial="initial"
           >
-            <HoverText variant="underline">{item.label}</HoverText>
+            {item.label}
           </motion.button>
         ))}
       </div>

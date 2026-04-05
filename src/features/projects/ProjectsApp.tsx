@@ -17,6 +17,7 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
   const openWindow = useWindowStore((state) => state.openWindow);
   const setWindowViewMode = useWindowStore((state) => state.setWindowViewMode);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(projects[0]?.id ?? null);
+  const [activeSection, setActiveSection] = useState<string>('projects');
 
   const viewMode = currentWindow?.viewMode ?? 'finder';
   const selectedProject = useMemo(
@@ -32,11 +33,10 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
       id: item.id,
       label: item.label,
       icon: item.icon,
-      active: item.id === 'projects',
+      active: activeSection === item.id,
       onClick: () => {
-        if (item.action?.type === 'window' && item.action.windowId) {
-          openWindow(item.action.windowId, item.action.title || item.label, { viewMode: item.action.viewMode });
-        }
+        setActiveSection(item.id);
+        setSelectedProjectId(null);
       },
     })),
   };
@@ -47,12 +47,10 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
       id: project.id,
       label: project.folderLabel,
       icon: 'file-text',
-      active: project.id === selectedProjectId,
+      active: activeSection.startsWith('project:') ? selectedProjectId === project.id : false,
       onClick: () => {
+        setActiveSection(`project:${project.id}`);
         setSelectedProjectId(project.id);
-        if (viewMode === 'finder') {
-          openProjectDetails(project.id);
-        }
       },
     })),
   };
@@ -131,7 +129,89 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
         </div>
 
         <div className="min-h-0 flex-1 overflow-auto">
-          {projects.length === 0 ? (
+          {activeSection.startsWith('project:') && selectedProject ? (
+            // Show project details on the right side
+            <div className="px-8 py-8">
+              <div className="mx-auto max-w-4xl">
+                <div className="mb-8">
+                  <Image
+                    src={selectedProject.thumbnail || "/portfolio/project-1.png"}
+                    alt={selectedProject.name}
+                    width={800}
+                    height={400}
+                    className="w-full rounded-2xl object-cover"
+                  />
+                </div>
+                <h1 className="mb-4 text-3xl font-bold text-[#18181b] dark:text-white">
+                  {selectedProject.name}
+                </h1>
+                <p className="mb-6 text-lg text-black/70 dark:text-white/70">
+                  {selectedProject.description}
+                </p>
+                <div className="mb-6 flex flex-wrap gap-2">
+                  {selectedProject.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-black/[0.05] px-3 py-1 text-sm font-medium text-black/65 dark:bg-white/8 dark:text-white/65"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => openLiveProject(selectedProject.id)}
+                    className="rounded-lg bg-blue-500 px-6 py-3 text-white transition hover:bg-blue-600"
+                  >
+                    Open Live Project
+                  </button>
+                  <button
+                    onClick={() => openGithub(selectedProject.id)}
+                    className="rounded-lg border border-black/20 px-6 py-3 text-[#171717] transition hover:bg-black/5 dark:border-white/20 dark:text-white dark:hover:bg-white/5"
+                  >
+                    View Code
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : activeSection === 'projects' ? (
+            // Show projects overview
+            <div className="px-8 py-8">
+              <h2 className="mb-6 text-2xl font-bold text-[#18181b] dark:text-white">Projects Overview</h2>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {projects.map((project) => (
+                  <div key={project.id} className="rounded-lg border border-black/10 p-4 dark:border-white/10">
+                    <h3 className="font-semibold text-[#18181b] dark:text-white">{project.name}</h3>
+                    <p className="mt-2 text-sm text-black/60 dark:text-white/60">{project.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : activeSection === 'photos' ? (
+            // Show photos section
+            <div className="px-8 py-8">
+              <h2 className="mb-6 text-2xl font-bold text-[#18181b] dark:text-white">Testimonials</h2>
+              <div className="text-center text-black/60 dark:text-white/60">
+                Testimonials section coming soon...
+              </div>
+            </div>
+          ) : activeSection === 'contact' ? (
+            // Show contact section
+            <div className="px-8 py-8">
+              <h2 className="mb-6 text-2xl font-bold text-[#18181b] dark:text-white">Contact Information</h2>
+              <div className="text-center text-black/60 dark:text-white/60">
+                Contact section coming soon...
+              </div>
+            </div>
+          ) : activeSection === 'resume' ? (
+            // Show resume section
+            <div className="px-8 py-8">
+              <h2 className="mb-6 text-2xl font-bold text-[#18181b] dark:text-white">Resume</h2>
+              <div className="text-center text-black/60 dark:text-white/60">
+                Resume section coming soon...
+              </div>
+            </div>
+          ) : projects.length === 0 ? (
             <div className="flex h-full items-center justify-center text-sm text-black/45 dark:text-white/45">
               No projects yet.
             </div>

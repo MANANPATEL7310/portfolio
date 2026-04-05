@@ -1,5 +1,5 @@
 {
-  "themeDefault": "light",
+  "themeDefault": "dark",
   "copy": {
     "blogHeading": "My Developer Blog",
     "blogCta": "Check out the full post",
@@ -9,10 +9,11 @@
     "blogEmpty": "No blog posts yet."
   },
   "wallpapers": [
-    { "id": "default", "label": "Default", "src": "/portfolio/wallpaper.png" },
-    { "id": "gradient", "label": "Gradient", "src": "/portfolio/wallpaper-gradient.jpg" },
-    { "id": "mountain", "label": "Mountain", "src": "/portfolio/wallpaper-mountain.jpg" },
-    { "id": "ocean", "label": "Ocean", "src": "/portfolio/wallpaper-ocean.jpg" }
+    { "id": "default", "label": "Default Dark", "src": "/portfolio/wallpaper.png" },
+    { "id": "sunrise", "label": "Sunrise", "src": "/wallpapers/sunrise.png" },
+    { "id": "wave", "label": "Wave", "src": "/wallpapers/wave.png" },
+    { "id": "aurora", "label": "Aurora", "src": "/wallpapers/aurora.png" },
+    { "id": "ocean", "label": "Ocean", "src": "/wallpapers/ocean.png" }
   ],
   "windowDefaults": {
     "projects": { "width": 1110, "height": 665, "x": 80, "y": 110 },

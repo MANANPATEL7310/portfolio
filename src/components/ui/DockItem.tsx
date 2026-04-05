@@ -18,7 +18,7 @@ export function DockItem({ label, icon, isOpen = false, onClick }: DockItemProps
       </div>
 
       <motion.button
-        whileHover={{ scale: 1.15, y: -8 }}
+        whileHover={{ scale: 1.15, y: -12 }}
         whileTap={{ scale: 0.95 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="transform origin-bottom"

@@ -146,28 +146,17 @@ export function SettingsApp() {
                   </div>
                 </section>
 
-                {/* Accent Color */}
+                {/* Desktop Icons Section */}
                 <section>
                   <h3 className="mb-4 text-[14px] font-semibold uppercase tracking-wide text-black/50 dark:text-white/50">
-                    Accent Color
+                    Desktop Icons
                   </h3>
-                  <div className="flex gap-3">
-                    {['blue', 'purple', 'pink', 'orange', 'green'].map((color) => (
-                      <button
-                        key={color}
-                        className={`h-10 w-10 rounded-full transition hover:scale-110 ${
-                          color === 'blue'
-                            ? 'bg-blue-500'
-                            : color === 'purple'
-                              ? 'bg-purple-500'
-                              : color === 'pink'
-                                ? 'bg-pink-500'
-                                : color === 'orange'
-                                  ? 'bg-orange-500'
-                                  : 'bg-green-500'
-                        }`}
-                      />
-                    ))}
+                  <div className="flex items-center gap-3 rounded-xl bg-black/[0.02] p-4 dark:bg-white/5">
+                    <span className="text-sm text-black/70 dark:text-white/70">Show icon labels</span>
+                    <label className="relative inline-flex cursor-pointer items-center">
+                      <input type="checkbox" className="peer sr-only" defaultChecked />
+                      <div className="peer h-6 w-11 rounded-full bg-gray-200 transition after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition after:content-[''] peer-checked:bg-blue-500 peer-checked:after:translate-x-full dark:bg-gray-700" />
+                    </label>
                   </div>
                 </section>
               </div>
