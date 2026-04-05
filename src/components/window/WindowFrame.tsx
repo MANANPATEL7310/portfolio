@@ -90,7 +90,7 @@ export function WindowFrame({
           className="absolute inset-0 cursor-grab active:cursor-grabbing"
         />
         {showTitle ? (
-          <span className="pointer-events-none text-[15px] font-semibold text-white/78">
+          <span className="pointer-events-none text-[15px] font-semibold text-slate-700 dark:text-white/78">
             {title}
           </span>
         ) : null}

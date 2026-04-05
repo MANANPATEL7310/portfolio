@@ -37,7 +37,7 @@ export function Desktop() {
         className={`pointer-events-none absolute inset-0 z-0 object-cover transition duration-700 ${
           theme === "light" ? "scale-[1.03] saturate-[0.78] brightness-[1.12]" : ""
         }`}
-        sizes="100vw"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
       />
       <div className="desktop-overlay pointer-events-none absolute inset-0 z-[1]" />
       <div className={`pointer-events-none absolute inset-0 z-[2] ${theme === "light" ? "bg-white/24" : "bg-slate-950/12"}`} />

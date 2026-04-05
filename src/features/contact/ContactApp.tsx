@@ -7,7 +7,7 @@ const iconMap = [CalendarDays, Send, AtSign, BriefcaseBusiness];
 
 export function ContactApp() {
   return (
-    <div className="flex h-full items-center justify-center bg-[#1f1f22] px-5 py-6 text-white">
+    <div className="flex h-full items-center justify-center bg-white px-5 py-6 text-[#171717] dark:bg-[#1f1f22] dark:text-white">
       <div className="w-full max-w-[690px]">
         <Image
           src={portfolioAssets.avatarImage}
@@ -15,8 +15,8 @@ export function ContactApp() {
           className="h-20 w-20 rounded-full object-cover"
         />
 
-        <h1 className="mt-8 text-[54px] font-semibold leading-none tracking-tight">Let&apos;s Connect</h1>
-        <p className="mt-5 max-w-[620px] text-[18px] text-white/82">
+        <h1 className="mt-8 text-[54px] font-semibold leading-none tracking-tight text-[#171717] dark:text-white">Let&apos;s Connect</h1>
+        <p className="mt-5 max-w-[620px] text-[18px] text-black/80 dark:text-white/82">
           Got an idea? A bug to squash? Or just wanna talk tech? I&apos;m in.
         </p>
 
