@@ -5,7 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Adrian's Portfolio",
+  title: "Manan's Portfolio",
   description: "A macOS-inspired portfolio built with Next.js.",
 };
 

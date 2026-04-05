@@ -1,9 +1,9 @@
 {
-  "email": "mailto:adrian@portfolio.dev",
-  "linkedin": "https://www.linkedin.com/in/adrian-portfolio",
-  "twitter": "https://x.com/adrianportfolio",
-  "github": "https://github.com/adrian",
-  "calendar": "mailto:adrian@portfolio.dev?subject=Schedule%20a%20call",
+  "email": "mailto:manan@portfolio.dev",
+  "linkedin": "https://www.linkedin.com/in/manan-portfolio",
+  "twitter": "https://x.com/mananportfolio",
+  "github": "https://github.com/manan",
+  "calendar": "mailto:manan@portfolio.dev?subject=Schedule%20a%20call",
   "actions": [
     {
       "id": "calendar",

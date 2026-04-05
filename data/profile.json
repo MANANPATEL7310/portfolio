@@ -5,8 +5,8 @@
   "signature": "portfolio.",
   "role": "Frontend developer, motion enthusiast, and product-minded builder.",
   "location": "Remote",
-  "email": "adrian@portfolio.dev",
-  "avatar": "/portfolio/adrian.jpg",
+  "email": "manan@portfolio.dev",
+  "avatar": "/portfolio/manan.jpg",
   "bio": "I build sleek, interactive websites that feel thoughtful, fast, and calm to use.",
   "skills": ["React", "Next.js", "TypeScript", "Node.js", "Tailwind", "Motion Design"],
   "techStack": {
@@ -23,7 +23,7 @@
       "icon": "folder",
       "title": "Meet the Developer Behind the Code",
       "content": [
-        "Hey! I’m Adrian 👋, a web developer who enjoys building sleek, interactive websites that actually work well.",
+        "Hey! I’m Manan 👋, a web developer who enjoys building sleek, interactive websites that actually work well.",
         "I specialize in JavaScript, React, and Next.js, and I love making things feel smooth, fast, and just a little bit delightful.",
         "I’m big on clean UI, good UX, and writing code that doesn’t need a search party to debug.",
         "Outside of dev work, you'll find me tweaking layouts at 2AM, sipping overpriced coffee, or impulse-buying gadgets I absolutely convinced myself I needed 😅"
@@ -124,7 +124,7 @@
     ]
   },
   "terminal": {
-    "prompt": "@adrian %",
+    "prompt": "@manan %",
     "commands": [
       {
         "id": "show-techstack",
