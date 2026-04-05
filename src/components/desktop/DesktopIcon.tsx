@@ -7,6 +7,7 @@ import type { StaticImageData } from "next/image";
 
 import { useWindowStore } from '@/store/useWindowStore';
 import type { WindowId } from "@/data/portfolio";
+import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 
 interface DesktopIconProps {
   id: WindowId;
@@ -30,6 +31,9 @@ export function DesktopIcon({
   const openWindow = useWindowStore((s) => s.openWindow);
   const savedPosition = useWindowStore((s) => s.desktopIconPositions[id]);
   const setDesktopIconPosition = useWindowStore((s) => s.setDesktopIconPosition);
+  const theme = useSystemStore((state) => state.theme);
+  const systemTheme = useSystemStore((state) => state.systemTheme);
+  const resolvedTheme = getResolvedTheme(theme, systemTheme);
 
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent) => {
     const target = event.currentTarget as HTMLElement | null;
@@ -72,8 +76,8 @@ export function DesktopIcon({
 
       <div className="px-2 py-0.5 text-center">
         <span
-          className="text-[18px] font-medium leading-[1.12] text-white drop-shadow-md"
-          style={{ textShadow: '0 2px 6px rgba(0,0,0,0.8)' }}
+          className={`text-[18px] font-medium leading-[1.12] drop-shadow-md ${resolvedTheme === 'dark' ? 'text-white' : 'text-slate-900'}`}
+          style={{ textShadow: resolvedTheme === 'dark' ? '0 2px 6px rgba(0,0,0,0.8)' : '0 2px 6px rgba(255,255,255,0.35)' }}
         >
           {label}
         </span>

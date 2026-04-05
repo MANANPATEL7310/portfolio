@@ -1,18 +1,30 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #edf2ff;
   --foreground: #171717;
-  --window-shell: rgba(245, 247, 255, 0.86);
-  --window-border: rgba(255, 255, 255, 0.55);
-  --window-toolbar: rgba(245, 247, 255, 0.72);
-  --panel-muted: rgba(226, 232, 240, 0.7);
+  --surface: rgba(245, 247, 255, 0.86);
+  --surface-strong: rgba(245, 247, 255, 0.94);
+  --border-subtle: rgba(255, 255, 255, 0.55);
+  --toolbar: rgba(245, 247, 255, 0.72);
+  --muted: rgba(226, 232, 240, 0.7);
+  --text-primary: #171717;
+  --text-secondary: rgba(23, 23, 23, 0.68);
   --desktop-overlay: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.1) 45%, rgba(15,23,42,0.2) 100%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-border-subtle: var(--border-subtle);
+  --color-toolbar: var(--toolbar);
+  --color-muted: var(--muted);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
   --color-mac-red: #ff5f56;
   --color-mac-yellow: #ffbd2e;
   --color-mac-green: #27c93f;
@@ -25,10 +37,13 @@
 .dark {
   --background: #071026;
   --foreground: #f8fafc;
-  --window-shell: rgba(26, 26, 31, 0.9);
-  --window-border: rgba(255, 255, 255, 0.12);
-  --window-toolbar: rgba(60, 60, 66, 0.82);
-  --panel-muted: rgba(38, 38, 45, 0.78);
+  --surface: rgba(26, 26, 31, 0.9);
+  --surface-strong: rgba(34, 34, 42, 0.96);
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --toolbar: rgba(60, 60, 66, 0.82);
+  --muted: rgba(38, 38, 45, 0.78);
+  --text-primary: #f8fafc;
+  --text-secondary: rgba(248, 250, 252, 0.72);
   --desktop-overlay: linear-gradient(180deg, rgba(9,12,31,0.2) 0%, rgba(9,12,31,0.05) 42%, rgba(2,6,23,0.45) 100%);
 }
 
@@ -41,15 +56,24 @@ body {
   font-family: var(--font-sans);
 }
 
+html {
+  color-scheme: dark;
+}
+
+html:not(.dark) {
+  color-scheme: light;
+}
+
 body {
   overflow: hidden;
+  transition: color 300ms ease, background-color 300ms ease;
 }
 
 .mac-glass {
-  background: var(--window-shell);
+  background: var(--surface);
   backdrop-filter: blur(var(--blur-mac));
   -webkit-backdrop-filter: blur(var(--blur-mac));
-  border: 1px solid var(--window-border);
+  border: 1px solid var(--border-subtle);
 }
 
 .desktop-shadow {
@@ -65,16 +89,16 @@ body {
 }
 
 .window-surface {
-  background: var(--window-shell);
-  border: 1px solid var(--window-border);
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
 }
 
 .window-toolbar {
-  background: var(--window-toolbar);
+  background: var(--toolbar);
 }
 
 .panel-muted {
-  background: var(--panel-muted);
+  background: var(--muted);
 }
 
 .desktop-overlay {

@@ -4,10 +4,12 @@ import { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 import { portfolioIdentity } from "@/data/portfolio";
-import { useSystemStore } from "@/store/useSystemStore";
+import { getResolvedTheme, useSystemStore } from "@/store/useSystemStore";
 
 export function WelcomeText() {
-  useSystemStore((state) => state.theme);
+  const theme = useSystemStore((state) => state.theme);
+  const systemTheme = useSystemStore((state) => state.systemTheme);
+  const resolvedTheme = getResolvedTheme(theme, systemTheme);
   const ref = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -42,7 +44,7 @@ export function WelcomeText() {
         className="pointer-events-auto flex cursor-default flex-col items-center gap-1 text-center select-none"
       >
         <p
-          className="text-[clamp(2.2rem,4vw,5rem)] font-light tracking-[-0.05em] text-white/92 drop-shadow-lg"
+          className={`text-[clamp(2.2rem,4vw,5rem)] font-light tracking-[-0.05em] drop-shadow-lg ${resolvedTheme === 'dark' ? 'text-white/92' : 'text-slate-900/90'}`}
           style={{ textShadow: "0 18px 42px rgba(0,0,0,0.32)" }}
         >
           {portfolioIdentity.greeting}
@@ -54,7 +56,7 @@ export function WelcomeText() {
           style={{
             fontFamily: 'var(--font-script)',
             fontSize: 'clamp(6rem, 13vw, 13rem)',
-            color: "#ffffff",
+            color: resolvedTheme === 'dark' ? '#ffffff' : '#0f172a',
             filter: 'drop-shadow(0 22px 40px rgba(2,6,23,0.42))',
           }}
         >

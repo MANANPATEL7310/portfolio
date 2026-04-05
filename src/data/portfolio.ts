@@ -24,7 +24,8 @@ import galleryTwoImage from "../assets/portfolio/gal2.png";
 import galleryThreeImage from "../assets/portfolio/gal3.png";
 import galleryFourImage from "../assets/portfolio/gal4.png";
 
-export type ThemeMode = "dark" | "light";
+export type ThemeMode = "dark" | "light" | "system";
+export type ResolvedThemeMode = "dark" | "light";
 export type ProjectSlug = "snapcast" | "converso" | "prepwise" | "bookwise";
 export type ProjectDetailWindowId = `project-${ProjectSlug}`;
 export type ProjectPreviewWindowId = `preview-${ProjectSlug}`;
