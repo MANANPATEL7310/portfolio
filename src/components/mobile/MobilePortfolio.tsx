@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ArrowUpRight, MoonStar, Sparkles, SunMedium } from "lucide-react";
 
+import { getWallpaper } from '@/lib/dataService';
 import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
 import { getResolvedTheme, useSystemStore } from "@/store/useSystemStore";
 
@@ -16,18 +17,19 @@ const mobileContactCards = [
 export function MobilePortfolio() {
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
   const setTheme = useSystemStore((state) => state.setTheme);
+  const currentWallpaperId = useSystemStore((state) => state.wallpaper);
+  const currentWallpaper = getWallpaper(currentWallpaperId);
   const profile = usePortfolioDataStore((state) => state.profile);
   const projects = usePortfolioDataStore((state) => state.projects);
   const gallery = usePortfolioDataStore((state) => state.gallery);
   const blogs = usePortfolioDataStore((state) => state.blogs);
   const socials = usePortfolioDataStore((state) => state.socials);
-  const settings = usePortfolioDataStore((state) => state.settings);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
       <div className="absolute inset-0">
         <Image
-          src={settings.wallpapers[theme]}
+          src={currentWallpaper.src}
           alt="Desktop wallpaper"
           fill
           priority

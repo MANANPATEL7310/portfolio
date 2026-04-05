@@ -8,10 +8,12 @@
     "photosEmpty": "No photos in this section yet.",
     "blogEmpty": "No blog posts yet."
   },
-  "wallpapers": {
-    "light": "/portfolio/wallpaper.png",
-    "dark": "/portfolio/wallpaper.png"
-  },
+  "wallpapers": [
+    { "id": "default", "label": "Default", "src": "/portfolio/wallpaper.png" },
+    { "id": "gradient", "label": "Gradient", "src": "/portfolio/wallpaper-gradient.jpg" },
+    { "id": "mountain", "label": "Mountain", "src": "/portfolio/wallpaper-mountain.jpg" },
+    { "id": "ocean", "label": "Ocean", "src": "/portfolio/wallpaper-ocean.jpg" }
+  ],
   "windowDefaults": {
     "projects": { "width": 1110, "height": 665, "x": 80, "y": 110 },
     "resume": { "width": 540, "height": 740, "x": 940, "y": 70 },

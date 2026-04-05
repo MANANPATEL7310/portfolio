@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import Image from "next/image";
-import { CircleUserRound, Search, SlidersHorizontal, Wifi } from "lucide-react";
+import { motion } from 'framer-motion';
+import { CircleUserRound, Search, Settings, SlidersHorizontal, Wifi } from "lucide-react";
 
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 import { useWindowStore } from '@/store/useWindowStore';
 import { ThemeDropdown } from './ThemeDropdown';
+import { HoverText } from '@/components/ui/HoverText';
 
 export function MenuBar() {
   const [time, setTime] = useState('');
@@ -59,42 +61,59 @@ export function MenuBar() {
         </button>
 
         {menuItems.map((item) => (
-          <button
+          <motion.button
             key={item.id}
             onClick={() => openWindow(item.id, item.title, { viewMode: item.openMode })}
-            className={`hidden text-[17px] transition md:inline ${
+            className={`group relative hidden overflow-hidden text-[17px] md:inline ${
               theme === "light" ? "text-black/85 hover:text-black" : "text-white/88 hover:text-white"
             }`}
+            whileHover="hover"
+            initial="initial"
           >
-            {item.label}
-          </button>
+            <HoverText variant="underline">{item.label}</HoverText>
+          </motion.button>
         ))}
       </div>
 
       <div className={`relative flex items-center gap-4 ${theme === "light" ? "text-black/85" : "text-white/82"}`}>
         <Wifi className="h-4 w-4" />
-        <button
+        <motion.button
           onClick={toggleSpotlight}
-          className={`transition ${theme === "light" ? "hover:text-black" : "hover:text-white"}`}
+          className={`relative ${theme === "light" ? "hover:text-black" : "hover:text-white"}`}
           title="Search (⌘K)"
+          whileHover={{ scale: 1.15 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         >
           <Search className="h-4 w-4" />
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           onClick={() => openWindow("about", "About Me")}
-          className={`transition ${theme === "light" ? "hover:text-black" : "hover:text-white"}`}
+          className={`relative ${theme === "light" ? "hover:text-black" : "hover:text-white"}`}
           title="About me"
+          whileHover={{ scale: 1.15 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         >
           <CircleUserRound className="h-4 w-4" />
-        </button>
+        </motion.button>
+        <motion.button
+          onClick={() => openWindow("settings", "Settings")}
+          className={`relative ${theme === "light" ? "hover:text-black" : "hover:text-white"}`}
+          title="Settings"
+          whileHover={{ scale: 1.15 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+        >
+          <Settings className="h-4 w-4" />
+        </motion.button>
         <div className="relative">
-          <button
+          <motion.button
             onClick={() => setIsThemeOpen((value) => !value)}
-            className={`transition ${theme === "light" ? "hover:text-black" : "hover:text-white"}`}
+            className={`relative ${theme === "light" ? "hover:text-black" : "hover:text-white"}`}
             title="Appearance"
+            whileHover={{ scale: 1.15 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           >
             <SlidersHorizontal className="h-4 w-4" />
-          </button>
+          </motion.button>
           <ThemeDropdown isOpen={isThemeOpen} onClose={() => setIsThemeOpen(false)} />
         </div>
         <span className={`hidden text-[15px] font-medium md:inline ${theme === "light" ? "text-black/90" : "text-white/95"}`}>{time}</span>

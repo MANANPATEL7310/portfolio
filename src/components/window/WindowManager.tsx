@@ -46,6 +46,9 @@ const BlogApp = dynamic(() => import("@/features/blog/BlogApp").then((mod) => mo
 const TerminalApp = dynamic(() => import("@/features/terminal/TerminalApp").then((mod) => mod.TerminalApp), {
   loading: () => <WindowFallback />,
 });
+const SettingsApp = dynamic(() => import("@/features/settings/SettingsApp").then((mod) => mod.SettingsApp), {
+  loading: () => <WindowFallback />,
+});
 
 function renderWindowContent(windowId: string) {
   const parsed = parseWindowId(windowId);
@@ -76,6 +79,8 @@ function renderWindowContent(windowId: string) {
       return <BlogApp />;
     case "terminal":
       return <TerminalApp />;
+    case "settings":
+      return <SettingsApp />;
     default:
       return <WindowFallback />;
   }

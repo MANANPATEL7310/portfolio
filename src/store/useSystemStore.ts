@@ -31,10 +31,12 @@ function applyTheme(theme: ResolvedThemeMode) {
 interface SystemStore {
   theme: ThemeMode;
   systemTheme: ResolvedThemeMode;
+  wallpaper: string;
   isSpotlightOpen: boolean;
   selectedDesktopItemId: string | null;
   hasHydrated: boolean;
   setTheme: (theme: ThemeMode) => void;
+  setWallpaper: (wallpaper: string) => void;
   toggleSpotlight: () => void;
   openSpotlight: () => void;
   closeSpotlight: () => void;
@@ -49,6 +51,7 @@ export const useSystemStore = create<SystemStore>()(
     (set, get) => ({
       theme: getSettings().themeDefault,
       systemTheme: getSystemTheme(),
+      wallpaper: getSettings().wallpapers[0]?.id ?? 'default',
       isSpotlightOpen: false,
       selectedDesktopItemId: null,
       hasHydrated: false,
@@ -57,6 +60,10 @@ export const useSystemStore = create<SystemStore>()(
         const resolvedTheme = getResolvedTheme(theme, get().systemTheme);
         applyTheme(resolvedTheme);
         set({ theme });
+      },
+
+      setWallpaper: (wallpaper) => {
+        set({ wallpaper });
       },
 
       setSystemTheme: (theme) => {
@@ -80,6 +87,7 @@ export const useSystemStore = create<SystemStore>()(
       skipHydration: true,
       partialize: (state) => ({
         theme: state.theme,
+        wallpaper: state.wallpaper,
       }),
       onRehydrateStorage: () => (state) => {
         const theme = state?.theme ?? getSettings().themeDefault;

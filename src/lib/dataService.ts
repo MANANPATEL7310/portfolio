@@ -17,6 +17,7 @@ export type WindowId =
   | "contact"
   | "blog"
   | "terminal"
+  | "settings"
   | `project:${string}`
   | `project-file:${string}:${string}`;
 
@@ -180,6 +181,12 @@ export interface SpotlightItem {
   viewMode?: WindowViewMode;
 }
 
+export interface WallpaperOption {
+  id: string;
+  label: string;
+  src: string;
+}
+
 export interface SettingsData {
   themeDefault: ThemeMode;
   copy: {
@@ -190,7 +197,7 @@ export interface SettingsData {
     photosEmpty: string;
     blogEmpty: string;
   };
-  wallpapers: Record<ResolvedThemeMode, string>;
+  wallpapers: WallpaperOption[];
   windowDefaults: Record<string, { width: number; height: number; x: number; y: number }>;
   menuItems: MenuItemSetting[];
   dockApps: DockAppSetting[];
@@ -239,7 +246,7 @@ export const getDesktopItems = (): DesktopItemSetting[] => [
   ...getSettings().desktopItems,
   ...getDesktopProjectItems(),
 ];
-export const getWallpaper = (theme: ResolvedThemeMode) => getSettings().wallpapers[theme];
+export const getWallpaper = (id: string) => getSettings().wallpapers.find((w) => w.id === id) ?? getSettings().wallpapers[0];
 
 export const getDesktopProjectItems = () =>
   getProjects().map((project) => ({

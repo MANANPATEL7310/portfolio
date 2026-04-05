@@ -9,6 +9,7 @@ import { getProjectWindowId, getSidebars } from '@/lib/dataService';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
 import { Sidebar, SidebarSection } from '@/components/ui/Sidebar';
+import { HoverText } from '@/components/ui/HoverText';
 
 export function ProjectsApp({ windowId }: { windowId: string }) {
   const projects = usePortfolioDataStore((state) => state.projects);
@@ -169,15 +170,21 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
                     <div className="space-y-3 p-5">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <h2 className="text-[22px] font-semibold text-[#18181b] dark:text-white">{project.name}</h2>
+                          <h2 className="group cursor-pointer text-[22px] font-semibold text-[#18181b] transition-colors duration-200 group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400">
+                            <HoverText variant="underline">{project.name}</HoverText>
+                          </h2>
                           <p className="mt-2 text-[15px] leading-6 text-black/68 dark:text-white/62">{project.description}</p>
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {project.tags.map((tag) => (
-                          <span key={tag} className="rounded-full bg-black/[0.05] px-3 py-1 text-xs font-medium text-black/65 dark:bg-white/8 dark:text-white/65">
+                          <motion.span 
+                            key={tag} 
+                            whileHover={{ scale: 1.05 }}
+                            className="rounded-full bg-black/[0.05] px-3 py-1 text-xs font-medium text-black/65 transition-colors duration-200 hover:bg-black/10 dark:bg-white/8 dark:text-white/65 dark:hover:bg-white/15"
+                          >
                             {tag}
-                          </span>
+                          </motion.span>
                         ))}
                       </div>
                     </div>
@@ -223,15 +230,20 @@ function ActionPill({
   icon: LucideIcon;
 }) {
   return (
-    <button
+    <motion.button
       onClick={(event) => {
         event.stopPropagation();
         onClick();
       }}
-      className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-xs font-semibold text-[#171717] shadow-lg transition hover:bg-white"
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-xs font-semibold text-[#171717] shadow-lg transition-colors duration-200 hover:bg-white hover:text-blue-600"
     >
       <Icon className="h-3.5 w-3.5" />
-      {label}
-    </button>
+      <span className="relative">
+        <HoverText variant="underline">{label}</HoverText>
+      </span>
+    </motion.button>
   );
 }

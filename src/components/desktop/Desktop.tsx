@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import Image from "next/image";
 
+import { getWallpaper } from '@/lib/dataService';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
@@ -17,11 +18,12 @@ import { WindowManager } from '../window/WindowManager';
 export function Desktop() {
   const constraintsRef = useRef<HTMLDivElement>(null);
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
+  const currentWallpaperId = useSystemStore((state) => state.wallpaper);
+  const currentWallpaper = getWallpaper(currentWallpaperId);
   const toggleSpotlight = useSystemStore((state) => state.toggleSpotlight);
   const isSpotlightOpen = useSystemStore((state) => state.isSpotlightOpen);
   const clearDesktopSelection = useSystemStore((state) => state.clearDesktopSelection);
   const closeSpotlight = useSystemStore((state) => state.closeSpotlight);
-  const settings = usePortfolioDataStore((state) => state.settings);
   const projects = usePortfolioDataStore((state) => state.projects);
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
   const closeWindow = useWindowStore((state) => state.closeWindow);
@@ -29,7 +31,7 @@ export function Desktop() {
 
   const desktopItems = useMemo(
     () => [
-      ...settings.desktopItems,
+      ...usePortfolioDataStore.getState().settings.desktopItems,
       ...projects.map((project) => ({
         id: `project:${project.id}`,
         label: project.desktopLabel,
@@ -38,7 +40,7 @@ export function Desktop() {
         desktopPosition: project.desktopPosition,
       })),
     ],
-    [projects, settings.desktopItems],
+    [projects],
   );
 
   useEffect(() => {
@@ -93,14 +95,14 @@ export function Desktop() {
       className="selection-glow relative h-screen w-screen overflow-hidden bg-slate-950 text-foreground"
     >
       <Image
-        src={settings.wallpapers[theme]}
+        src={currentWallpaper.src}
         alt="Desktop wallpaper"
         fill
         priority
         className={`pointer-events-none absolute inset-0 z-0 object-cover transition duration-700 ${
           theme === "light" ? "scale-[1.03] saturate-[0.78] brightness-[1.12]" : ""
         }`}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+        sizes="100vw"
       />
       <div className="desktop-overlay pointer-events-none absolute inset-0 z-[1]" />
       <div className={`pointer-events-none absolute inset-0 z-[2] ${theme === "light" ? "bg-white/24" : "bg-slate-950/12"}`} />

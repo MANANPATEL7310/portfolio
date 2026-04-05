@@ -173,12 +173,12 @@ export const WindowFrame = memo(function WindowFrame({
       <div
         className={twMerge(
           clsx(
-            "min-h-0 min-w-0 flex-1 overflow-auto rounded-b-[1.4rem] bg-[rgba(15,15,18,0.18)]",
+            "min-h-0 min-w-0 flex-1 overflow-hidden rounded-b-[1.4rem] bg-[rgba(15,15,18,0.18)]",
             contentClassName,
           ),
         )}
       >
-        <div className="h-full w-full min-w-0 min-h-0 overflow-auto">
+        <div className="h-full w-full overflow-auto">
           {children || (
             <div className="flex h-full items-center justify-center text-sm text-white/45">
               Content for &quot;{title}&quot; is on the way.

@@ -1,6 +1,8 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { LucideIcon, FolderOpen, Info, FileText, Trash2, Heart, Image as ImageIcon, MapPin, Users } from 'lucide-react';
+import { HoverText } from './HoverText';
 
 export interface SidebarItem {
   id: string;
@@ -49,21 +51,22 @@ export function Sidebar({ sections, width = 206 }: SidebarProps) {
             {section.items.map((item) => {
               const Icon = iconMap[item.icon] || FolderOpen;
               return (
-                <button
+                <motion.button
                   key={item.id}
                   onClick={() => {
-                    console.log('Sidebar item clicked:', item.id, item.label);
                     item.onClick?.();
                   }}
-                  className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] transition ${
+                  whileHover="hover"
+                  initial="initial"
+                  className={`group flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] transition ${
                     item.active
                       ? 'bg-black/8 text-[#1b1b1d] dark:bg-white/10 dark:text-white'
                       : 'text-black/78 hover:bg-black/4 dark:text-white/82 dark:hover:bg-white/6'
                   }`}
                 >
-                  <Icon className="h-4 w-4 text-blue-400" />
-                  {item.label}
-                </button>
+                  <Icon className="h-4 w-4 text-blue-400 transition-transform duration-200 group-hover:scale-110" />
+                  <HoverText variant="underline">{item.label}</HoverText>
+                </motion.button>
               );
             })}
           </div>
