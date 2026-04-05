@@ -8,6 +8,7 @@ import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
 
 export function BlogApp() {
   const blogs = usePortfolioDataStore((state) => state.blogs);
+  const copy = usePortfolioDataStore((state) => state.settings.copy);
   const [selectedBlogId, setSelectedBlogId] = useState<string | null>(null);
   const selectedBlog = useMemo(
     () => blogs.find((post) => post.id === selectedBlogId) ?? null,
@@ -31,7 +32,7 @@ export function BlogApp() {
       <div className="hide-scrollbar flex-1 overflow-auto px-8 py-10">
         <div className="mx-auto max-w-[720px]">
           <div className="flex items-center justify-between gap-4">
-            <h1 className="text-[24px] font-semibold text-rose-500">My Developer Blog</h1>
+            <h1 className="text-[24px] font-semibold text-rose-500">{copy.blogHeading}</h1>
             {selectedBlog ? (
               <button
                 onClick={() => setSelectedBlogId(null)}
@@ -65,31 +66,37 @@ export function BlogApp() {
             </article>
           ) : (
             <div className="mt-8 space-y-9">
-              {blogs.map((post) => (
-                <button
-                  key={post.id}
-                  onClick={() => setSelectedBlogId(post.id)}
-                  className="grid w-full grid-cols-[108px_1fr] gap-5 text-left"
-                >
-                  <Image src={post.thumbnail} alt={post.title} width={112} height={112} className="h-28 w-28 rounded-2xl object-cover" />
-                  <div>
-                    <p className="text-[15px] text-black/55 dark:text-white/62">
-                      {new Date(post.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </p>
-                    <h2 className="mt-2 text-[22px] font-semibold leading-[1.25] text-[#18181b] dark:text-white">
-                      {post.title}
-                    </h2>
-                    <p className="mt-3 text-[16px] text-black/68 dark:text-white/65">{post.excerpt}</p>
-                    <span className="mt-4 inline-block text-[16px] text-sky-500">
-                      Check out the full post
-                    </span>
-                  </div>
-                </button>
-              ))}
+              {blogs.length === 0 ? (
+                <div className="rounded-[1.6rem] border border-black/6 px-6 py-10 text-center text-[16px] text-black/55 dark:border-white/10 dark:text-white/55">
+                  {copy.blogEmpty}
+                </div>
+              ) : (
+                blogs.map((post) => (
+                  <button
+                    key={post.id}
+                    onClick={() => setSelectedBlogId(post.id)}
+                    className="grid w-full grid-cols-[108px_1fr] gap-5 text-left"
+                  >
+                    <Image src={post.thumbnail} alt={post.title} width={112} height={112} className="h-28 w-28 rounded-2xl object-cover" />
+                    <div>
+                      <p className="text-[15px] text-black/55 dark:text-white/62">
+                        {new Date(post.date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </p>
+                      <h2 className="mt-2 text-[22px] font-semibold leading-[1.25] text-[#18181b] dark:text-white">
+                        {post.title}
+                      </h2>
+                      <p className="mt-3 text-[16px] text-black/68 dark:text-white/65">{post.excerpt}</p>
+                      <span className="mt-4 inline-block text-[16px] text-sky-500">
+                        {copy.blogCta}
+                      </span>
+                    </div>
+                  </button>
+                ))
+              )}
             </div>
           )}
         </div>

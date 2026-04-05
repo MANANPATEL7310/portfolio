@@ -26,19 +26,24 @@ export function FolderItem({ file, projectId, selected, onSelect }: FileItemProp
   };
 
   return (
-    <FileButton selected={selected} onClick={onSelect} onDoubleClick={handleOpen}>
-      <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
-        <Image
-          src={file.icon}
-          alt={file.name}
-          width={96}
-          height={96}
-          className="max-h-24 w-auto object-contain"
-          sizes="96px"
-        />
-      </div>
-      <span>{file.name}</span>
-    </FileButton>
+    <FileButton
+      selected={selected}
+      onClick={onSelect}
+      onDoubleClick={handleOpen}
+      label={file.name}
+      preview={
+        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
+          <Image
+            src={file.icon}
+            alt={file.name}
+            width={96}
+            height={96}
+            className="max-h-24 w-auto object-contain"
+            sizes="96px"
+          />
+        </div>
+      }
+    />
   );
 }
 
@@ -55,19 +60,24 @@ export function ImageItem({ file, projectId, selected, onSelect }: FileItemProps
   };
 
   return (
-    <FileButton selected={selected} onClick={onSelect} onDoubleClick={handleOpen}>
-      <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
-        <Image
-          src={file.src || file.icon}
-          alt={file.name}
-          width={96}
-          height={96}
-          className="max-h-24 w-auto rounded-2xl border border-black/6 bg-white object-contain shadow-lg dark:border-white/10"
-          sizes="96px"
-        />
-      </div>
-      <span>{file.name}</span>
-    </FileButton>
+    <FileButton
+      selected={selected}
+      onClick={onSelect}
+      onDoubleClick={handleOpen}
+      label={file.name}
+      preview={
+        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
+          <Image
+            src={file.src || file.icon}
+            alt={file.name}
+            width={96}
+            height={96}
+            className="max-h-24 w-auto rounded-2xl border border-black/6 bg-white object-contain shadow-lg dark:border-white/10"
+            sizes="96px"
+          />
+        </div>
+      }
+    />
   );
 }
 
@@ -82,19 +92,24 @@ export function TextItem({ file, projectId, selected, onSelect }: FileItemProps)
   };
 
   return (
-    <FileButton selected={selected} onClick={onSelect} onDoubleClick={handleOpen}>
-      <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
-        <Image
-          src={file.icon}
-          alt={file.name}
-          width={96}
-          height={96}
-          className="max-h-24 w-auto object-contain"
-          sizes="96px"
-        />
-      </div>
-      <span>{file.name}</span>
-    </FileButton>
+    <FileButton
+      selected={selected}
+      onClick={onSelect}
+      onDoubleClick={handleOpen}
+      label={file.name}
+      preview={
+        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
+          <Image
+            src={file.icon}
+            alt={file.name}
+            width={96}
+            height={96}
+            className="max-h-24 w-auto object-contain"
+            sizes="96px"
+          />
+        </div>
+      }
+    />
   );
 }
 
@@ -106,19 +121,24 @@ export function LinkItem({ file, selected, onSelect }: FileItemProps) {
   };
 
   return (
-    <FileButton selected={selected} onClick={onSelect} onDoubleClick={handleOpen}>
-      <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
-        <Image
-          src={file.icon}
-          alt={file.name}
-          width={96}
-          height={96}
-          className="max-h-24 w-auto object-contain"
-          sizes="96px"
-        />
-      </div>
-      <span>{file.name}</span>
-    </FileButton>
+    <FileButton
+      selected={selected}
+      onClick={onSelect}
+      onDoubleClick={handleOpen}
+      label={file.name}
+      preview={
+        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
+          <Image
+            src={file.icon}
+            alt={file.name}
+            width={96}
+            height={96}
+            className="max-h-24 w-auto object-contain"
+            sizes="96px"
+          />
+        </div>
+      }
+    />
   );
 }
 
@@ -133,30 +153,36 @@ export function FigmaItem({ file, projectId, selected, onSelect }: FileItemProps
   };
 
   return (
-    <FileButton selected={selected} onClick={onSelect} onDoubleClick={handleOpen}>
-      <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
-        <Image
-          src={file.icon}
-          alt={file.name}
-          width={96}
-          height={96}
-          className="max-h-24 w-auto object-contain"
-          sizes="96px"
-        />
-      </div>
-      <span>{file.name}</span>
-    </FileButton>
+    <FileButton
+      selected={selected}
+      onClick={onSelect}
+      onDoubleClick={handleOpen}
+      label={file.name}
+      preview={
+        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
+          <Image
+            src={file.icon}
+            alt={file.name}
+            width={96}
+            height={96}
+            className="max-h-24 w-auto object-contain"
+            sizes="96px"
+          />
+        </div>
+      }
+    />
   );
 }
 
 interface FileButtonProps {
-  children: React.ReactNode;
+  preview: React.ReactNode;
+  label: string;
   selected?: boolean;
   onClick?: () => void;
   onDoubleClick?: () => void;
 }
 
-function FileButton({ children, selected, onClick, onDoubleClick }: FileButtonProps) {
+function FileButton({ preview, label, selected, onClick, onDoubleClick }: FileButtonProps) {
   return (
     <button
       onClick={onClick}
@@ -165,7 +191,8 @@ function FileButton({ children, selected, onClick, onDoubleClick }: FileButtonPr
         selected ? 'bg-black/[0.04] dark:bg-white/6' : ''
       }`}
     >
-      <div className="transition duration-200 group-hover:scale-[1.03]">{children}</div>
+      <div className="transition duration-200 group-hover:scale-[1.03]">{preview}</div>
+      <span>{label}</span>
     </button>
   );
 }

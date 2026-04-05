@@ -1,47 +1,37 @@
 'use client';
 
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { AtSign, BriefcaseBusiness, CalendarDays, Send } from "lucide-react";
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { AtSign, BriefcaseBusiness, CalendarDays, Send, type LucideIcon } from 'lucide-react';
 
-import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
-import { HoverText } from '@/components/ui/HoverText';
+import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 
-const actionConfig = [
-  {
-    id: "calendar",
-    label: "Schedule a call",
-    icon: CalendarDays,
-    colorClass: "from-rose-400 to-rose-500",
-  },
-  {
-    id: "email",
-    label: "Email me",
-    icon: Send,
-    colorClass: "from-emerald-400 to-emerald-500",
-  },
-  {
-    id: "twitter",
-    label: "Twitter/X",
-    icon: AtSign,
-    colorClass: "from-orange-300 to-rose-300",
-  },
-  {
-    id: "linkedin",
-    label: "LinkedIn",
-    icon: BriefcaseBusiness,
-    colorClass: "from-sky-400 to-sky-500",
-  },
-] as const;
+const iconMap: Record<string, LucideIcon> = {
+  'calendar-days': CalendarDays,
+  send: Send,
+  'at-sign': AtSign,
+  'briefcase-business': BriefcaseBusiness,
+};
 
 export function ContactApp() {
   const profile = usePortfolioDataStore((state) => state.profile);
   const socials = usePortfolioDataStore((state) => state.socials);
+  const copy = usePortfolioDataStore((state) => state.settings.copy);
 
-  const actions = actionConfig.map((action) => ({
-    ...action,
-    href: socials[action.id],
-  }));
+  const hrefMap = {
+    calendar: socials.calendar,
+    email: socials.email,
+    twitter: socials.twitter,
+    linkedin: socials.linkedin,
+  };
+
+  const actions = socials.actions
+    .map((action) => ({
+      ...action,
+      href: hrefMap[action.id as keyof typeof hrefMap],
+      Icon: iconMap[action.icon] ?? CalendarDays,
+    }))
+    .filter((action) => Boolean(action.href));
 
   return (
     <div className="flex h-full flex-col bg-white text-[#171717] dark:bg-[#1f1f22] dark:text-white">
@@ -60,17 +50,16 @@ export function ContactApp() {
             />
             <div>
               <h1 className="text-[40px] font-semibold leading-tight tracking-tight text-[#171717] dark:text-white">
-                Let&apos;s Connect
+                {copy.contactHeading}
               </h1>
               <p className="mt-2 max-w-[520px] text-[17px] text-black/70 dark:text-white/75">
-                Got an idea? A bug to squash? Or just wanna talk tech? I&apos;m in.
+                {copy.contactIntro}
               </p>
             </div>
           </div>
 
           <div className="mt-10 grid gap-4 md:grid-cols-2">
             {actions.map((action) => {
-              const Icon = action.icon;
               const external = action.href.startsWith('http');
 
               return (
@@ -84,11 +73,9 @@ export function ContactApp() {
                   className={`flex items-center gap-4 rounded-2xl bg-gradient-to-br ${action.colorClass} p-5 text-white shadow-lg transition`}
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
-                    <Icon className="h-6 w-6" />
+                    <action.Icon className="h-6 w-6" />
                   </div>
-                  <span className="text-[17px] font-semibold">
-                    <HoverText variant="underline">{action.label}</HoverText>
-                  </span>
+                  <span className="text-[17px] font-semibold">{action.label}</span>
                 </motion.a>
               );
             })}

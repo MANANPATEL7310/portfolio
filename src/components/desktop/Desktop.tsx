@@ -25,13 +25,14 @@ export function Desktop() {
   const clearDesktopSelection = useSystemStore((state) => state.clearDesktopSelection);
   const closeSpotlight = useSystemStore((state) => state.closeSpotlight);
   const projects = usePortfolioDataStore((state) => state.projects);
+  const desktopSettings = usePortfolioDataStore((state) => state.settings.desktopItems);
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
   const closeWindow = useWindowStore((state) => state.closeWindow);
   const clampWindowsToViewport = useWindowStore((state) => state.clampWindowsToViewport);
 
   const desktopItems = useMemo(
     () => [
-      ...usePortfolioDataStore.getState().settings.desktopItems,
+      ...desktopSettings,
       ...projects.map((project) => ({
         id: `project:${project.id}`,
         label: project.desktopLabel,
@@ -40,7 +41,7 @@ export function Desktop() {
         desktopPosition: project.desktopPosition,
       })),
     ],
-    [projects],
+    [desktopSettings, projects],
   );
 
   useEffect(() => {

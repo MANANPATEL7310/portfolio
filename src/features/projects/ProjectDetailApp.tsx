@@ -1,24 +1,42 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
-import { getProjectWindowId, getSidebars } from '@/lib/dataService';
+import { Sidebar, type SidebarSection } from '@/components/ui/Sidebar';
+import { FileRenderer } from '@/components/ui/FileItems';
+import { getSidebars } from '@/lib/dataService';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
-import { Sidebar, SidebarSection } from '@/components/ui/Sidebar';
-import { FileRenderer } from '@/components/ui/FileItems';
 
-export function ProjectDetailApp({ projectId }: { projectId: string }) {
+export function ProjectDetailApp({
+  projectId,
+  windowId,
+}: {
+  projectId: string;
+  windowId: string;
+}) {
   const projects = usePortfolioDataStore((state) => state.projects);
   const openWindow = useWindowStore((state) => state.openWindow);
-  const project = useMemo(
-    () => projects.find((item) => item.id === projectId),
-    [projectId, projects]
-  );
-  const [selectedFileId, setSelectedFileId] = useState<string | null>(project?.files[0]?.id ?? null);
+  const setWindowTitle = useWindowStore((state) => state.setWindowTitle);
+  const [activeProjectId, setActiveProjectId] = useState(projectId);
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
 
+  const activeProject = useMemo(
+    () => projects.find((item) => item.id === activeProjectId) ?? projects.find((item) => item.id === projectId) ?? null,
+    [activeProjectId, projectId, projects],
+  );
   const sidebarData = getSidebars();
+  const activeFileId =
+    activeProject && selectedFileId && activeProject.files.some((file) => file.id === selectedFileId)
+      ? selectedFileId
+      : activeProject?.files[0]?.id ?? null;
+
+  useEffect(() => {
+    if (activeProject) {
+      setWindowTitle(windowId, activeProject.titleBar);
+    }
+  }, [activeProject, setWindowTitle, windowId]);
 
   const favoritesSection: SidebarSection = {
     heading: sidebarData.finder.heading,
@@ -29,7 +47,7 @@ export function ProjectDetailApp({ projectId }: { projectId: string }) {
       active: false,
       onClick: () => {
         if (item.action?.type === 'window' && item.action.windowId) {
-          openWindow(item.action.windowId, item.action.title || item.label, { viewMode: item.action.viewMode });
+          openWindow(item.action.windowId, item.action.title ?? item.label, { viewMode: item.action.viewMode });
         }
       },
     })),
@@ -41,16 +59,15 @@ export function ProjectDetailApp({ projectId }: { projectId: string }) {
       id: item.id,
       label: item.folderLabel,
       icon: 'file-text',
-      active: item.id === project?.id,
+      active: item.id === activeProject?.id,
       onClick: () => {
-        if (item.id !== project?.id) {
-          openWindow(getProjectWindowId(item.id), item.titleBar);
-        }
+        setActiveProjectId(item.id);
+        setSelectedFileId(null);
       },
     })),
   };
 
-  if (!project) {
+  if (!activeProject) {
     return null;
   }
 
@@ -63,18 +80,20 @@ export function ProjectDetailApp({ projectId }: { projectId: string }) {
           <div className="flex items-center gap-4 text-black/35 dark:text-white/45">
             <ChevronLeft className="h-6 w-6" />
             <ChevronRight className="h-6 w-6" />
-            <span className="ml-2 text-[21px] font-semibold text-[#2c2c2f] dark:text-white">{project.titleBar}</span>
+            <span className="ml-2 text-[21px] font-semibold text-[#2c2c2f] dark:text-white">
+              {activeProject.titleBar}
+            </span>
           </div>
           <Search className="h-7 w-7 text-black/45 dark:text-white/55" />
         </div>
 
         <div className="grid flex-1 grid-cols-2 gap-x-16 gap-y-10 overflow-auto px-10 py-12 lg:px-20">
-          {project.files.map((file) => (
+          {activeProject.files.map((file) => (
             <FileRenderer
               key={file.id}
               file={file}
-              projectId={project.id}
-              selected={selectedFileId === file.id}
+              projectId={activeProject.id}
+              selected={activeFileId === file.id}
               onSelect={() => setSelectedFileId(file.id)}
             />
           ))}

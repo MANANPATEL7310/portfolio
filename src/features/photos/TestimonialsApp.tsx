@@ -17,14 +17,21 @@ const layoutClasses: Record<string, string> = {
 
 export function TestimonialsApp() {
   const gallery = usePortfolioDataStore((state) => state.gallery);
+  const copy = usePortfolioDataStore((state) => state.settings.copy);
   const [previewId, setPreviewId] = useState<string | null>(null);
-  const previewIndex = useMemo(
-    () => gallery.findIndex((image) => image.id === previewId),
-    [gallery, previewId]
-  );
-  const previewImage = previewIndex >= 0 ? gallery[previewIndex] : null;
+  const [activeCollection, setActiveCollection] = useState('library');
 
   const sidebarData = getSidebars();
+  const filteredGallery = useMemo(
+    () => gallery.filter((image) => image.collections.includes(activeCollection)),
+    [activeCollection, gallery],
+  );
+  const previewIndex = useMemo(
+    () => filteredGallery.findIndex((image) => image.id === previewId),
+    [filteredGallery, previewId],
+  );
+  const previewImage = previewIndex >= 0 ? filteredGallery[previewIndex] : null;
+  const activeSidebarItem = sidebarData.photos.items.find((item) => item.id === activeCollection) ?? sidebarData.photos.items[0];
 
   const photosSection: SidebarSection = {
     heading: sidebarData.photos.heading,
@@ -32,8 +39,8 @@ export function TestimonialsApp() {
       id: item.id,
       label: item.label,
       icon: item.icon,
-      active: item.id === 'library',
-      onClick: () => {},
+      active: item.id === activeCollection,
+      onClick: () => setActiveCollection(item.id),
     })),
   };
 
@@ -44,25 +51,25 @@ export function TestimonialsApp() {
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex h-16 items-center justify-between border-b border-black/6 px-6 dark:border-white/10">
           <span className="text-[18px] font-semibold text-[#2c2c2f] dark:text-white/88">
-            {gallery[0]
-              ? new Date(gallery[0].date).toLocaleDateString('en-US', {
+            {filteredGallery[0]
+              ? new Date(filteredGallery[0].date).toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
                   year: 'numeric',
                 })
-              : 'Gallery'}
+              : activeSidebarItem?.label ?? 'Gallery'}
           </span>
           <Search className="h-7 w-7 text-black/45 dark:text-white/55" />
         </div>
 
         <div className="hide-scrollbar flex-1 overflow-auto px-5 py-5">
-          {gallery.length === 0 ? (
+          {filteredGallery.length === 0 ? (
             <div className="flex h-full items-center justify-center text-sm text-black/40 dark:text-white/45">
-              No gallery images yet.
+              {copy.photosEmpty}
             </div>
           ) : (
             <div className="grid auto-rows-[145px] grid-cols-2 gap-3 lg:grid-cols-3">
-              {gallery.map((moment) => (
+              {filteredGallery.map((moment) => (
                 <button
                   key={moment.id}
                   onClick={() => setPreviewId(moment.id)}
@@ -118,13 +125,13 @@ export function TestimonialsApp() {
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setPreviewId(gallery[(previewIndex - 1 + gallery.length) % gallery.length]?.id ?? null)}
+                    onClick={() => setPreviewId(filteredGallery[(previewIndex - 1 + filteredGallery.length) % filteredGallery.length]?.id ?? null)}
                     className="rounded-full border border-white/15 px-3 py-2 text-sm transition hover:bg-white/10"
                   >
                     Prev
                   </button>
                   <button
-                    onClick={() => setPreviewId(gallery[(previewIndex + 1) % gallery.length]?.id ?? null)}
+                    onClick={() => setPreviewId(filteredGallery[(previewIndex + 1) % filteredGallery.length]?.id ?? null)}
                     className="rounded-full border border-white/15 px-3 py-2 text-sm transition hover:bg-white/10"
                   >
                     Next

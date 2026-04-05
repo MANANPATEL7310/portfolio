@@ -54,7 +54,7 @@ function renderWindowContent(windowId: string) {
   const parsed = parseWindowId(windowId);
 
   if (parsed.kind === "project") {
-    return <ProjectDetailApp projectId={parsed.projectId} />;
+    return <ProjectDetailApp projectId={parsed.projectId} windowId={windowId} />;
   }
 
   if (parsed.kind === "project-file") {
