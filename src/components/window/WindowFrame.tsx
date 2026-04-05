@@ -161,7 +161,7 @@ export const WindowFrame = memo(function WindowFrame({
               dragControls.start(event);
             }
           }}
-          className="absolute inset-0 cursor-grab active:cursor-grabbing"
+          className="absolute inset-x-0 top-0 h-12 cursor-grab active:cursor-grabbing"
         />
         {showTitle ? (
           <span className="pointer-events-none text-[15px] font-semibold text-slate-700 dark:text-white/78">

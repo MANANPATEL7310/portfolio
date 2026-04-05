@@ -1,24 +1,18 @@
 'use client';
 
-import { useMemo, useState } from "react";
-import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
-import { FolderOpen, Heart, Image as ImageIcon, MapPin, Search, Users, X } from "lucide-react";
+import { useMemo, useState } from 'react';
+import Image from 'next/image';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Search, X } from 'lucide-react';
 
-import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
-
-const sections = [
-  { label: "Library", icon: FolderOpen, active: true },
-  { label: "Memories", icon: ImageIcon },
-  { label: "Places", icon: MapPin },
-  { label: "People", icon: Users },
-  { label: "Favorites", icon: Heart },
-];
+import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
+import { getSidebars } from '@/lib/dataService';
+import { Sidebar, SidebarSection } from '@/components/ui/Sidebar';
 
 const layoutClasses: Record<string, string> = {
-  hero: "col-span-2 row-span-2 lg:col-span-2",
-  square: "col-span-1 row-span-1",
-  portrait: "col-span-1 row-span-2",
+  hero: 'col-span-2 row-span-2 lg:col-span-2',
+  square: 'col-span-1 row-span-1',
+  portrait: 'col-span-1 row-span-2',
 };
 
 export function TestimonialsApp() {
@@ -26,44 +20,37 @@ export function TestimonialsApp() {
   const [previewId, setPreviewId] = useState<string | null>(null);
   const previewIndex = useMemo(
     () => gallery.findIndex((image) => image.id === previewId),
-    [gallery, previewId],
+    [gallery, previewId]
   );
   const previewImage = previewIndex >= 0 ? gallery[previewIndex] : null;
 
+  const sidebarData = getSidebars();
+
+  const photosSection: SidebarSection = {
+    heading: sidebarData.photos.heading,
+    items: sidebarData.photos.items.map((item) => ({
+      id: item.id,
+      label: item.label,
+      icon: item.icon,
+      active: item.id === 'library',
+      onClick: () => {},
+    })),
+  };
+
   return (
     <div className="flex h-full bg-white text-[#171717] dark:bg-[#1f1f22] dark:text-white">
-      <aside className="hidden w-[198px] shrink-0 border-r border-black/6 bg-[#eef1f5] px-3 py-5 md:block dark:border-white/10 dark:bg-[#34343a]">
-        <p className="px-3 text-[13px] font-semibold text-black/25 dark:text-white/28">Photos</p>
-        <div className="mt-4 space-y-1">
-          {sections.map((section) => {
-            const Icon = section.icon;
-            return (
-              <button
-                key={section.label}
-                className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] transition ${
-                  section.active
-                    ? "bg-black/8 text-[#1b1b1d] dark:bg-white/10 dark:text-white"
-                    : "text-black/78 hover:bg-black/4 dark:text-white/82 dark:hover:bg-white/6"
-                }`}
-              >
-                <Icon className="h-4 w-4 text-blue-400" />
-                {section.label}
-              </button>
-            );
-          })}
-        </div>
-      </aside>
+      <Sidebar sections={[photosSection]} width={198} />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex h-16 items-center justify-between border-b border-black/6 px-6 dark:border-white/10">
           <span className="text-[18px] font-semibold text-[#2c2c2f] dark:text-white/88">
             {gallery[0]
-              ? new Date(gallery[0].date).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
+              ? new Date(gallery[0].date).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
                 })
-              : "Gallery"}
+              : 'Gallery'}
           </span>
           <Search className="h-7 w-7 text-black/45 dark:text-white/55" />
         </div>

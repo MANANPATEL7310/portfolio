@@ -1,13 +1,14 @@
 'use client';
 
-import { useMemo, useState } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Code2, FileText, FolderOpen, Grid2X2, Info, List, Search, Trash2, ExternalLink, type LucideIcon } from "lucide-react";
+import { useMemo, useState } from 'react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Code2, Grid2X2, List, Search, ExternalLink, FolderOpen, type LucideIcon } from 'lucide-react';
 
-import { getProjectWindowId } from "@/lib/dataService";
-import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
-import { useWindowStore } from "@/store/useWindowStore";
+import { getProjectWindowId, getSidebars } from '@/lib/dataService';
+import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
+import { useWindowStore } from '@/store/useWindowStore';
+import { Sidebar, SidebarSection } from '@/components/ui/Sidebar';
 
 export function ProjectsApp({ windowId }: { windowId: string }) {
   const projects = usePortfolioDataStore((state) => state.projects);
@@ -16,11 +17,44 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
   const setWindowViewMode = useWindowStore((state) => state.setWindowViewMode);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(projects[0]?.id ?? null);
 
-  const viewMode = currentWindow?.viewMode ?? "finder";
+  const viewMode = currentWindow?.viewMode ?? 'finder';
   const selectedProject = useMemo(
     () => projects.find((project) => project.id === selectedProjectId) ?? projects[0] ?? null,
-    [projects, selectedProjectId],
+    [projects, selectedProjectId]
   );
+
+  const sidebarData = getSidebars();
+
+  const favoritesSection: SidebarSection = {
+    heading: sidebarData.finder.heading,
+    items: sidebarData.finder.items.map((item) => ({
+      id: item.id,
+      label: item.label,
+      icon: item.icon,
+      active: item.id === 'projects',
+      onClick: () => {
+        if (item.action?.type === 'window' && item.action.windowId) {
+          openWindow(item.action.windowId, item.action.title || item.label, { viewMode: item.action.viewMode });
+        }
+      },
+    })),
+  };
+
+  const workSection: SidebarSection = {
+    heading: sidebarData.finder.sectionLabel,
+    items: projects.map((project) => ({
+      id: project.id,
+      label: project.folderLabel,
+      icon: 'file-text',
+      active: project.id === selectedProjectId,
+      onClick: () => {
+        setSelectedProjectId(project.id);
+        if (viewMode === 'finder') {
+          openProjectDetails(project.id);
+        }
+      },
+    })),
+  };
 
   const openProjectDetails = (projectId: string) => {
     const project = projects.find((item) => item.id === projectId);
@@ -51,56 +85,7 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
 
   return (
     <div className="flex h-full bg-white text-[#171717] dark:bg-[#1f1f22] dark:text-white">
-      <aside className="hidden w-[206px] shrink-0 border-r border-black/6 bg-[#eef1f5] px-3 py-5 md:block dark:border-white/10 dark:bg-[#34343a]">
-        <p className="px-3 text-[13px] font-semibold text-black/25 dark:text-white/28">Favorites</p>
-        <div className="mt-2 space-y-1">
-          <button className="flex w-full items-center gap-2 rounded-xl bg-black/8 px-3 py-2 text-left text-[17px] text-[#1b1b1d] dark:bg-white/10 dark:text-white">
-            <FolderOpen className="h-4 w-4 text-blue-400" />
-            Work
-          </button>
-          <button
-            onClick={() => openWindow("about", "About Me")}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] text-black/78 transition hover:bg-black/4 dark:text-white/82 dark:hover:bg-white/6"
-          >
-            <Info className="h-4 w-4 text-blue-400" />
-            About me
-          </button>
-          <button
-            onClick={() => openWindow("resume", "Resume.pdf")}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] text-black/78 transition hover:bg-black/4 dark:text-white/82 dark:hover:bg-white/6"
-          >
-            <FileText className="h-4 w-4 text-blue-400" />
-            Resume
-          </button>
-          <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] text-black/78 transition hover:bg-black/4 dark:text-white/82 dark:hover:bg-white/6">
-            <Trash2 className="h-4 w-4 text-blue-400" />
-            Trash
-          </button>
-        </div>
-
-        <p className="mt-10 px-3 text-[13px] font-semibold text-black/25 dark:text-white/28">Work</p>
-        <div className="mt-2 space-y-1">
-          {projects.map((project) => (
-            <button
-              key={project.id}
-              onClick={() => {
-                setSelectedProjectId(project.id);
-                if (viewMode === "finder") {
-                  openProjectDetails(project.id);
-                }
-              }}
-              className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] transition ${
-                project.id === selectedProjectId
-                  ? "bg-black/8 text-[#1b1b1d] dark:bg-white/10 dark:text-white"
-                  : "text-black/72 hover:bg-black/4 dark:text-white/80 dark:hover:bg-white/6"
-              }`}
-            >
-              <FileText className="h-4 w-4 text-blue-400" />
-              {project.folderLabel}
-            </button>
-          ))}
-        </div>
-      </aside>
+      <Sidebar sections={[favoritesSection, workSection]} />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex h-16 items-center justify-between border-b border-black/6 px-6 dark:border-white/10">

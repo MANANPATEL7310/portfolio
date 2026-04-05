@@ -1,18 +1,10 @@
 'use client';
 
-import { useMemo, useState } from "react";
-import Image from "next/image";
-import { BookOpen, BriefcaseBusiness, FileText, FolderOpen, Sparkles } from "lucide-react";
+import { useMemo, useState } from 'react';
+import Image from 'next/image';
 
-import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
-
-const iconMap = {
-  folder: FolderOpen,
-  book: BookOpen,
-  sparkles: Sparkles,
-  briefcase: BriefcaseBusiness,
-  file: FileText,
-} as const;
+import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
+import { Sidebar, SidebarSection } from '@/components/ui/Sidebar';
 
 export function AboutApp() {
   const profile = usePortfolioDataStore((state) => state.profile);
@@ -21,8 +13,18 @@ export function AboutApp() {
 
   const activeSection = useMemo(
     () => profile.aboutSections.find((section) => section.id === activeSectionId) ?? profile.aboutSections[0],
-    [activeSectionId, profile.aboutSections],
+    [activeSectionId, profile.aboutSections]
   );
+
+  const aboutSection: SidebarSection = {
+    items: profile.aboutSections.map((section) => ({
+      id: section.id,
+      label: section.label,
+      icon: section.icon,
+      active: section.id === activeSectionId,
+      onClick: () => setActiveSectionId(section.id),
+    })),
+  };
 
   if (!activeSection) {
     return null;
@@ -30,30 +32,7 @@ export function AboutApp() {
 
   return (
     <div className="flex h-full bg-white text-[#171717] dark:bg-[#1f1f22] dark:text-white">
-      <aside className="hidden w-[198px] shrink-0 border-r border-black/6 bg-[#eef1f5] px-3 py-5 md:block dark:border-white/10 dark:bg-[#34343a]">
-        <p className="px-3 text-[13px] font-semibold text-black/25 dark:text-white/28">Favorites</p>
-        <div className="mt-4 space-y-1">
-          {profile.aboutSections.map((section) => {
-            const Icon = iconMap[section.icon as keyof typeof iconMap] ?? FolderOpen;
-            const active = section.id === activeSection.id;
-
-            return (
-              <button
-                key={section.id}
-                onClick={() => setActiveSectionId(section.id)}
-                className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] transition ${
-                  active
-                    ? "bg-black/8 text-[#1b1b1d] dark:bg-white/10 dark:text-white"
-                    : "text-black/78 hover:bg-black/4 dark:text-white/82 dark:hover:bg-white/6"
-                }`}
-              >
-                <Icon className="h-4 w-4 text-blue-400" />
-                {section.label}
-              </button>
-            );
-          })}
-        </div>
-      </aside>
+      <Sidebar sections={[aboutSection]} width={198} />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex h-16 items-center border-b border-black/6 px-5 dark:border-white/10">
