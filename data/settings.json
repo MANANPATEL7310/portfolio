@@ -1,5 +1,13 @@
 {
   "themeDefault": "light",
+  "copy": {
+    "blogHeading": "My Developer Blog",
+    "blogCta": "Check out the full post",
+    "contactHeading": "Let's Connect",
+    "contactIntro": "Got an idea? A bug to squash? Or just wanna talk tech? I'm in.",
+    "photosEmpty": "No photos in this section yet.",
+    "blogEmpty": "No blog posts yet."
+  },
   "wallpapers": {
     "light": "/portfolio/wallpaper.png",
     "dark": "/portfolio/wallpaper.png"

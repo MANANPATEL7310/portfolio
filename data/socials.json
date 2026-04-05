@@ -3,5 +3,31 @@
   "linkedin": "https://www.linkedin.com/in/adrian-portfolio",
   "twitter": "https://x.com/adrianportfolio",
   "github": "https://github.com/adrian",
-  "calendar": "mailto:adrian@portfolio.dev?subject=Schedule%20a%20call"
+  "calendar": "mailto:adrian@portfolio.dev?subject=Schedule%20a%20call",
+  "actions": [
+    {
+      "id": "calendar",
+      "label": "Schedule a call",
+      "icon": "calendar-days",
+      "colorClass": "from-rose-400 to-rose-500"
+    },
+    {
+      "id": "email",
+      "label": "Email me",
+      "icon": "send",
+      "colorClass": "from-emerald-400 to-emerald-500"
+    },
+    {
+      "id": "twitter",
+      "label": "Twitter/X",
+      "icon": "at-sign",
+      "colorClass": "from-orange-300 to-rose-300"
+    },
+    {
+      "id": "linkedin",
+      "label": "LinkedIn",
+      "icon": "briefcase-business",
+      "colorClass": "from-sky-400 to-sky-500"
+    }
+  ]
 }

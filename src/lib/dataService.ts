@@ -3,6 +3,7 @@ import galleryJson from "../../data/gallery.json";
 import profileJson from "../../data/profile.json";
 import projectsJson from "../../data/projects.json";
 import settingsJson from "../../data/settings.json";
+import sidebarJson from "../../data/sidebar.json";
 import socialsJson from "../../data/socials.json";
 
 export type ThemeMode = "dark" | "light" | "system";
@@ -65,6 +66,12 @@ export interface SocialLinks {
   twitter: string;
   github: string;
   calendar: string;
+  actions: Array<{
+    id: string;
+    label: string;
+    icon: string;
+    colorClass: string;
+  }>;
 }
 
 export interface AboutSection {
@@ -140,6 +147,7 @@ export interface GalleryImage {
   date: string;
   title: string;
   layout: string;
+  collections: string[];
 }
 
 export interface DockAppSetting {
@@ -174,11 +182,44 @@ export interface SpotlightItem {
 
 export interface SettingsData {
   themeDefault: ThemeMode;
+  copy: {
+    blogHeading: string;
+    blogCta: string;
+    contactHeading: string;
+    contactIntro: string;
+    photosEmpty: string;
+    blogEmpty: string;
+  };
   wallpapers: Record<ResolvedThemeMode, string>;
   windowDefaults: Record<string, { width: number; height: number; x: number; y: number }>;
   menuItems: MenuItemSetting[];
   dockApps: DockAppSetting[];
   desktopItems: DesktopItemSetting[];
+}
+
+export interface SidebarAction {
+  type: "window" | "placeholder";
+  windowId?: string;
+  title?: string;
+  viewMode?: WindowViewMode;
+}
+
+export interface SidebarItemData {
+  id: string;
+  label: string;
+  icon: string;
+  action?: SidebarAction;
+}
+
+export interface SidebarGroup {
+  heading: string;
+  items: SidebarItemData[];
+  sectionLabel?: string;
+}
+
+export interface SidebarData {
+  finder: SidebarGroup;
+  photos: SidebarGroup;
 }
 
 export const getProjects = (): ProjectData[] => projectsJson as ProjectData[];
@@ -191,6 +232,7 @@ export const getProfile = (): ProfileData => profileJson as ProfileData;
 export const getSocials = (): SocialLinks => socialsJson as SocialLinks;
 export const getGallery = (): GalleryImage[] => galleryJson as GalleryImage[];
 export const getSettings = (): SettingsData => settingsJson as SettingsData;
+export const getSidebars = (): SidebarData => sidebarJson as SidebarData;
 export const getMenuItems = (): MenuItemSetting[] => getSettings().menuItems;
 export const getDockApps = (): DockAppSetting[] => getSettings().dockApps;
 export const getDesktopItems = (): DesktopItemSetting[] => [

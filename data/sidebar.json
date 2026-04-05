@@ -1,0 +1,57 @@
+{
+  "finder": {
+    "heading": "Favorites",
+    "items": [
+      {
+        "id": "projects",
+        "label": "Work",
+        "icon": "folder-open",
+        "action": {
+          "type": "window",
+          "windowId": "projects",
+          "title": "Work",
+          "viewMode": "finder"
+        }
+      },
+      {
+        "id": "about",
+        "label": "About me",
+        "icon": "info",
+        "action": {
+          "type": "window",
+          "windowId": "about",
+          "title": "About Me"
+        }
+      },
+      {
+        "id": "resume",
+        "label": "Resume",
+        "icon": "file-text",
+        "action": {
+          "type": "window",
+          "windowId": "resume",
+          "title": "Resume.pdf"
+        }
+      },
+      {
+        "id": "trash",
+        "label": "Trash",
+        "icon": "trash-2",
+        "action": {
+          "type": "placeholder"
+        }
+      }
+    ],
+    "sectionLabel": "Work"
+  },
+  "photos": {
+    "heading": "Photos",
+    "items": [
+      { "id": "library", "label": "Library", "icon": "folder-open" },
+      { "id": "memories", "label": "Memories", "icon": "image" },
+      { "id": "places", "label": "Places", "icon": "map-pin" },
+      { "id": "people", "label": "People", "icon": "users" },
+      { "id": "favorites", "label": "Favorites", "icon": "heart" }
+    ]
+  }
+}

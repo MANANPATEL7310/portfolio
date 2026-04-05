@@ -56,6 +56,7 @@ interface WindowStore {
   toggleMinimizeWindow: (id: string) => void;
   toggleMaximizeWindow: (id: string) => void;
   bringToFront: (id: string) => void;
+  setWindowTitle: (id: string, title: string) => void;
   setWindowViewMode: (id: string, viewMode: WindowViewMode) => void;
   updateWindowPosition: (id: string, position: WindowPosition) => void;
   updateWindowSize: (id: string, size: WindowSize) => void;
@@ -307,6 +308,24 @@ export const useWindowStore = create<WindowStore>()(
             },
             activeWindowId: id,
             nextZIndex: state.nextZIndex + 1,
+          };
+        }),
+
+      setWindowTitle: (id, title) =>
+        set((state) => {
+          const target = state.windows[id];
+          if (!target || target.title === title) {
+            return state;
+          }
+
+          return {
+            windows: {
+              ...state.windows,
+              [id]: {
+                ...target,
+                title,
+              },
+            },
           };
         }),
 

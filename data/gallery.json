@@ -4,34 +4,39 @@
     "src": "/portfolio/gal1.png",
     "date": "2025-06-07",
     "title": "Shift conference",
-    "layout": "col-span-2 row-span-2"
+    "layout": "hero",
+    "collections": ["library", "places", "memories"]
   },
   {
     "id": "img-2",
     "src": "/portfolio/blog3.png",
     "date": "2025-06-07",
     "title": "JS Mastery",
-    "layout": "col-span-1 row-span-2"
+    "layout": "portrait",
+    "collections": ["library", "places", "memories"]
   },
   {
     "id": "img-3",
     "src": "/portfolio/gal2.png",
     "date": "2025-06-07",
     "title": "Interview session",
-    "layout": "col-span-1 row-span-1"
+    "layout": "square",
+    "collections": ["library", "people", "memories", "favorites"]
   },
   {
     "id": "img-4",
     "src": "/portfolio/gal3.png",
     "date": "2025-06-07",
     "title": "Live interview",
-    "layout": "col-span-1 row-span-1"
+    "layout": "square",
+    "collections": ["library", "people", "memories"]
   },
   {
     "id": "img-5",
     "src": "/portfolio/gal4.png",
     "date": "2025-06-07",
     "title": "Conference chat",
-    "layout": "col-span-1 row-span-1"
+    "layout": "square",
+    "collections": ["library", "people", "places", "favorites"]
   }
 ]
