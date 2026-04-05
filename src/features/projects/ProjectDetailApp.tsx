@@ -1,18 +1,39 @@
 'use client';
 
+import { useMemo, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, FileText, FolderOpen, Info, Link2, Search, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText, FolderOpen, Info, Search, Trash2 } from "lucide-react";
 
-import { portfolioAssets, projects, type ProjectSlug } from "@/data/portfolio";
+import { getProjectFileWindowId, getProjectWindowId } from "@/lib/dataService";
+import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
 import { useWindowStore } from "@/store/useWindowStore";
 
-export function ProjectDetailApp({ slug }: { slug: ProjectSlug }) {
+export function ProjectDetailApp({ projectId }: { projectId: string }) {
+  const projects = usePortfolioDataStore((state) => state.projects);
   const openWindow = useWindowStore((state) => state.openWindow);
-  const project = projects.find((item) => item.slug === slug);
+  const project = useMemo(
+    () => projects.find((item) => item.id === projectId),
+    [projectId, projects],
+  );
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(project?.files[0]?.id ?? null);
 
   if (!project) {
     return null;
   }
+
+  const openProjectFile = (fileId: string) => {
+    const file = project.files.find((item) => item.id === fileId);
+    if (!file) {
+      return;
+    }
+
+    if (file.type === "link" && file.url) {
+      window.open(file.url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    openWindow(getProjectFileWindowId(project.id, file.id), file.windowTitle ?? file.name);
+  };
 
   return (
     <div className="flex h-full bg-white text-[#171717] dark:bg-[#1f1f22] dark:text-white">
@@ -20,7 +41,7 @@ export function ProjectDetailApp({ slug }: { slug: ProjectSlug }) {
         <p className="px-3 text-[13px] font-semibold text-black/25 dark:text-white/28">Favorites</p>
         <div className="mt-2 space-y-1">
           <button
-            onClick={() => openWindow("projects", "Work")}
+            onClick={() => openWindow("projects", "Work", { viewMode: "finder" })}
             className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] text-black/78 transition hover:bg-black/4 dark:text-white/82 dark:hover:bg-white/6"
           >
             <FolderOpen className="h-4 w-4 text-blue-400" />
@@ -50,10 +71,10 @@ export function ProjectDetailApp({ slug }: { slug: ProjectSlug }) {
         <div className="mt-2 space-y-1">
           {projects.map((item) => (
             <button
-              key={item.slug}
-              onClick={() => openWindow(item.windowId, item.titleBar)}
+              key={item.id}
+              onClick={() => openWindow(getProjectWindowId(item.id), item.titleBar)}
               className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[17px] transition ${
-                item.slug === slug
+                item.id === project.id
                   ? "bg-black/8 text-[#1b1b1d] dark:bg-white/10 dark:text-white"
                   : "text-black/72 hover:bg-black/4 dark:text-white/80 dark:hover:bg-white/6"
               }`}
@@ -76,41 +97,31 @@ export function ProjectDetailApp({ slug }: { slug: ProjectSlug }) {
         </div>
 
         <div className="grid flex-1 grid-cols-2 gap-x-16 gap-y-10 overflow-auto px-10 py-12 lg:px-20">
-          <FileButton
-            label="Full case study"
-            onClick={() => openWindow(project.noteWindowId, `${project.shortLabel} Project TLDR.txt`)}
-          >
-            <Image src={portfolioAssets.folderIcon} alt="" className="w-24" sizes="96px" />
-          </FileButton>
-
-          <FileButton label="Design.fig">
-            <Image src={portfolioAssets.figmaIcon} alt="" className="w-20 rounded-3xl" sizes="80px" />
-          </FileButton>
-
-          <FileButton
-            label="Screenshot.png"
-            onClick={() => openWindow(project.previewWindowId, `${project.shortLabel} Screenshot.png`)}
-          >
-            <div className="relative h-20 w-20 overflow-hidden rounded-2xl border border-white/10 bg-white shadow-lg">
-              <Image src={project.heroImage} alt="" fill className="object-cover" sizes="80px" />
-            </div>
-          </FileButton>
-
-          <FileButton label={project.siteLabel}>
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white shadow-lg">
-              <Image src={portfolioAssets.safariIcon} alt="" className="w-16" sizes="64px" />
-            </div>
-          </FileButton>
-
-          <FileButton
-            label="TLDR.txt"
-            onClick={() => openWindow(project.noteWindowId, `${project.shortLabel} Project TLDR.txt`)}
-          >
-            <div className="relative">
-              <Image src={portfolioAssets.txtIcon} alt="" className="w-14" sizes="56px" />
-              <Link2 className="absolute -right-2 top-7 h-4 w-4 text-white/20" />
-            </div>
-          </FileButton>
+          {project.files.map((file) => (
+            <FileButton
+              key={file.id}
+              label={file.name}
+              selected={selectedFileId === file.id}
+              onClick={() => {
+                setSelectedFileId(file.id);
+                if (file.type === "link") {
+                  openProjectFile(file.id);
+                }
+              }}
+              onDoubleClick={() => openProjectFile(file.id)}
+            >
+              <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl">
+                <Image
+                  src={file.icon || file.src || project.icon}
+                  alt={file.name}
+                  width={96}
+                  height={96}
+                  className={`max-h-24 w-auto object-contain ${file.type === "image" ? "rounded-2xl border border-black/6 bg-white shadow-lg dark:border-white/10" : ""}`}
+                  sizes="96px"
+                />
+              </div>
+            </FileButton>
+          ))}
         </div>
       </div>
     </div>
@@ -120,16 +131,23 @@ export function ProjectDetailApp({ slug }: { slug: ProjectSlug }) {
 function FileButton({
   children,
   label,
+  selected,
   onClick,
+  onDoubleClick,
 }: {
   children: React.ReactNode;
   label: string;
-  onClick?: () => void;
+  selected: boolean;
+  onClick: () => void;
+  onDoubleClick: () => void;
 }) {
   return (
     <button
       onClick={onClick}
-      className="group flex flex-col items-center gap-3 text-center text-[17px] text-[#1b1b1d] dark:text-white/92"
+      onDoubleClick={onDoubleClick}
+      className={`group flex flex-col items-center gap-3 rounded-2xl px-4 py-3 text-center text-[17px] text-[#1b1b1d] transition dark:text-white/92 ${
+        selected ? "bg-black/[0.04] dark:bg-white/6" : ""
+      }`}
     >
       <div className="transition duration-200 group-hover:scale-[1.03]">{children}</div>
       <span>{label}</span>

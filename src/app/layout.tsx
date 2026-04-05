@@ -20,21 +20,23 @@ export default function RootLayout({
         <Script id="theme-bootstrap" strategy="beforeInteractive">
           {`(() => {
   try {
-    const storedTheme = window.localStorage.getItem('theme');
+    const storedSystemState = window.localStorage.getItem('macos-portfolio.system');
+    const parsedState = storedSystemState ? JSON.parse(storedSystemState) : null;
+    const storedTheme = parsedState?.state?.theme;
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     const theme = storedTheme === 'system'
       ? systemTheme
       : storedTheme === 'light' || storedTheme === 'dark'
         ? storedTheme
-        : 'dark';
+        : 'light';
     const root = document.documentElement;
     root.classList.toggle('dark', theme === 'dark');
     root.style.colorScheme = theme;
     document.body && (document.body.dataset.theme = theme);
   } catch (error) {
     const root = document.documentElement;
-    root.classList.add('dark');
-    root.style.colorScheme = 'dark';
+    root.classList.remove('dark');
+    root.style.colorScheme = 'light';
   }
 })();`}
         </Script>

@@ -1,74 +1,114 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import Image from "next/image";
 
-import { MenuBar } from './MenuBar';
-import { Dock } from './Dock';
-import { WelcomeText } from './WelcomeText';
-import { DesktopIcon } from './DesktopIcon';
-import { Spotlight } from './Spotlight';
-import { WindowManager } from '../window/WindowManager';
-import { desktopShortcuts, portfolioAssets } from "@/data/portfolio";
+import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
+import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 import { useWindowStore } from '@/store/useWindowStore';
-import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
+import { DesktopIcon } from './DesktopIcon';
+import { Dock } from './Dock';
+import { MenuBar } from './MenuBar';
+import { Spotlight } from './Spotlight';
+import { WelcomeText } from './WelcomeText';
+import { WindowManager } from '../window/WindowManager';
 
 export function Desktop() {
   const constraintsRef = useRef<HTMLDivElement>(null);
-  const theme = useSystemStore((state) => state.theme);
-  const systemTheme = useSystemStore((state) => state.systemTheme);
+  const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
   const toggleSpotlight = useSystemStore((state) => state.toggleSpotlight);
+  const isSpotlightOpen = useSystemStore((state) => state.isSpotlightOpen);
+  const clearDesktopSelection = useSystemStore((state) => state.clearDesktopSelection);
+  const closeSpotlight = useSystemStore((state) => state.closeSpotlight);
+  const settings = usePortfolioDataStore((state) => state.settings);
+  const projects = usePortfolioDataStore((state) => state.projects);
+  const activeWindowId = useWindowStore((state) => state.activeWindowId);
+  const closeWindow = useWindowStore((state) => state.closeWindow);
   const clampWindowsToViewport = useWindowStore((state) => state.clampWindowsToViewport);
-  const hydrateDesktopIconPositions = useWindowStore((state) => state.hydrateDesktopIconPositions);
-  const resolvedTheme = getResolvedTheme(theme, systemTheme);
+
+  const desktopItems = useMemo(
+    () => [
+      ...settings.desktopItems,
+      ...projects.map((project) => ({
+        id: `project:${project.id}`,
+        label: project.desktopLabel,
+        title: project.titleBar,
+        icon: project.icon,
+        desktopPosition: project.desktopPosition,
+      })),
+    ],
+    [projects, settings.desktopItems],
+  );
 
   useEffect(() => {
-    try {
-      const savedPositions = window.localStorage.getItem('macos-portfolio.desktop-icon-positions');
-      if (savedPositions) {
-        hydrateDesktopIconPositions(JSON.parse(savedPositions));
-      }
-    } catch {
-      // Ignore malformed persisted layout.
-    }
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
+  useEffect(() => {
     clampWindowsToViewport();
 
     const handleResize = () => {
       clampWindowsToViewport();
     };
 
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, [clampWindowsToViewport, hydrateDesktopIconPositions]);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [clampWindowsToViewport]);
 
   useKeyboardShortcut(['Meta', 'k'], toggleSpotlight);
+  useKeyboardShortcut(['Meta', 'w'], () => {
+    if (activeWindowId) {
+      closeWindow(activeWindowId);
+    }
+  });
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') {
+        return;
+      }
+
+      if (isSpotlightOpen) {
+        closeSpotlight();
+        return;
+      }
+
+      if (activeWindowId) {
+        closeWindow(activeWindowId);
+        return;
+      }
+
+      clearDesktopSelection();
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [activeWindowId, clearDesktopSelection, closeSpotlight, closeWindow, isSpotlightOpen]);
 
   return (
     <div
+      ref={constraintsRef}
+      onClick={() => clearDesktopSelection()}
       className="selection-glow relative h-screen w-screen overflow-hidden bg-slate-950 text-foreground"
     >
       <Image
-        src={portfolioAssets.wallpaperImage}
+        src={settings.wallpapers[theme]}
         alt="Desktop wallpaper"
         fill
         priority
         className={`pointer-events-none absolute inset-0 z-0 object-cover transition duration-700 ${
-          resolvedTheme === "light" ? "scale-[1.03] saturate-[0.78] brightness-[1.12]" : ""
+          theme === "light" ? "scale-[1.03] saturate-[0.78] brightness-[1.12]" : ""
         }`}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
       />
       <div className="desktop-overlay pointer-events-none absolute inset-0 z-[1]" />
-      <div className={`pointer-events-none absolute inset-0 z-[2] ${resolvedTheme === "light" ? "bg-white/24" : "bg-slate-950/12"}`} />
-
-      <div ref={constraintsRef} className="pointer-events-none absolute inset-x-0 top-12 bottom-0 z-[3]" />
+      <div className={`pointer-events-none absolute inset-0 z-[2] ${theme === "light" ? "bg-white/24" : "bg-slate-950/12"}`} />
 
       <MenuBar />
       <WelcomeText />
 
-      {desktopShortcuts.map((shortcut) => (
+      {desktopItems.map((shortcut) => (
         <DesktopIcon
           key={shortcut.id}
           {...shortcut}

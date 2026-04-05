@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 
@@ -8,7 +8,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const theme = useSystemStore((state) => state.theme);
   const systemTheme = useSystemStore((state) => state.systemTheme);
   const setSystemTheme = useSystemStore((state) => state.setSystemTheme);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -28,15 +27,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.toggle('dark', resolvedTheme === 'dark');
     document.documentElement.style.colorScheme = resolvedTheme;
   }, [systemTheme, theme]);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setMounted(true), 0);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
 
   return children;
 }

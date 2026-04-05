@@ -1,0 +1,38 @@
+[
+  {
+    "id": "blog-1",
+    "title": "How I Built My macOS-Style Dev Portfolio with React + Tailwind",
+    "date": "2025-09-02",
+    "thumbnail": "/portfolio/blog1.png",
+    "excerpt": "A breakdown of how I recreated macOS windowing, dock behavior, and portfolio storytelling inside a single web app.",
+    "content": [
+      "This portfolio started as an experiment in interface nostalgia, but it turned into a strong exercise in product thinking.",
+      "I wanted the UI to feel familiar like macOS, while still behaving like a modern, performant Next.js app.",
+      "The hardest part was balancing delight with clarity. Every animation needed to support navigation, not distract from it."
+    ]
+  },
+  {
+    "id": "blog-2",
+    "title": "How I Organize My Projects for Sanity and Speed",
+    "date": "2025-08-28",
+    "thumbnail": "/portfolio/blog2.png",
+    "excerpt": "A simple project setup I use to keep experiments shippable, folders predictable, and UI work maintainable.",
+    "content": [
+      "I keep projects small on purpose. Clear data layers, consistent file names, and reusable UI building blocks save a lot of pain later.",
+      "The goal is not maximum abstraction. It is enough structure that I can move quickly without losing the plot.",
+      "When a project grows, the first thing I try to centralize is content and metadata so I stop hardcoding visual decisions."
+    ]
+  },
+  {
+    "id": "blog-3",
+    "title": "Small UX Details That Make a Big Difference (and How I Implemented Them)",
+    "date": "2025-08-15",
+    "thumbnail": "/portfolio/blog3.png",
+    "excerpt": "From hover timing to window focus states, these details quietly make interfaces feel polished and trustworthy.",
+    "content": [
+      "Most memorable interfaces are not memorable because of giant features. They are memorable because the small interactions feel considered.",
+      "Focus rings, spacing rhythm, drag constraints, and subtle easing functions all influence how stable an app feels.",
+      "I look for details that lower cognitive friction. If the interface explains itself with motion and layout, users stay in flow."
+    ]
+  }
+]

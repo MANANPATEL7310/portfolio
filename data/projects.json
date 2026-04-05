@@ -1,0 +1,267 @@
+[
+  {
+    "id": "project-1",
+    "slug": "snapcast",
+    "name": "SnapCast",
+    "desktopLabel": "Project 1 (SnapCast)",
+    "folderLabel": "Project 1",
+    "titleBar": "Project 1 - SnapCast",
+    "icon": "/portfolio/folder.png",
+    "thumbnail": "/portfolio/project-1.png",
+    "liveUrl": "https://snapcast.vercel.app",
+    "githubUrl": "https://github.com/adrian/snapcast",
+    "websiteLabel": "snapcast.app",
+    "description": "A video-first creator dashboard with polished editing flows, fast publishing actions, and strong motion design.",
+    "tags": ["Next.js", "TypeScript", "Motion", "Design systems"],
+    "desktopPosition": { "x": -36, "y": 110 },
+    "files": [
+      {
+        "id": "case-study",
+        "type": "folder",
+        "name": "Full case study",
+        "icon": "/portfolio/folder.png",
+        "windowTitle": "SnapCast Case Study",
+        "content": [
+          "SnapCast turns creator workflow chaos into a clean, fast publishing experience.",
+          "The product focuses on recording, clip management, and social-ready exports without sacrificing performance.",
+          "Built with a responsive Next.js frontend, reusable UI primitives, and a motion layer that feels native instead of flashy."
+        ]
+      },
+      {
+        "id": "design-fig",
+        "type": "figma",
+        "name": "Design.fig",
+        "icon": "/portfolio/figma.png",
+        "src": "/portfolio/figma.png",
+        "windowTitle": "SnapCast Design.fig"
+      },
+      {
+        "id": "screenshot",
+        "type": "image",
+        "name": "Screenshot.png",
+        "icon": "/portfolio/project-1.png",
+        "src": "/portfolio/project-1.png",
+        "windowTitle": "SnapCast Screenshot.png"
+      },
+      {
+        "id": "tldr",
+        "type": "text",
+        "name": "TLDR.txt",
+        "icon": "/portfolio/txt.png",
+        "windowTitle": "SnapCast Project TLDR.txt",
+        "content": [
+          "SnapCast gives creators a fast, visually organized way to record and ship content.",
+          "The interface emphasizes clarity, timeline control, and export states that feel trustworthy under pressure.",
+          "It was designed to balance polish and speed so creators can publish more without adding tool fatigue."
+        ]
+      },
+      {
+        "id": "website",
+        "type": "link",
+        "name": "snapcast.app",
+        "icon": "/portfolio/safari.png",
+        "url": "https://snapcast.vercel.app",
+        "windowTitle": "SnapCast Live Website"
+      }
+    ]
+  },
+  {
+    "id": "project-2",
+    "slug": "converso",
+    "name": "Converso",
+    "desktopLabel": "Project 2 (Converso)",
+    "folderLabel": "Project 2",
+    "titleBar": "Project 2 - Converso",
+    "icon": "/portfolio/folder.png",
+    "thumbnail": "/portfolio/project-2.png",
+    "liveUrl": "https://converso.vercel.app",
+    "githubUrl": "https://github.com/adrian/converso",
+    "websiteLabel": "converso.com",
+    "description": "An AI learning companion platform that makes coding lessons playful, personal, and easier to stick with.",
+    "tags": ["Next.js", "Tailwind", "AI UX", "Education"],
+    "desktopPosition": { "x": -36, "y": 360 },
+    "files": [
+      {
+        "id": "case-study",
+        "type": "folder",
+        "name": "Full case study",
+        "icon": "/portfolio/folder.png",
+        "windowTitle": "Converso Case Study",
+        "content": [
+          "Converso is a fun and modern way to learn coding without getting bored.",
+          "Instead of just watching videos, you level up as you complete lessons, earn rewards like points and diamonds, and unlock cool achievements.",
+          "The experience leans on game-like progression and colorful teaching states without becoming noisy."
+        ]
+      },
+      {
+        "id": "design-fig",
+        "type": "figma",
+        "name": "Design.fig",
+        "icon": "/portfolio/figma.png",
+        "src": "/portfolio/figma.png",
+        "windowTitle": "Converso Design.fig"
+      },
+      {
+        "id": "screenshot",
+        "type": "image",
+        "name": "Screenshot.png",
+        "icon": "/portfolio/project-2.png",
+        "src": "/portfolio/project-2.png",
+        "windowTitle": "Converso Screenshot.png"
+      },
+      {
+        "id": "tldr",
+        "type": "text",
+        "name": "TLDR.txt",
+        "icon": "/portfolio/txt.png",
+        "windowTitle": "Converso Project TLDR.txt",
+        "content": [
+          "Converso is a fun and modern way to learn coding without getting bored.",
+          "Instead of just watching videos, you level up as you complete lessons, earn rewards like points and diamonds, and unlock cool achievements.",
+          "Think of it like a game, but for learning JavaScript, React, and more.",
+          "It's built using Next.js and Tailwind, so everything runs fast and looks clean."
+        ]
+      },
+      {
+        "id": "website",
+        "type": "link",
+        "name": "converso.com",
+        "icon": "/portfolio/safari.png",
+        "url": "https://converso.vercel.app",
+        "windowTitle": "Converso Live Website"
+      }
+    ]
+  },
+  {
+    "id": "project-3",
+    "slug": "prepwise",
+    "name": "PrepWise",
+    "desktopLabel": "Project 3 (PrepWise)",
+    "folderLabel": "Project 3",
+    "titleBar": "Project 3 - PrepWise",
+    "icon": "/portfolio/folder.png",
+    "thumbnail": "/portfolio/project-3.png",
+    "liveUrl": "https://prepwise.vercel.app",
+    "githubUrl": "https://github.com/adrian/prepwise",
+    "websiteLabel": "prepwise.dev",
+    "description": "A focused interview prep workspace with guided prompts, practice loops, and structured feedback.",
+    "tags": ["React", "Interview prep", "Speech flows", "Animation"],
+    "desktopPosition": { "x": -36, "y": 570 },
+    "files": [
+      {
+        "id": "case-study",
+        "type": "folder",
+        "name": "Full case study",
+        "icon": "/portfolio/folder.png",
+        "windowTitle": "PrepWise Case Study",
+        "content": [
+          "PrepWise helps candidates rehearse technical answers in a calmer, more repeatable way.",
+          "It blends prompt coaching, timed drills, and clean review states so practice stays focused instead of overwhelming.",
+          "The interface is intentionally minimal, with strong typography and quick transitions to keep attention on the content."
+        ]
+      },
+      {
+        "id": "design-fig",
+        "type": "figma",
+        "name": "Design.fig",
+        "icon": "/portfolio/figma.png",
+        "src": "/portfolio/figma.png",
+        "windowTitle": "PrepWise Design.fig"
+      },
+      {
+        "id": "screenshot",
+        "type": "image",
+        "name": "Screenshot.png",
+        "icon": "/portfolio/project-3.png",
+        "src": "/portfolio/project-3.png",
+        "windowTitle": "PrepWise Screenshot.png"
+      },
+      {
+        "id": "tldr",
+        "type": "text",
+        "name": "TLDR.txt",
+        "icon": "/portfolio/txt.png",
+        "windowTitle": "PrepWise Project TLDR.txt",
+        "content": [
+          "PrepWise helps candidates rehearse technical answers in a calmer, more repeatable way.",
+          "It blends prompt coaching, timed drills, and clean review states so practice stays focused instead of overwhelming.",
+          "The experience is built for deliberate repetition, measurable improvement, and less pre-interview chaos."
+        ]
+      },
+      {
+        "id": "website",
+        "type": "link",
+        "name": "prepwise.dev",
+        "icon": "/portfolio/safari.png",
+        "url": "https://prepwise.vercel.app",
+        "windowTitle": "PrepWise Live Website"
+      }
+    ]
+  },
+  {
+    "id": "project-4",
+    "slug": "bookwise",
+    "name": "Bookwise",
+    "desktopLabel": "Project 4 (Bookwise)",
+    "folderLabel": "Project 4",
+    "titleBar": "Project 4 - Bookwise",
+    "icon": "/portfolio/folder.png",
+    "thumbnail": "/portfolio/blog1.png",
+    "liveUrl": "https://bookwise.vercel.app",
+    "githubUrl": "https://github.com/adrian/bookwise",
+    "websiteLabel": "bookwise.app",
+    "description": "A calm digital library product for organizing notes, highlights, and reading goals.",
+    "tags": ["SaaS", "Reader UX", "Search", "Subscriptions"],
+    "desktopPosition": { "x": -36, "y": 780 },
+    "files": [
+      {
+        "id": "case-study",
+        "type": "folder",
+        "name": "Full case study",
+        "icon": "/portfolio/folder.png",
+        "windowTitle": "Bookwise Case Study",
+        "content": [
+          "Bookwise gives readers a better way to manage highlights, notes, and reading lists.",
+          "The experience prioritizes calm layouts, smart categorization, and quick navigation between books and insights.",
+          "It was designed for long-term use, which means clarity, speed, and readable typography mattered more than flashy features."
+        ]
+      },
+      {
+        "id": "design-fig",
+        "type": "figma",
+        "name": "Design.fig",
+        "icon": "/portfolio/figma.png",
+        "src": "/portfolio/figma.png",
+        "windowTitle": "Bookwise Design.fig"
+      },
+      {
+        "id": "screenshot",
+        "type": "image",
+        "name": "Screenshot.png",
+        "icon": "/portfolio/blog1.png",
+        "src": "/portfolio/blog1.png",
+        "windowTitle": "Bookwise Screenshot.png"
+      },
+      {
+        "id": "tldr",
+        "type": "text",
+        "name": "TLDR.txt",
+        "icon": "/portfolio/txt.png",
+        "windowTitle": "Bookwise Project TLDR.txt",
+        "content": [
+          "Bookwise gives readers a better way to manage highlights, notes, and reading lists.",
+          "The experience prioritizes calm layouts, smart categorization, and quick navigation between books and insights.",
+          "The product direction is slower-paced, intentionally readable, and tuned for retention instead of novelty."
+        ]
+      },
+      {
+        "id": "website",
+        "type": "link",
+        "name": "bookwise.app",
+        "icon": "/portfolio/safari.png",
+        "url": "https://bookwise.vercel.app",
+        "windowTitle": "Bookwise Live Website"
+      }
+    ]
+  }
+]

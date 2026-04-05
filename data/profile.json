@@ -1,0 +1,147 @@
+{
+  "name": "Adrian",
+  "fullTitle": "Adrian's Portfolio",
+  "greeting": "Hey, welcome to my",
+  "signature": "portfolio",
+  "role": "Frontend developer, motion enthusiast, and product-minded builder.",
+  "location": "Remote",
+  "email": "adrian@portfolio.dev",
+  "avatar": "/portfolio/adrian.jpg",
+  "bio": "I build sleek, interactive websites that feel thoughtful, fast, and calm to use.",
+  "skills": ["React", "Next.js", "TypeScript", "Node.js", "Tailwind", "Motion Design"],
+  "techStack": {
+    "frontend": ["React", "Next.js", "TypeScript"],
+    "styling": ["Tailwind", "Sass", "CSS"],
+    "backend": ["Node.js", "Express", "NestJS"],
+    "database": ["MongoDB", "PostgreSQL"],
+    "devTools": ["Git", "GitHub", "Docker"]
+  },
+  "aboutSections": [
+    {
+      "id": "general",
+      "label": "General",
+      "icon": "folder",
+      "title": "Meet the Developer Behind the Code",
+      "content": [
+        "Hey! I’m Adrian 👋, a web developer who enjoys building sleek, interactive websites that actually work well.",
+        "I specialize in JavaScript, React, and Next.js, and I love making things feel smooth, fast, and just a little bit delightful.",
+        "I’m big on clean UI, good UX, and writing code that doesn’t need a search party to debug.",
+        "Outside of dev work, you'll find me tweaking layouts at 2AM, sipping overpriced coffee, or impulse-buying gadgets I absolutely convinced myself I needed 😅"
+      ]
+    },
+    {
+      "id": "books",
+      "label": "Books",
+      "icon": "book",
+      "title": "Books That Changed How I Build",
+      "content": [
+        "I keep coming back to books that sharpen product taste as much as technical thinking.",
+        "Deep Work, The Design of Everyday Things, and Inspired all changed how I structure time, flows, and user-facing decisions.",
+        "The best books make me rethink constraints, not just syntax."
+      ]
+    },
+    {
+      "id": "random",
+      "label": "Random",
+      "icon": "sparkles",
+      "title": "The Fun Side Projects",
+      "content": [
+        "I collect interface experiments the way some people collect sneakers.",
+        "A lot of my best production ideas start as tiny playful prototypes with one interesting interaction.",
+        "I like building just enough to answer a product question, then deciding whether it deserves to grow."
+      ]
+    },
+    {
+      "id": "future-plans",
+      "label": "Future Plans",
+      "icon": "briefcase",
+      "title": "What I Want to Build Next",
+      "content": [
+        "I want to keep exploring interfaces that feel native, tactile, and unexpectedly human on the web.",
+        "That includes richer storytelling portfolios, AI products that feel less robotic, and tools that reduce creative friction.",
+        "The long-term goal is simple: build software people enjoy coming back to."
+      ]
+    },
+    {
+      "id": "drafts",
+      "label": "Drafts",
+      "icon": "file",
+      "title": "Ideas in Progress",
+      "content": [
+        "My drafts folder is mostly half-finished UI ideas, interaction notes, and product concepts waiting for the right moment.",
+        "Not every draft becomes a shipped feature, but almost all of them teach me something useful.",
+        "I try to keep the bar low for starting and the bar high for polishing."
+      ]
+    }
+  ],
+  "resume": {
+    "viewerTitle": "Resume.pdf",
+    "pageCount": 2,
+    "zoomLevels": [75, 100, 125, 150],
+    "identity": {
+      "name": "Ian Hansson",
+      "headline": ["Graphic Designer", "UI/UX Engineer", "Developer"]
+    },
+    "profile": "Enthusiastic and creative graphic designer with a passion for translating ideas into visually compelling designs. With experience in both print and digital mediums, I thrive on bringing concepts to life through innovative and impactful visuals.",
+    "contact": ["816-555-0146", "ian_hansson", "hansson@example.com", "www.example.com"],
+    "experience": [
+      {
+        "company": "Adatum Corporation",
+        "period": "20XX - Present",
+        "description": "Developed and evolved brand identities, crafted compelling collateral, oversaw end-to-end project lifecycles, and contributed to award-winning campaigns."
+      },
+      {
+        "company": "Proseware, Inc.",
+        "period": "20XX - 20XX",
+        "description": "Collaborated across disciplines on typography systems, product visuals, and motion assets that improved clarity and presentation quality."
+      },
+      {
+        "company": "Relecloud",
+        "period": "20XX - 20XX",
+        "description": "Built campaigns and design explorations that strengthened visual consistency and helped turn complex concepts into clear experiences."
+      }
+    ],
+    "skills": [
+      "Design software",
+      "Typography",
+      "UI/UX design",
+      "Print design",
+      "Project management",
+      "Creative problem solving",
+      "Communication skills"
+    ],
+    "education": [
+      {
+        "school": "Graphic Design Institute",
+        "period": "20XX - 20XX",
+        "degree": "Master of Fine Arts, Graphic Design"
+      },
+      {
+        "school": "Jasper University",
+        "period": "20XX - 20XX",
+        "degree": "Bachelor of Arts, Graphic Design"
+      }
+    ]
+  },
+  "terminal": {
+    "prompt": "@adrian %",
+    "commands": [
+      {
+        "id": "show-techstack",
+        "command": "show techstack",
+        "type": "techstack"
+      },
+      {
+        "id": "github-stats",
+        "command": "github stats",
+        "type": "github"
+      }
+    ],
+    "githubStats": {
+      "repos": 36,
+      "stars": 148,
+      "contributions": "1,248",
+      "focus": "Frontend systems, polished UX, and product-minded prototyping"
+    }
+  }
+}

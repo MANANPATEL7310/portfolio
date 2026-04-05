@@ -1,17 +1,55 @@
+'use client';
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { AtSign, BriefcaseBusiness, CalendarDays, Send } from "lucide-react";
 
-import { contactActions, portfolioAssets } from "@/data/portfolio";
+import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
 
-const iconMap = [CalendarDays, Send, AtSign, BriefcaseBusiness];
+const actionConfig = [
+  {
+    id: "calendar",
+    label: "Schedule a call",
+    icon: CalendarDays,
+    colorClass: "from-rose-400 to-rose-500",
+  },
+  {
+    id: "email",
+    label: "Email me",
+    icon: Send,
+    colorClass: "from-emerald-400 to-emerald-500",
+  },
+  {
+    id: "twitter",
+    label: "Twitter/X",
+    icon: AtSign,
+    colorClass: "from-orange-300 to-rose-300",
+  },
+  {
+    id: "linkedin",
+    label: "LinkedIn",
+    icon: BriefcaseBusiness,
+    colorClass: "from-sky-400 to-sky-500",
+  },
+] as const;
 
 export function ContactApp() {
+  const profile = usePortfolioDataStore((state) => state.profile);
+  const socials = usePortfolioDataStore((state) => state.socials);
+
+  const actions = actionConfig.map((action) => ({
+    ...action,
+    href: socials[action.id],
+  }));
+
   return (
     <div className="flex h-full items-center justify-center bg-white px-5 py-6 text-[#171717] dark:bg-[#1f1f22] dark:text-white">
       <div className="w-full max-w-[690px]">
         <Image
-          src={portfolioAssets.avatarImage}
-          alt="Adrian profile"
+          src={profile.avatar}
+          alt={`${profile.name} profile`}
+          width={80}
+          height={80}
           className="h-20 w-20 rounded-full object-cover"
         />
 
@@ -21,19 +59,23 @@ export function ContactApp() {
         </p>
 
         <div className="mt-10 grid gap-3 md:grid-cols-4">
-          {contactActions.map((action, index) => {
-            const Icon = iconMap[index] ?? Send;
+          {actions.map((action) => {
+            const Icon = action.icon;
+            const external = action.href.startsWith("http");
+
             return (
-              <a
-                key={action.label}
+              <motion.a
+                key={action.id}
                 href={action.href}
-                target={action.href.startsWith("http") ? "_blank" : undefined}
-                rel={action.href.startsWith("http") ? "noreferrer" : undefined}
-                className={`rounded-2xl bg-gradient-to-br ${action.colorClass} px-4 py-5 text-white shadow-[0_20px_40px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5`}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noreferrer" : undefined}
+                whileHover={{ y: -4, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`rounded-2xl bg-gradient-to-br ${action.colorClass} px-4 py-5 text-white shadow-[0_20px_40px_rgba(0,0,0,0.18)] transition`}
               >
                 <Icon className="h-6 w-6" />
                 <p className="mt-9 text-[17px] font-semibold">{action.label}</p>
-              </a>
+              </motion.a>
             );
           })}
         </div>

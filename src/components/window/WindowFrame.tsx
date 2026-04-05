@@ -13,6 +13,7 @@ interface WindowFrameProps {
   id: string;
   title: string;
   isActive: boolean;
+  isMinimized?: boolean;
   isMaximized?: boolean;
   children?: ReactNode;
   constraintsRef: React.RefObject<Element | null>;
@@ -27,6 +28,7 @@ export const WindowFrame = memo(function WindowFrame({
   id,
   title,
   isActive,
+  isMinimized,
   isMaximized,
   children,
   constraintsRef,
@@ -40,6 +42,7 @@ export const WindowFrame = memo(function WindowFrame({
   const closeWindow = useWindowStore((state) => state.closeWindow);
   const toggleMinimizeWindow = useWindowStore((state) => state.toggleMinimizeWindow);
   const toggleMaximizeWindow = useWindowStore((state) => state.toggleMaximizeWindow);
+  const updateWindowPosition = useWindowStore((state) => state.updateWindowPosition);
   const updateWindowSize = useWindowStore((state) => state.updateWindowSize);
   const dragControls = useDragControls();
   const [isResizing, setIsResizing] = useState(false);
@@ -108,8 +111,24 @@ export const WindowFrame = memo(function WindowFrame({
       dragElastic={0}
       dragMomentum={false}
       initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
+      animate={{
+        opacity: isMinimized ? 0 : 1,
+        scale: isMinimized ? 0.88 : 1,
+        y: isMinimized ? 180 : 0,
+      }}
       exit={{ opacity: 0, scale: 0.85, y: 28 }}
+      onDragEnd={(event) => {
+        const target = event.currentTarget as HTMLElement | null;
+        if (!target || isMaximized || isResizing) {
+          return;
+        }
+
+        const rect = target.getBoundingClientRect();
+        updateWindowPosition(id, {
+          x: Math.round(rect.left),
+          y: Math.round(rect.top),
+        });
+      }}
       onPointerDown={() => bringToFront(id)}
       style={{
         left: position.x,
@@ -117,7 +136,7 @@ export const WindowFrame = memo(function WindowFrame({
         width: size.width,
         height: size.height,
         zIndex,
-        pointerEvents: 'auto',
+        pointerEvents: isMinimized ? 'none' : 'auto',
       }}
       className={twMerge(
         clsx(
