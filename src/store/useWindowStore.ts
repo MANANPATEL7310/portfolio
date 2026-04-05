@@ -50,6 +50,7 @@ interface WindowStore {
   activeWindowId: string | null;
   desktopIconPositions: Record<string, WindowPosition>;
   nextZIndex: number;
+  hasHydrated: boolean;
   openWindow: (id: string, title?: string, options?: OpenWindowOptions) => void;
   closeWindow: (id: string) => void;
   toggleMinimizeWindow: (id: string) => void;
@@ -60,6 +61,7 @@ interface WindowStore {
   updateWindowSize: (id: string, size: WindowSize) => void;
   clampWindowsToViewport: () => void;
   setDesktopIconPosition: (id: string, position: WindowPosition) => void;
+  setHasHydrated: (value: boolean) => void;
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -150,6 +152,7 @@ export const useWindowStore = create<WindowStore>()(
       activeWindowId: null,
       desktopIconPositions: {},
       nextZIndex: 100,
+      hasHydrated: false,
 
       openWindow: (id, title, options) =>
         set((state) => {
@@ -441,10 +444,13 @@ export const useWindowStore = create<WindowStore>()(
             [id]: position,
           },
         })),
+
+      setHasHydrated: (value) => set({ hasHydrated: value }),
     }),
     {
       name: WINDOW_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
       partialize: (state) => ({
         windows: state.windows,
         activeWindowId: state.activeWindowId,
@@ -457,6 +463,7 @@ export const useWindowStore = create<WindowStore>()(
         }
 
         window.requestAnimationFrame(() => {
+          state.setHasHydrated(true);
           state.clampWindowsToViewport();
         });
       },

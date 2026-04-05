@@ -33,6 +33,7 @@ interface SystemStore {
   systemTheme: ResolvedThemeMode;
   isSpotlightOpen: boolean;
   selectedDesktopItemId: string | null;
+  hasHydrated: boolean;
   setTheme: (theme: ThemeMode) => void;
   toggleSpotlight: () => void;
   openSpotlight: () => void;
@@ -40,6 +41,7 @@ interface SystemStore {
   selectDesktopItem: (id: string) => void;
   clearDesktopSelection: () => void;
   setSystemTheme: (theme: ResolvedThemeMode) => void;
+  setHasHydrated: (value: boolean) => void;
 }
 
 export const useSystemStore = create<SystemStore>()(
@@ -49,6 +51,7 @@ export const useSystemStore = create<SystemStore>()(
       systemTheme: getSystemTheme(),
       isSpotlightOpen: false,
       selectedDesktopItemId: null,
+      hasHydrated: false,
 
       setTheme: (theme) => {
         const resolvedTheme = getResolvedTheme(theme, get().systemTheme);
@@ -69,10 +72,12 @@ export const useSystemStore = create<SystemStore>()(
       closeSpotlight: () => set({ isSpotlightOpen: false }),
       selectDesktopItem: (id) => set({ selectedDesktopItemId: id }),
       clearDesktopSelection: () => set({ selectedDesktopItemId: null }),
+      setHasHydrated: (value) => set({ hasHydrated: value }),
     }),
     {
       name: SYSTEM_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
       partialize: (state) => ({
         theme: state.theme,
       }),
@@ -80,6 +85,7 @@ export const useSystemStore = create<SystemStore>()(
         const theme = state?.theme ?? getSettings().themeDefault;
         const resolvedTheme = getResolvedTheme(theme, getSystemTheme());
         applyTheme(resolvedTheme);
+        state?.setHasHydrated(true);
       },
     },
   ),

@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from 'framer-motion';
 
@@ -81,10 +82,12 @@ function renderWindowContent(windowId: string) {
 }
 
 export function WindowManager({ constraintsRef }: { constraintsRef: React.RefObject<Element | null> }) {
-  const windows = useWindowStore((state) =>
-    Object.values(state.windows).sort((left, right) => left.zIndex - right.zIndex),
-  );
+  const windowsMap = useWindowStore((state) => state.windows);
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
+  const windows = useMemo(
+    () => Object.values(windowsMap).sort((left, right) => left.zIndex - right.zIndex),
+    [windowsMap],
+  );
 
   return (
     <div className="absolute inset-0 z-20 pointer-events-none">
