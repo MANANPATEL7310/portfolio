@@ -4,10 +4,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 import { Sidebar, type SidebarSection } from '@/components/ui/Sidebar';
-import { FileRenderer } from '@/components/ui/FileItems';
-import { getSidebars } from '@/lib/dataService';
+import { getProjectFileWindowId, getSidebars } from '@/lib/dataService';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
+import { AboutContentPane } from '@/features/about/AboutContentPane';
+import { ProjectFilesPane } from './ProjectFilesPane';
+import { ProjectsOverviewPane } from './ProjectsOverviewPane';
+
+type FinderPane = 'root' | 'project' | 'about' | 'trash';
 
 export function ProjectDetailApp({
   projectId,
@@ -17,10 +21,13 @@ export function ProjectDetailApp({
   windowId: string;
 }) {
   const projects = usePortfolioDataStore((state) => state.projects);
+  const profile = usePortfolioDataStore((state) => state.profile);
   const openWindow = useWindowStore((state) => state.openWindow);
   const setWindowTitle = useWindowStore((state) => state.setWindowTitle);
+  const [activePane, setActivePane] = useState<FinderPane>('project');
   const [activeProjectId, setActiveProjectId] = useState(projectId);
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [aboutSectionId, setAboutSectionId] = useState(profile.aboutSections[0]?.id ?? null);
 
   const activeProject = useMemo(
     () => projects.find((item) => item.id === activeProjectId) ?? projects.find((item) => item.id === projectId) ?? null,
@@ -33,10 +40,33 @@ export function ProjectDetailApp({
       : activeProject?.files[0]?.id ?? null;
 
   useEffect(() => {
-    if (activeProject) {
-      setWindowTitle(windowId, activeProject.titleBar);
+    const nextTitle =
+      activePane === 'about'
+        ? 'About Me'
+        : activePane === 'trash'
+          ? 'Trash'
+          : activePane === 'root'
+            ? 'Work'
+            : activeProject?.titleBar ?? 'Work';
+
+    setWindowTitle(windowId, nextTitle);
+  }, [activePane, activeProject?.titleBar, setWindowTitle, windowId]);
+
+  const openProjectFile = (nextProjectId: string, fileId: string) => {
+    const project = projects.find((item) => item.id === nextProjectId);
+    const file = project?.files.find((item) => item.id === fileId);
+
+    if (!project || !file) {
+      return;
     }
-  }, [activeProject, setWindowTitle, windowId]);
+
+    if (file.type === 'link' && file.url) {
+      window.open(file.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    openWindow(getProjectFileWindowId(nextProjectId, fileId), file.windowTitle ?? file.name);
+  };
 
   const favoritesSection: SidebarSection = {
     heading: sidebarData.finder.heading,
@@ -44,8 +74,27 @@ export function ProjectDetailApp({
       id: item.id,
       label: item.label,
       icon: item.icon,
-      active: false,
+      active:
+        (item.id === 'projects' && activePane === 'root') ||
+        (item.id === 'about' && activePane === 'about') ||
+        (item.id === 'trash' && activePane === 'trash'),
       onClick: () => {
+        if (item.id === 'projects') {
+          setActivePane('root');
+          setSelectedFileId(null);
+          return;
+        }
+
+        if (item.id === 'about') {
+          setActivePane('about');
+          return;
+        }
+
+        if (item.id === 'trash') {
+          setActivePane('trash');
+          return;
+        }
+
         if (item.action?.type === 'window' && item.action.windowId) {
           openWindow(item.action.windowId, item.action.title ?? item.label, { viewMode: item.action.viewMode });
         }
@@ -59,8 +108,9 @@ export function ProjectDetailApp({
       id: item.id,
       label: item.folderLabel,
       icon: 'file-text',
-      active: item.id === activeProject?.id,
+      active: activePane === 'project' && item.id === activeProject?.id,
       onClick: () => {
+        setActivePane('project');
         setActiveProjectId(item.id);
         setSelectedFileId(null);
       },
@@ -81,23 +131,50 @@ export function ProjectDetailApp({
             <ChevronLeft className="h-6 w-6" />
             <ChevronRight className="h-6 w-6" />
             <span className="ml-2 text-[21px] font-semibold text-[#2c2c2f] dark:text-white">
-              {activeProject.titleBar}
+              {activePane === 'about'
+                ? 'About Me'
+                : activePane === 'trash'
+                  ? 'Trash'
+                  : activePane === 'root'
+                    ? 'Work'
+                    : activeProject.titleBar}
             </span>
           </div>
           <Search className="h-7 w-7 text-black/45 dark:text-white/55" />
         </div>
 
-        <div className="grid flex-1 grid-cols-2 gap-x-16 gap-y-10 overflow-auto px-10 py-12 lg:px-20">
-          {activeProject.files.map((file) => (
-            <FileRenderer
-              key={file.id}
-              file={file}
-              projectId={activeProject.id}
-              selected={activeFileId === file.id}
-              onSelect={() => setSelectedFileId(file.id)}
-            />
-          ))}
-        </div>
+        {activePane === 'about' ? (
+          <AboutContentPane
+            activeSectionId={aboutSectionId}
+            showSectionTabs
+            onSelectSection={setAboutSectionId}
+          />
+        ) : activePane === 'trash' ? (
+          <div className="flex h-full items-center justify-center px-8 text-center text-sm text-black/45 dark:text-white/45">
+            Trash is empty right now.
+          </div>
+        ) : activePane === 'root' ? (
+          <ProjectsOverviewPane
+            projects={projects}
+            selectedProjectId={activeProjectId}
+            onSelectProject={(nextProjectId) => {
+              setActiveProjectId(nextProjectId);
+              setSelectedFileId(null);
+            }}
+            onOpenProject={(nextProjectId) => {
+              setActivePane('project');
+              setActiveProjectId(nextProjectId);
+              setSelectedFileId(null);
+            }}
+          />
+        ) : (
+          <ProjectFilesPane
+            project={activeProject}
+            selectedFileId={activeFileId}
+            onSelectFile={setSelectedFileId}
+            onOpenFile={(fileId) => openProjectFile(activeProject.id, fileId)}
+          />
+        )}
       </div>
     </div>
   );

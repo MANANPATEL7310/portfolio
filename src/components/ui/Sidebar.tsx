@@ -1,7 +1,22 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { LucideIcon, FolderOpen, Info, FileText, Trash2, Heart, Image as ImageIcon, MapPin, Users } from 'lucide-react';
+import {
+  LucideIcon,
+  Folder,
+  FolderOpen,
+  Info,
+  File,
+  FileText,
+  Trash2,
+  Heart,
+  Image as ImageIcon,
+  MapPin,
+  Users,
+  BookOpen,
+  Sparkles,
+  BriefcaseBusiness,
+} from 'lucide-react';
 
 export interface SidebarItem {
   id: string;
@@ -22,8 +37,10 @@ interface SidebarProps {
 }
 
 const iconMap: Record<string, LucideIcon> = {
+  folder: Folder,
   'folder-open': FolderOpen,
   'info': Info,
+  file: File,
   'file-text': FileText,
   'trash-2': Trash2,
   'trash': Trash2,
@@ -31,6 +48,9 @@ const iconMap: Record<string, LucideIcon> = {
   'image': ImageIcon,
   'map-pin': MapPin,
   'users': Users,
+  book: BookOpen,
+  sparkles: Sparkles,
+  briefcase: BriefcaseBusiness,
 };
 
 export function Sidebar({ sections, width = 206 }: SidebarProps) {

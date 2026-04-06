@@ -5,20 +5,27 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Code2, ExternalLink, FolderOpen, Grid2X2, List, Search, type LucideIcon } from 'lucide-react';
 
-import { FileRenderer } from '@/components/ui/FileItems';
 import { Sidebar, type SidebarSection } from '@/components/ui/Sidebar';
-import { getSidebars } from '@/lib/dataService';
+import { getProjectFileWindowId, getSidebars } from '@/lib/dataService';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
+import { AboutContentPane } from '@/features/about/AboutContentPane';
+import { ProjectFilesPane } from './ProjectFilesPane';
+import { ProjectsOverviewPane } from './ProjectsOverviewPane';
+
+type FinderPane = 'root' | 'project' | 'about' | 'trash';
 
 export function ProjectsApp({ windowId }: { windowId: string }) {
   const projects = usePortfolioDataStore((state) => state.projects);
+  const profile = usePortfolioDataStore((state) => state.profile);
   const currentWindow = useWindowStore((state) => state.windows[windowId]);
   const openWindow = useWindowStore((state) => state.openWindow);
   const setWindowTitle = useWindowStore((state) => state.setWindowTitle);
   const setWindowViewMode = useWindowStore((state) => state.setWindowViewMode);
+  const [activePane, setActivePane] = useState<FinderPane>('root');
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [aboutSectionId, setAboutSectionId] = useState(profile.aboutSections[0]?.id ?? null);
 
   const viewMode = currentWindow?.viewMode ?? 'finder';
   const sidebarData = getSidebars();
@@ -37,12 +44,18 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
     const nextTitle =
       viewMode === 'showcase'
         ? 'Projects Showcase'
-        : selectedProject?.titleBar ?? finderRootTitle;
+        : activePane === 'about'
+          ? 'About Me'
+          : activePane === 'trash'
+            ? 'Trash'
+            : activePane === 'project'
+              ? selectedProject?.titleBar ?? finderRootTitle
+              : finderRootTitle;
 
     if (currentWindow && currentWindow.title !== nextTitle) {
       setWindowTitle(windowId, nextTitle);
     }
-  }, [currentWindow, finderRootTitle, selectedProject?.titleBar, setWindowTitle, viewMode, windowId]);
+  }, [activePane, currentWindow, finderRootTitle, selectedProject?.titleBar, setWindowTitle, viewMode, windowId]);
 
   const openLiveProject = (projectId: string) => {
     const project = projects.find((item) => item.id === projectId);
@@ -64,8 +77,25 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
 
   const openFinderProject = (projectId: string) => {
     setWindowViewMode(windowId, 'finder');
+    setActivePane('project');
     setSelectedProjectId(projectId);
     setSelectedFileId(null);
+  };
+
+  const handleOpenProjectFile = (projectId: string, fileId: string) => {
+    const project = projects.find((item) => item.id === projectId);
+    const file = project?.files.find((item) => item.id === fileId);
+
+    if (!project || !file) {
+      return;
+    }
+
+    if (file.type === 'link' && file.url) {
+      window.open(file.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    openWindow(getProjectFileWindowId(projectId, fileId), file.windowTitle ?? file.name);
   };
 
   const favoriteSection: SidebarSection = {
@@ -74,12 +104,29 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
       id: item.id,
       label: item.label,
       icon: item.icon,
-      active: item.id === 'projects' ? viewMode === 'finder' && selectedProjectId === null : false,
+      active:
+        viewMode === 'finder' &&
+        ((item.id === 'projects' && activePane === 'root') ||
+          (item.id === 'about' && activePane === 'about') ||
+          (item.id === 'trash' && activePane === 'trash')),
       onClick: () => {
         if (item.id === 'projects') {
           setWindowViewMode(windowId, 'finder');
+          setActivePane('root');
           setSelectedProjectId(null);
           setSelectedFileId(null);
+          return;
+        }
+
+        if (item.id === 'about') {
+          setWindowViewMode(windowId, 'finder');
+          setActivePane('about');
+          return;
+        }
+
+        if (item.id === 'trash') {
+          setWindowViewMode(windowId, 'finder');
+          setActivePane('trash');
           return;
         }
 
@@ -96,7 +143,7 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
       id: project.id,
       label: project.folderLabel,
       icon: 'file-text',
-      active: viewMode === 'finder' && selectedProjectId === project.id,
+      active: viewMode === 'finder' && activePane === 'project' && selectedProjectId === project.id,
       onClick: () => openFinderProject(project.id),
     })),
   };
@@ -104,7 +151,13 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
   const headerTitle =
     viewMode === 'showcase'
       ? 'Projects Showcase'
-      : selectedProject?.titleBar ?? finderRootTitle;
+      : activePane === 'about'
+        ? 'About Me'
+        : activePane === 'trash'
+          ? 'Trash'
+          : activePane === 'project'
+            ? selectedProject?.titleBar ?? finderRootTitle
+            : finderRootTitle;
 
   return (
     <div className="flex h-full bg-white text-[#171717] dark:bg-[#1f1f22] dark:text-white">
@@ -215,44 +268,34 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
                 );
               })}
             </div>
-          ) : selectedProject ? (
-            <div className="grid flex-1 grid-cols-2 gap-x-16 gap-y-10 overflow-auto px-10 py-12 lg:px-20">
-              {selectedProject.files.map((file) => (
-                <FileRenderer
-                  key={file.id}
-                  file={file}
-                  projectId={selectedProject.id}
-                  selected={activeFileId === file.id}
-                  onSelect={() => setSelectedFileId(file.id)}
-                />
-              ))}
+          ) : activePane === 'about' ? (
+            <AboutContentPane
+              activeSectionId={aboutSectionId}
+              showSectionTabs
+              onSelectSection={setAboutSectionId}
+            />
+          ) : activePane === 'trash' ? (
+            <div className="flex h-full items-center justify-center px-8 text-center text-sm text-black/45 dark:text-white/45">
+              Trash is empty right now.
             </div>
+          ) : activePane === 'project' && selectedProject ? (
+            <ProjectFilesPane
+              project={selectedProject}
+              selectedFileId={activeFileId}
+              onSelectFile={setSelectedFileId}
+              onOpenFile={(fileId) => handleOpenProjectFile(selectedProject.id, fileId)}
+            />
           ) : (
-            <div className="grid grid-cols-1 gap-y-12 px-10 py-12 sm:grid-cols-2 sm:px-16 lg:px-24">
-              {projects.map((project) => (
-                <button
-                  key={project.id}
-                  onClick={() => {
-                    setSelectedProjectId(project.id);
-                    setSelectedFileId(null);
-                  }}
-                  onDoubleClick={() => openFinderProject(project.id)}
-                  className={`group flex flex-col items-center justify-self-center gap-3 rounded-2xl px-4 py-3 text-center transition ${
-                    selectedProjectId === project.id ? 'bg-black/[0.04] dark:bg-white/6' : ''
-                  }`}
-                >
-                  <Image
-                    src={project.icon}
-                    alt={project.titleBar}
-                    width={112}
-                    height={112}
-                    className="w-28 transition duration-200 group-hover:scale-105"
-                    sizes="112px"
-                  />
-                  <span className="text-[20px] text-[#18181b] dark:text-white/92">{project.desktopLabel}</span>
-                </button>
-              ))}
-            </div>
+            <ProjectsOverviewPane
+              projects={projects}
+              selectedProjectId={selectedProjectId}
+              onSelectProject={(projectId) => {
+                setActivePane('root');
+                setSelectedProjectId(projectId);
+                setSelectedFileId(null);
+              }}
+              onOpenProject={openFinderProject}
+            />
           )}
         </div>
       </div>
