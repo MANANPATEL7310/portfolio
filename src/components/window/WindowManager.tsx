@@ -19,6 +19,9 @@ function WindowFallback() {
 const ProjectsApp = dynamic(() => import("@/features/projects/ProjectsApp").then((mod) => mod.ProjectsApp), {
   loading: () => <WindowFallback />,
 });
+const BrowserApp = dynamic(() => import("@/features/browser/BrowserApp").then((mod) => mod.BrowserApp), {
+  loading: () => <WindowFallback />,
+});
 const ProjectDetailApp = dynamic(() => import("@/features/projects/ProjectDetailApp").then((mod) => mod.ProjectDetailApp), {
   loading: () => <WindowFallback />,
 });
@@ -49,9 +52,6 @@ const AboutApp = dynamic(() => import("@/features/about/AboutApp").then((mod) =>
 const ContactApp = dynamic(() => import("@/features/contact/ContactApp").then((mod) => mod.ContactApp), {
   loading: () => <WindowFallback />,
 });
-const BlogApp = dynamic(() => import("@/features/blog/BlogApp").then((mod) => mod.BlogApp), {
-  loading: () => <WindowFallback />,
-});
 const TerminalApp = dynamic(() => import("@/features/terminal/TerminalApp").then((mod) => mod.TerminalApp), {
   loading: () => <WindowFallback />,
 });
@@ -64,6 +64,10 @@ function renderWindowContent(windowId: string) {
 
   if (parsed.kind === "project") {
     return <ProjectDetailApp projectId={parsed.projectId} windowId={windowId} />;
+  }
+
+  if (parsed.kind === "browser") {
+    return <BrowserApp windowId={windowId} />;
   }
 
   if (parsed.kind === "project-file") {
@@ -87,6 +91,8 @@ function renderWindowContent(windowId: string) {
   switch (parsed.appId) {
     case "projects":
       return <ProjectsApp windowId={windowId} />;
+    case "browser":
+      return <BrowserApp windowId={windowId} />;
     case "trash":
       return <TrashApp />;
     case "resume":
@@ -98,7 +104,7 @@ function renderWindowContent(windowId: string) {
     case "contact":
       return <ContactApp />;
     case "blog":
-      return <BlogApp />;
+      return <BrowserApp windowId={windowId} />;
     case "terminal":
       return <TerminalApp />;
     case "settings":

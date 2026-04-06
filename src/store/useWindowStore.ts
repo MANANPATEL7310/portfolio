@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { BROWSER_HOME_URL, getBrowserDisplayTitle, isInternalBrowserUrl, normalizeBrowserUrl } from "@/lib/browser";
 import {
   getDefaultWindowTitle,
+  getBrowserWindowId,
   getWindowDefaultsForId,
   type WindowViewMode,
 } from "@/lib/dataService";
@@ -41,19 +43,50 @@ export interface WindowState {
   } | null;
 }
 
+export type BrowserStatus = "loading" | "ready" | "blocked" | "external-only";
+
+export interface BrowserHistoryEntry {
+  url: string;
+  title: string;
+}
+
+export interface BrowserSession {
+  id: string;
+  url: string;
+  title: string;
+  history: BrowserHistoryEntry[];
+  historyIndex: number;
+  status: BrowserStatus;
+  reloadKey: number;
+}
+
 interface OpenWindowOptions {
   title?: string;
   viewMode?: WindowViewMode;
 }
 
+interface OpenBrowserOptions {
+  title?: string;
+  windowId?: string;
+}
+
 interface WindowStore {
   windows: Record<string, WindowState>;
+  browserSessions: Record<string, BrowserSession>;
   activeWindowId: string | null;
   desktopIconPositions: Record<string, WindowPosition>;
   desktopLayoutVersion: number;
   nextZIndex: number;
   hasHydrated: boolean;
   openWindow: (id: string, title?: string, options?: OpenWindowOptions) => void;
+  openBrowserWindow: (url?: string, options?: OpenBrowserOptions) => string;
+  ensureBrowserSession: (windowId: string, url?: string, title?: string) => void;
+  navigateBrowserWindow: (windowId: string, url: string, options?: { title?: string; replace?: boolean }) => void;
+  goBrowserBack: (windowId: string) => void;
+  goBrowserForward: (windowId: string) => void;
+  reloadBrowserWindow: (windowId: string) => void;
+  setBrowserStatus: (windowId: string, status: BrowserStatus) => void;
+  setBrowserTitle: (windowId: string, title: string) => void;
   closeWindow: (id: string) => void;
   toggleMinimizeWindow: (id: string) => void;
   toggleMaximizeWindow: (id: string) => void;
@@ -116,6 +149,32 @@ function getTopWindowId(windows: Record<string, WindowState>) {
     .sort((left, right) => right.zIndex - left.zIndex)[0]?.id ?? null;
 }
 
+function buildBrowserHistoryEntry(url: string, title?: string): BrowserHistoryEntry {
+  const normalizedUrl = normalizeBrowserUrl(url);
+  return {
+    url: normalizedUrl,
+    title: title ?? getBrowserDisplayTitle(normalizedUrl),
+  };
+}
+
+function buildBrowserSession(windowId: string, url = BROWSER_HOME_URL, title?: string): BrowserSession {
+  const entry = buildBrowserHistoryEntry(url, title);
+  return {
+    id: windowId,
+    url: entry.url,
+    title: entry.title,
+    history: [entry],
+    historyIndex: 0,
+    status: isInternalBrowserUrl(entry.url) ? "ready" : "loading",
+    reloadKey: 0,
+  };
+}
+
+function buildGeneratedBrowserWindowId() {
+  const sessionId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  return getBrowserWindowId(sessionId);
+}
+
 function buildWindowState(id: string, zIndex: number, options?: OpenWindowOptions): WindowState {
   const viewport = getViewport();
   const defaults = getWindowDefaultsForId(id);
@@ -153,6 +212,7 @@ export const useWindowStore = create<WindowStore>()(
   persist(
     (set) => ({
       windows: {},
+      browserSessions: {},
       activeWindowId: null,
       desktopIconPositions: {},
       desktopLayoutVersion: DESKTOP_LAYOUT_VERSION,
@@ -161,6 +221,27 @@ export const useWindowStore = create<WindowStore>()(
 
       openWindow: (id, title, options) =>
         set((state) => {
+          if (id === "browser" || id === "blog") {
+            const browserWindowId = buildGeneratedBrowserWindowId();
+            const browserSession = buildBrowserSession(browserWindowId, BROWSER_HOME_URL, title ?? getDefaultWindowTitle(id));
+
+            return {
+              windows: {
+                ...state.windows,
+                [browserWindowId]: buildWindowState(browserWindowId, state.nextZIndex, {
+                  ...options,
+                  title: browserSession.title,
+                }),
+              },
+              browserSessions: {
+                ...state.browserSessions,
+                [browserWindowId]: browserSession,
+              },
+              activeWindowId: browserWindowId,
+              nextZIndex: state.nextZIndex + 1,
+            };
+          }
+
           const existing = state.windows[id];
 
           if (existing) {
@@ -194,13 +275,241 @@ export const useWindowStore = create<WindowStore>()(
           };
         }),
 
+      openBrowserWindow: (url = BROWSER_HOME_URL, options) => {
+        const browserWindowId = options?.windowId ?? buildGeneratedBrowserWindowId();
+        set((state) => {
+          const browserSession = buildBrowserSession(browserWindowId, url, options?.title);
+          const existing = state.windows[browserWindowId];
+
+          return {
+            windows: {
+              ...state.windows,
+              [browserWindowId]: existing
+                ? {
+                    ...existing,
+                    title: browserSession.title,
+                    isOpen: true,
+                    isMinimized: false,
+                    zIndex: state.nextZIndex,
+                  }
+                : buildWindowState(browserWindowId, state.nextZIndex, {
+                    title: browserSession.title,
+                  }),
+            },
+            browserSessions: {
+              ...state.browserSessions,
+              [browserWindowId]: browserSession,
+            },
+            activeWindowId: browserWindowId,
+            nextZIndex: state.nextZIndex + 1,
+          };
+        });
+        return browserWindowId;
+      },
+
+      ensureBrowserSession: (windowId, url = BROWSER_HOME_URL, title) =>
+        set((state) => {
+          if (state.browserSessions[windowId]) {
+            return state;
+          }
+
+          return {
+            browserSessions: {
+              ...state.browserSessions,
+              [windowId]: buildBrowserSession(windowId, url, title),
+            },
+          };
+        }),
+
+      navigateBrowserWindow: (windowId, url, options) =>
+        set((state) => {
+          const existingSession = state.browserSessions[windowId] ?? buildBrowserSession(windowId);
+          const entry = buildBrowserHistoryEntry(url, options?.title);
+          const baseHistory = options?.replace
+            ? existingSession.history.slice()
+            : existingSession.history.slice(0, existingSession.historyIndex + 1);
+          const nextHistory = options?.replace
+            ? baseHistory.map((historyEntry, index) =>
+                index === existingSession.historyIndex ? entry : historyEntry,
+              )
+            : [...baseHistory, entry];
+          const nextHistoryIndex = options?.replace ? existingSession.historyIndex : nextHistory.length - 1;
+          const nextSession: BrowserSession = {
+            ...existingSession,
+            url: entry.url,
+            title: entry.title,
+            history: nextHistory,
+            historyIndex: nextHistoryIndex,
+            status: isInternalBrowserUrl(entry.url) ? "ready" : "loading",
+          };
+
+          const existingWindow = state.windows[windowId];
+
+          return {
+            browserSessions: {
+              ...state.browserSessions,
+              [windowId]: nextSession,
+            },
+            windows: existingWindow
+              ? {
+                  ...state.windows,
+                  [windowId]: {
+                    ...existingWindow,
+                    title: nextSession.title,
+                  },
+                }
+              : state.windows,
+          };
+        }),
+
+      goBrowserBack: (windowId) =>
+        set((state) => {
+          const session = state.browserSessions[windowId];
+          if (!session || session.historyIndex <= 0) {
+            return state;
+          }
+
+          const nextHistoryIndex = session.historyIndex - 1;
+          const nextEntry = session.history[nextHistoryIndex];
+          const existingWindow = state.windows[windowId];
+
+          return {
+            browserSessions: {
+              ...state.browserSessions,
+              [windowId]: {
+                ...session,
+                historyIndex: nextHistoryIndex,
+                url: nextEntry.url,
+                title: nextEntry.title,
+                status: isInternalBrowserUrl(nextEntry.url) ? "ready" : "loading",
+              },
+            },
+            windows: existingWindow
+              ? {
+                  ...state.windows,
+                  [windowId]: {
+                    ...existingWindow,
+                    title: nextEntry.title,
+                  },
+                }
+              : state.windows,
+          };
+        }),
+
+      goBrowserForward: (windowId) =>
+        set((state) => {
+          const session = state.browserSessions[windowId];
+          if (!session || session.historyIndex >= session.history.length - 1) {
+            return state;
+          }
+
+          const nextHistoryIndex = session.historyIndex + 1;
+          const nextEntry = session.history[nextHistoryIndex];
+          const existingWindow = state.windows[windowId];
+
+          return {
+            browserSessions: {
+              ...state.browserSessions,
+              [windowId]: {
+                ...session,
+                historyIndex: nextHistoryIndex,
+                url: nextEntry.url,
+                title: nextEntry.title,
+                status: isInternalBrowserUrl(nextEntry.url) ? "ready" : "loading",
+              },
+            },
+            windows: existingWindow
+              ? {
+                  ...state.windows,
+                  [windowId]: {
+                    ...existingWindow,
+                    title: nextEntry.title,
+                  },
+                }
+              : state.windows,
+          };
+        }),
+
+      reloadBrowserWindow: (windowId) =>
+        set((state) => {
+          const session = state.browserSessions[windowId];
+          if (!session) {
+            return state;
+          }
+
+          return {
+            browserSessions: {
+              ...state.browserSessions,
+              [windowId]: {
+                ...session,
+                reloadKey: session.reloadKey + 1,
+                status: isInternalBrowserUrl(session.url) ? "ready" : "loading",
+              },
+            },
+          };
+        }),
+
+      setBrowserStatus: (windowId, status) =>
+        set((state) => {
+          const session = state.browserSessions[windowId];
+          if (!session || session.status === status) {
+            return state;
+          }
+
+          return {
+            browserSessions: {
+              ...state.browserSessions,
+              [windowId]: {
+                ...session,
+                status,
+              },
+            },
+          };
+        }),
+
+      setBrowserTitle: (windowId, title) =>
+        set((state) => {
+          const session = state.browserSessions[windowId];
+          const windowState = state.windows[windowId];
+          if (!session || session.title === title) {
+            return state;
+          }
+
+          const history = session.history.map((entry, index) =>
+            index === session.historyIndex ? { ...entry, title } : entry,
+          );
+
+          return {
+            browserSessions: {
+              ...state.browserSessions,
+              [windowId]: {
+                ...session,
+                title,
+                history,
+              },
+            },
+            windows: windowState
+              ? {
+                  ...state.windows,
+                  [windowId]: {
+                    ...windowState,
+                    title,
+                  },
+                }
+              : state.windows,
+          };
+        }),
+
       closeWindow: (id) =>
         set((state) => {
           const nextWindows = { ...state.windows };
+          const nextBrowserSessions = { ...state.browserSessions };
           delete nextWindows[id];
+          delete nextBrowserSessions[id];
 
           return {
             windows: nextWindows,
+            browserSessions: nextBrowserSessions,
             activeWindowId: getTopWindowId(nextWindows),
           };
         }),
@@ -482,6 +791,7 @@ export const useWindowStore = create<WindowStore>()(
       skipHydration: true,
       partialize: (state) => ({
         windows: state.windows,
+        browserSessions: state.browserSessions,
         activeWindowId: state.activeWindowId,
         desktopIconPositions: state.desktopIconPositions,
         desktopLayoutVersion: state.desktopLayoutVersion,
@@ -495,6 +805,9 @@ export const useWindowStore = create<WindowStore>()(
         window.requestAnimationFrame(() => {
           if (state.desktopLayoutVersion !== DESKTOP_LAYOUT_VERSION) {
             state.resetDesktopIconPositions();
+          }
+          if (state.windows.blog && !state.browserSessions.blog) {
+            state.ensureBrowserSession("blog", BROWSER_HOME_URL, getDefaultWindowTitle("blog"));
           }
           state.setHasHydrated(true);
           state.clampWindowsToViewport();

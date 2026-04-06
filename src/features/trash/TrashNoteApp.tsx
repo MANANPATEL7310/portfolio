@@ -1,5 +1,6 @@
 'use client';
 
+import { openInBrowser } from '@/lib/openInBrowser';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 
 export function TrashNoteApp({ itemId }: { itemId: string }) {
@@ -30,14 +31,13 @@ export function TrashNoteApp({ itemId }: { itemId: string }) {
             ))}
           </div>
         ) : item.url ? (
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => openInBrowser(item.url!, { title: item.windowTitle ?? item.name })}
             className="inline-flex items-center rounded-full bg-[#171717] px-4 py-2 text-sm font-medium text-white transition hover:bg-black dark:bg-white/12 dark:hover:bg-white/18"
           >
             Open archived link
-          </a>
+          </button>
         ) : null}
       </div>
     </div>

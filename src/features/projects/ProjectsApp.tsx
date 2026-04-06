@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Grid2X2, List, Search } from 'lucide-react';
 
 import { Sidebar, type SidebarSection } from '@/components/ui/Sidebar';
 import { getProjectFileWindowId, getSidebars } from '@/lib/dataService';
+import { openInBrowser } from '@/lib/openInBrowser';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
 import { AboutContentPane } from '@/features/about/AboutContentPane';
@@ -70,7 +71,7 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
       return;
     }
 
-    window.open(project.liveUrl, '_blank', 'noopener,noreferrer');
+    openInBrowser(project.liveUrl, { title: project.name });
   };
 
   const openGithub = (projectId: string) => {
@@ -79,7 +80,7 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
       return;
     }
 
-    window.open(project.githubUrl, '_blank', 'noopener,noreferrer');
+    openInBrowser(project.githubUrl, { title: `${project.name} — GitHub` });
   };
 
   const openFinderProject = (projectId: string) => {
@@ -101,7 +102,7 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
     }
 
     if (file.type === 'link' && file.url) {
-      window.open(file.url, '_blank', 'noopener,noreferrer');
+      openInBrowser(file.url, { title: file.windowTitle ?? file.name });
       return;
     }
 

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Image from "next/image";
 
 import { getDesktopGridPosition, getDesktopViewport } from '@/lib/desktopGrid';
 import { getWallpaper } from '@/lib/dataService';
@@ -14,6 +13,7 @@ import { Dock } from './Dock';
 import { MenuBar } from './MenuBar';
 import { Spotlight } from './Spotlight';
 import { WelcomeText } from './WelcomeText';
+import { WallpaperRenderer } from './WallpaperRenderer';
 import { WindowManager } from '../window/WindowManager';
 
 export function Desktop() {
@@ -101,16 +101,7 @@ export function Desktop() {
       onClick={() => clearDesktopSelection()}
       className="selection-glow relative h-screen w-screen overflow-hidden bg-slate-950 text-foreground"
     >
-      <Image
-        src={currentWallpaper.src}
-        alt="Desktop wallpaper"
-        fill
-        priority
-        className={`pointer-events-none absolute inset-0 z-0 object-cover transition duration-700 ${
-          theme === "light" ? "scale-[1.03] saturate-[0.78] brightness-[1.12]" : ""
-        }`}
-        sizes="100vw"
-      />
+      <WallpaperRenderer wallpaper={currentWallpaper} theme={theme} />
       <div className="desktop-overlay pointer-events-none absolute inset-0 z-[1]" />
       <div className={`pointer-events-none absolute inset-0 z-[2] ${theme === "light" ? "bg-white/24" : "bg-slate-950/12"}`} />
 

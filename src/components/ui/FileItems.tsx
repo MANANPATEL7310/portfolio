@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
 import { getProjectFileWindowId, ProjectFile } from '@/lib/dataService';
+import { openInBrowser } from '@/lib/openInBrowser';
 
 interface FileItemProps {
   file: ProjectFile;
@@ -116,7 +117,7 @@ export function TextItem({ file, projectId, selected, onSelect }: FileItemProps)
 export function LinkItem({ file, selected, onSelect }: FileItemProps) {
   const handleOpen = () => {
     if (file.url) {
-      window.open(file.url, '_blank', 'noopener,noreferrer');
+      openInBrowser(file.url, { title: file.windowTitle || file.name });
     }
   };
 

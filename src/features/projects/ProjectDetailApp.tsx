@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 import { Sidebar, type SidebarSection } from '@/components/ui/Sidebar';
 import { getProjectFileWindowId, getSidebars } from '@/lib/dataService';
+import { openInBrowser } from '@/lib/openInBrowser';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
 import { AboutContentPane } from '@/features/about/AboutContentPane';
@@ -68,7 +69,7 @@ export function ProjectDetailApp({
     }
 
     if (file.type === 'link' && file.url) {
-      window.open(file.url, '_blank', 'noopener,noreferrer');
+      openInBrowser(file.url, { title: file.windowTitle ?? file.name });
       return;
     }
 

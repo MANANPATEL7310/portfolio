@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { AtSign, BriefcaseBusiness, CalendarDays, Send, type LucideIcon } from 'lucide-react';
 
+import { openInBrowser } from '@/lib/openInBrowser';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 
 const iconMap: Record<string, LucideIcon> = {
@@ -63,11 +64,19 @@ export function ContactApp() {
               const external = action.href.startsWith('http');
 
               return (
-                <motion.a
+                <motion.button
                   key={action.id}
-                  href={action.href}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noreferrer' : undefined}
+                  type="button"
+                  onClick={() => {
+                    if (external) {
+                      openInBrowser(action.href, { title: action.label });
+                      return;
+                    }
+
+                    if (typeof window !== 'undefined') {
+                      window.location.href = action.href;
+                    }
+                  }}
                   whileHover={{ y: -3, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className={`flex items-center gap-4 rounded-2xl bg-gradient-to-br ${action.colorClass} p-5 text-white shadow-lg transition`}
@@ -76,7 +85,7 @@ export function ContactApp() {
                     <action.Icon className="h-6 w-6" />
                   </div>
                   <span className="text-[17px] font-semibold">{action.label}</span>
-                </motion.a>
+                </motion.button>
               );
             })}
           </div>

@@ -123,16 +123,23 @@ export function SettingsApp() {
                             ? 'border-blue-500'
                             : 'border-transparent hover:border-black/20 dark:hover:border-white/20'
                         }`}
-                      >
+                        >
                         <Image
-                          src={wallpaper.src}
+                          src={wallpaper.posterSrc ?? wallpaper.src ?? '/portfolio/wallpaper.png'}
                           alt={wallpaper.label}
                           fill
                           className="object-cover"
                           sizes="200px"
                         />
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                          <span className="text-[12px] font-medium text-white">{wallpaper.label}</span>
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[12px] font-medium text-white">{wallpaper.label}</span>
+                            {wallpaper.type === 'animated' ? (
+                              <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white">
+                                Animated
+                              </span>
+                            ) : null}
+                          </div>
                         </div>
                         {currentWallpaper === wallpaper.id && (
                           <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white">
@@ -195,7 +202,7 @@ export function SettingsApp() {
                         <Type className="h-4 w-4 text-black/60 dark:text-white/60" />
                         <span className="text-[14px]">Browser</span>
                       </div>
-                      <span className="text-[14px] text-black/50 dark:text-white/50">Safari</span>
+                      <span className="text-[14px] text-black/50 dark:text-white/50">{settings.browser.profile === 'safari' ? 'Safari' : settings.browser.profile}</span>
                     </div>
                     <div className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5">
                       <div className="flex items-center gap-3">

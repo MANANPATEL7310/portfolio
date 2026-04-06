@@ -12,6 +12,7 @@ export type ResolvedThemeMode = "dark" | "light";
 export type WindowViewMode = "finder" | "showcase";
 export type WindowId =
   | "projects"
+  | "browser"
   | "resume"
   | "photos"
   | "about"
@@ -20,6 +21,7 @@ export type WindowId =
   | "terminal"
   | "settings"
   | "trash"
+  | `browser:${string}`
   | `project:${string}`
   | `project-file:${string}:${string}`
   | `trash-file:${string}`;
@@ -210,7 +212,25 @@ export interface SpotlightItem {
 export interface WallpaperOption {
   id: string;
   label: string;
-  src: string;
+  type: "static" | "animated";
+  src?: string;
+  posterSrc?: string;
+  renderer?: "aurora-drift" | "glass-wave";
+}
+
+export interface BrowserBookmark {
+  id: string;
+  label: string;
+  description: string;
+  url: string;
+  icon: string;
+}
+
+export interface BrowserSettings {
+  homeTitle: string;
+  addressPlaceholder: string;
+  profile: "safari";
+  bookmarks: BrowserBookmark[];
 }
 
 export interface SettingsData {
@@ -224,6 +244,7 @@ export interface SettingsData {
     blogEmpty: string;
   };
   wallpapers: WallpaperOption[];
+  browser: BrowserSettings;
   windowDefaults: Record<string, { width: number; height: number; x: number; y: number }>;
   menuItems: MenuItemSetting[];
   dockApps: DockAppSetting[];
@@ -292,6 +313,7 @@ export const getProjectWindowId = (projectId: string) => `project:${projectId}` 
 export const getProjectFileWindowId = (projectId: string, fileId: string) =>
   `project-file:${projectId}:${fileId}` as const;
 export const getTrashFileWindowId = (itemId: string) => `trash-file:${itemId}` as const;
+export const getBrowserWindowId = (sessionId: string) => `browser:${sessionId}` as const;
 
 export const getProjectFile = (projectId: string, fileId: string) =>
   getProjectById(projectId)?.files.find((file) => file.id === fileId);
@@ -301,6 +323,10 @@ export const getDefaultWindowTitle = (id: string) => {
 
   if (parsed.kind === "project") {
     return getProjectById(parsed.projectId)?.titleBar ?? "Project";
+  }
+
+  if (parsed.kind === "browser") {
+    return getSettings().browser.homeTitle;
   }
 
   if (parsed.kind === "project-file") {
@@ -317,6 +343,10 @@ export const getDefaultWindowTitle = (id: string) => {
     return getProfile().resume.viewerTitle;
   }
 
+  if (parsed.appId === "browser" || parsed.appId === "blog") {
+    return getSettings().browser.homeTitle;
+  }
+
   const settingTitle =
     getMenuItems().find((item) => item.id === parsed.appId)?.title ??
     getDockApps().find((item) => item.id === parsed.appId)?.title;
@@ -329,6 +359,10 @@ export const getWindowDefaultsForId = (id: string) => {
 
   if (parsed.kind === "project") {
     return getWindowDefault("projectFolder");
+  }
+
+  if (parsed.kind === "browser") {
+    return getWindowDefault("browser");
   }
 
   if (parsed.kind === "project-file") {
@@ -347,6 +381,10 @@ export const getWindowDefaultsForId = (id: string) => {
     }
 
     return getWindowDefault("trashFile");
+  }
+
+  if (parsed.appId === "browser" || parsed.appId === "blog") {
+    return getWindowDefault("browser");
   }
 
   return getWindowDefault(parsed.appId);
@@ -395,9 +433,14 @@ export const getSpotlightItems = (): SpotlightItem[] => {
 
 export function parseWindowId(id: string):
   | { kind: "app"; appId: WindowId }
+  | { kind: "browser"; sessionId: string }
   | { kind: "project"; projectId: string }
   | { kind: "project-file"; projectId: string; fileId: string }
   | { kind: "trash-file"; itemId: string } {
+  if (id.startsWith("browser:")) {
+    return { kind: "browser", sessionId: id.replace("browser:", "") };
+  }
+
   if (id.startsWith("trash-file:")) {
     const [, itemId] = id.split(":");
     return { kind: "trash-file", itemId };

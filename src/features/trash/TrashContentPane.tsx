@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Archive, Clock3, ExternalLink, FolderOpen, StickyNote } from 'lucide-react';
 
 import { getTrashFileWindowId } from '@/lib/dataService';
+import { openInBrowser } from '@/lib/openInBrowser';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
 
@@ -25,7 +26,7 @@ export function TrashContentPane() {
     }
 
     if (item.type === 'link' && item.url) {
-      window.open(item.url, '_blank', 'noopener,noreferrer');
+      openInBrowser(item.url, { title: item.windowTitle ?? item.name });
       return;
     }
 

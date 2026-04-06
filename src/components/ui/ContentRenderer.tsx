@@ -2,6 +2,7 @@
 
 import { ProjectData, BlogPost, GalleryImage, AboutSection, ProjectFile } from '@/lib/dataService';
 import Image from 'next/image';
+import { openInBrowser } from '@/lib/openInBrowser';
 
 export type ContentType = 'project' | 'blog' | 'about' | 'gallery' | 'file-folder' | 'file-image' | 'file-text' | 'file-link' | 'file-figma';
 
@@ -205,14 +206,13 @@ function LinkContent({ data }: { data: ProjectFile }) {
     <div className="flex h-full flex-col items-center justify-center p-8 text-center">
       <p className="text-lg text-[#171717] dark:text-white">{data.name}</p>
       {data.url ? (
-        <a
-          href={data.url}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => openInBrowser(data.url!, { title: data.name })}
           className="mt-4 text-sky-500 hover:underline dark:text-sky-400"
         >
           Open link →
-        </a>
+        </button>
       ) : (
         <p className="mt-4 text-sm text-black/45 dark:text-white/45">No URL provided.</p>
       )}

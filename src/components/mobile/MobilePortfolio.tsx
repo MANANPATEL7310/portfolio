@@ -6,6 +6,7 @@ import { ArrowUpRight, MoonStar, Sparkles, SunMedium } from "lucide-react";
 import { getWallpaper } from '@/lib/dataService';
 import { usePortfolioDataStore } from "@/store/usePortfolioDataStore";
 import { getResolvedTheme, useSystemStore } from "@/store/useSystemStore";
+import { WallpaperRenderer } from '@/components/desktop/WallpaperRenderer';
 
 const mobileContactCards = [
   { id: "calendar", label: "Schedule a call" },
@@ -28,16 +29,7 @@ export function MobilePortfolio() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
       <div className="absolute inset-0">
-        <Image
-          src={currentWallpaper.src}
-          alt="Desktop wallpaper"
-          fill
-          priority
-          className={`object-cover transition duration-500 ${
-            theme === "light" ? "scale-105 saturate-[0.8] brightness-[1.15]" : ""
-          }`}
-          sizes="100vw"
-        />
+        <WallpaperRenderer wallpaper={currentWallpaper} theme={theme} mobile />
         <div className="desktop-overlay absolute inset-0" />
         <div className={`absolute inset-0 ${theme === "light" ? "bg-white/24" : "bg-slate-950/32"}`} />
       </div>

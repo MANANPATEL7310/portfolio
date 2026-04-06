@@ -9,14 +9,52 @@
     "blogEmpty": "No blog posts yet."
   },
   "wallpapers": [
-    { "id": "default", "label": "Default Dark", "src": "/portfolio/wallpaper.png" },
-    { "id": "sunrise", "label": "Sunrise", "src": "/wallpapers/sunrise.png" },
-    { "id": "wave", "label": "Wave", "src": "/wallpapers/wave.png" },
-    { "id": "aurora", "label": "Aurora", "src": "/wallpapers/aurora.png" },
-    { "id": "ocean", "label": "Ocean", "src": "/wallpapers/ocean.png" }
+    { "id": "default", "label": "Default Dark", "type": "static", "src": "/portfolio/wallpaper.png", "posterSrc": "/portfolio/wallpaper.png" },
+    { "id": "sunrise", "label": "Sunrise", "type": "static", "src": "/wallpapers/sunrise.png", "posterSrc": "/wallpapers/sunrise.png" },
+    { "id": "wave", "label": "Wave", "type": "static", "src": "/wallpapers/wave.png", "posterSrc": "/wallpapers/wave.png" },
+    { "id": "aurora", "label": "Aurora", "type": "static", "src": "/wallpapers/aurora.png", "posterSrc": "/wallpapers/aurora.png" },
+    { "id": "ocean", "label": "Ocean", "type": "static", "src": "/wallpapers/ocean.png", "posterSrc": "/wallpapers/ocean.png" },
+    { "id": "aurora-drift", "label": "Aurora Drift", "type": "animated", "posterSrc": "/wallpapers/aurora.png", "renderer": "aurora-drift" },
+    { "id": "glass-wave", "label": "Glass Wave", "type": "animated", "posterSrc": "/wallpapers/wave.png", "renderer": "glass-wave" }
   ],
+  "browser": {
+    "homeTitle": "Start Page",
+    "addressPlaceholder": "Search or enter website name",
+    "profile": "safari",
+    "bookmarks": [
+      {
+        "id": "projects-showcase",
+        "label": "Projects Showcase",
+        "description": "Browse the live project collection",
+        "url": "portfolio://home",
+        "icon": "/portfolio/finder.png"
+      },
+      {
+        "id": "snapcast",
+        "label": "SnapCast",
+        "description": "Open the live creator dashboard",
+        "url": "https://snapcast.vercel.app",
+        "icon": "/portfolio/project-1.png"
+      },
+      {
+        "id": "github",
+        "label": "GitHub",
+        "description": "See the public code behind the work",
+        "url": "https://github.com/manan",
+        "icon": "/portfolio/terminal.png"
+      },
+      {
+        "id": "linkedin",
+        "label": "LinkedIn",
+        "description": "Connect professionally",
+        "url": "https://www.linkedin.com",
+        "icon": "/portfolio/contact.png"
+      }
+    ]
+  },
   "windowDefaults": {
     "projects": { "width": 1280, "height": 760, "x": 60, "y": 90 },
+    "browser": { "width": 1180, "height": 760, "x": 110, "y": 90 },
     "resume": { "width": 540, "height": 740, "x": 940, "y": 70 },
     "photos": { "width": 1110, "height": 620, "x": 250, "y": 150 },
     "about": { "width": 800, "height": 470, "x": 420, "y": 240 },
@@ -37,7 +75,7 @@
   ],
   "dockApps": [
     { "id": "projects", "label": "Finder", "title": "Work", "icon": "/portfolio/finder.png", "openMode": "finder" },
-    { "id": "blog", "label": "Safari", "title": "My Developer Blog", "icon": "/portfolio/safari.png" },
+    { "id": "browser", "label": "Safari", "title": "Start Page", "icon": "/portfolio/safari.png" },
     { "id": "photos", "label": "Photos", "title": "Photos", "icon": "/portfolio/photos.png" },
     { "id": "about", "label": "About", "title": "About Me", "icon": "/portfolio/contact.png" },
     { "id": "terminal", "label": "Terminal", "title": "Tech Stack", "icon": "/portfolio/terminal.png" },
