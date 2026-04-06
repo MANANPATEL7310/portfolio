@@ -103,7 +103,6 @@ export const WindowFrame = memo(function WindowFrame({
 
   return (
     <motion.div
-      layout
       drag={!isMaximized && !isResizing}
       dragControls={dragControls}
       dragListener={false}
@@ -113,8 +112,15 @@ export const WindowFrame = memo(function WindowFrame({
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{
         opacity: isMinimized ? 0 : 1,
-        scale: isMinimized ? 0.88 : 1,
-        y: isMinimized ? 180 : 0,
+        scale: isMinimized ? 0.82 : 1,
+        y: isMinimized ? 120 : 0,
+        filter: isMinimized ? 'blur(6px)' : 'blur(0px)',
+      }}
+      transition={{
+        opacity: { duration: isMinimized ? 0.18 : 0.22, ease: 'easeOut' },
+        scale: { type: 'spring', stiffness: 250, damping: 28 },
+        y: { type: 'spring', stiffness: 230, damping: 28 },
+        filter: { duration: 0.2, ease: 'easeOut' },
       }}
       exit={{ opacity: 0, scale: 0.85, y: 28 }}
       onDragEnd={(event) => {
@@ -137,6 +143,8 @@ export const WindowFrame = memo(function WindowFrame({
         height: size.height,
         zIndex,
         pointerEvents: isMinimized ? 'none' : 'auto',
+        transformOrigin: 'center bottom',
+        willChange: 'transform, opacity',
       }}
       className={twMerge(
         clsx(
@@ -173,10 +181,12 @@ export const WindowFrame = memo(function WindowFrame({
       <div
         className={twMerge(
           clsx(
-            "min-h-0 min-w-0 flex-1 overflow-hidden rounded-b-[1.4rem] bg-[rgba(15,15,18,0.18)]",
+            "min-h-0 min-w-0 flex-1 overflow-hidden rounded-b-[1.4rem] bg-[rgba(15,15,18,0.18)] transition-opacity duration-200",
+            isMinimized ? "opacity-0" : "opacity-100",
             contentClassName,
           ),
         )}
+        aria-hidden={isMinimized}
       >
         <div className="h-full w-full overflow-auto">
           {children || (
