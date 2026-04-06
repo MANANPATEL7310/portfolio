@@ -8,6 +8,7 @@ import { getProjectFileWindowId, getSidebars } from '@/lib/dataService';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useWindowStore } from '@/store/useWindowStore';
 import { AboutContentPane } from '@/features/about/AboutContentPane';
+import { TrashContentPane } from '@/features/trash/TrashContentPane';
 import { ProjectFilesPane } from './ProjectFilesPane';
 import { ProjectsOverviewPane } from './ProjectsOverviewPane';
 import { useFinderNavigation } from './useFinderNavigation';
@@ -173,9 +174,7 @@ export function ProjectDetailApp({
             onSelectSection={setAboutSectionId}
           />
         ) : activePane === 'trash' ? (
-          <div className="flex h-full items-center justify-center px-8 text-center text-sm text-black/45 dark:text-white/45">
-            Trash is empty right now.
-          </div>
+          <TrashContentPane />
         ) : activePane === 'root' ? (
           <ProjectsOverviewPane
             projects={projects}

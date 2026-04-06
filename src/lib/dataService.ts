@@ -5,6 +5,7 @@ import projectsJson from "../../data/projects.json";
 import settingsJson from "../../data/settings.json";
 import sidebarJson from "../../data/sidebar.json";
 import socialsJson from "../../data/socials.json";
+import trashJson from "../../data/trash.json";
 
 export type ThemeMode = "dark" | "light" | "system";
 export type ResolvedThemeMode = "dark" | "light";
@@ -18,8 +19,10 @@ export type WindowId =
   | "blog"
   | "terminal"
   | "settings"
+  | "trash"
   | `project:${string}`
-  | `project-file:${string}:${string}`;
+  | `project-file:${string}:${string}`
+  | `trash-file:${string}`;
 
 export type ProjectFileType = "folder" | "image" | "text" | "link" | "figma";
 
@@ -151,6 +154,29 @@ export interface GalleryImage {
   collections: string[];
 }
 
+export type TrashItemType = "folder" | "image" | "text" | "link";
+
+export interface TrashItem {
+  id: string;
+  type: TrashItemType;
+  name: string;
+  icon: string;
+  windowTitle?: string;
+  src?: string;
+  url?: string;
+  content?: string[];
+  deletedAt: string;
+  summary: string;
+  tags: string[];
+}
+
+export interface TrashData {
+  title: string;
+  subtitle: string;
+  emptyMessage: string;
+  items: TrashItem[];
+}
+
 export interface DockAppSetting {
   id: string;
   label: string;
@@ -238,6 +264,8 @@ export const getBlogById = (id: string): BlogPost | undefined =>
 export const getProfile = (): ProfileData => profileJson as ProfileData;
 export const getSocials = (): SocialLinks => socialsJson as SocialLinks;
 export const getGallery = (): GalleryImage[] => galleryJson as GalleryImage[];
+export const getTrash = (): TrashData => trashJson as TrashData;
+export const getTrashItem = (id: string): TrashItem | undefined => getTrash().items.find((item) => item.id === id);
 export const getSettings = (): SettingsData => settingsJson as SettingsData;
 export const getSidebars = (): SidebarData => sidebarJson as SidebarData;
 export const getMenuItems = (): MenuItemSetting[] => getSettings().menuItems;
@@ -263,6 +291,7 @@ export const getWindowDefault = (key: string) =>
 export const getProjectWindowId = (projectId: string) => `project:${projectId}` as const;
 export const getProjectFileWindowId = (projectId: string, fileId: string) =>
   `project-file:${projectId}:${fileId}` as const;
+export const getTrashFileWindowId = (itemId: string) => `trash-file:${itemId}` as const;
 
 export const getProjectFile = (projectId: string, fileId: string) =>
   getProjectById(projectId)?.files.find((file) => file.id === fileId);
@@ -277,6 +306,11 @@ export const getDefaultWindowTitle = (id: string) => {
   if (parsed.kind === "project-file") {
     const file = getProjectFile(parsed.projectId, parsed.fileId);
     return file?.windowTitle ?? file?.name ?? "File Preview";
+  }
+
+  if (parsed.kind === "trash-file") {
+    const item = getTrashItem(parsed.itemId);
+    return item?.windowTitle ?? item?.name ?? "Archive Item";
   }
 
   if (parsed.appId === "resume") {
@@ -306,6 +340,15 @@ export const getWindowDefaultsForId = (id: string) => {
     return getWindowDefault("projectFile");
   }
 
+  if (parsed.kind === "trash-file") {
+    const item = getTrashItem(parsed.itemId);
+    if (item?.type === "image") {
+      return getWindowDefault("trashPreview");
+    }
+
+    return getWindowDefault("trashFile");
+  }
+
   return getWindowDefault(parsed.appId);
 };
 
@@ -322,7 +365,7 @@ export const getSpotlightItems = (): SpotlightItem[] => {
 
   const appItems = [
     ...getMenuItems(),
-    ...getDockApps().filter((item) => item.id !== "trash"),
+    ...getDockApps(),
   ].reduce<SpotlightItem[]>((items, app) => {
     if (items.some((item) => item.id === app.id)) {
       return items;
@@ -337,13 +380,29 @@ export const getSpotlightItems = (): SpotlightItem[] => {
     return items;
   }, []);
 
-  return [...appItems, ...projects];
+  const trashItems = getTrash().items.map((item) => ({
+    id: getTrashFileWindowId(item.id),
+    title: item.windowTitle ?? item.name,
+    keywords: [
+      item.name.toLowerCase(),
+      item.summary.toLowerCase(),
+      ...item.tags.map((tag) => tag.toLowerCase()),
+    ],
+  }));
+
+  return [...appItems, ...projects, ...trashItems];
 };
 
 export function parseWindowId(id: string):
   | { kind: "app"; appId: WindowId }
   | { kind: "project"; projectId: string }
-  | { kind: "project-file"; projectId: string; fileId: string } {
+  | { kind: "project-file"; projectId: string; fileId: string }
+  | { kind: "trash-file"; itemId: string } {
+  if (id.startsWith("trash-file:")) {
+    const [, itemId] = id.split(":");
+    return { kind: "trash-file", itemId };
+  }
+
   if (id.startsWith("project-file:")) {
     const [, projectId, fileId] = id.split(":");
     return { kind: "project-file", projectId, fileId };

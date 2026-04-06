@@ -1,0 +1,74 @@
+{
+  "title": "Scrapped Ideas",
+  "subtitle": "Archived concepts, alternate directions, and experiments I intentionally set aside while shaping this portfolio.",
+  "emptyMessage": "Trash is empty right now.",
+  "items": [
+    {
+      "id": "dock-physics-v1",
+      "type": "text",
+      "name": "Dock Physics v1.txt",
+      "icon": "/portfolio/txt.png",
+      "windowTitle": "Dock Physics v1.txt",
+      "deletedAt": "2026-02-18",
+      "summary": "An early dock animation pass that felt fun in isolation but too noisy once the rest of the interface calmed down.",
+      "tags": ["Motion", "Experiment"],
+      "content": [
+        "The first dock prototype had oversized bounce reactions and too much magnet-like motion between neighboring icons.",
+        "It was visually impressive for a moment, but it kept pulling attention away from the actual portfolio content.",
+        "I archived it because the stronger choice was to make the dock feel polished and alive, not theatrical."
+      ]
+    },
+    {
+      "id": "alt-hero-direction",
+      "type": "image",
+      "name": "Alt Hero Direction.png",
+      "icon": "/portfolio/project-1.png",
+      "src": "/portfolio/project-1.png",
+      "windowTitle": "Alt Hero Direction.png",
+      "deletedAt": "2026-02-26",
+      "summary": "A brighter landing treatment that looked polished, but diluted the macOS desktop illusion I wanted to preserve.",
+      "tags": ["Hero", "Visual direction"]
+    },
+    {
+      "id": "portfolio-story-v1",
+      "type": "folder",
+      "name": "Portfolio Story v1",
+      "icon": "/portfolio/folder-clear.png",
+      "windowTitle": "Portfolio Story v1",
+      "deletedAt": "2026-03-04",
+      "summary": "An archived content structure that explained too much too early instead of letting the interface do the storytelling.",
+      "tags": ["Narrative", "UX"],
+      "content": [
+        "This version leaned heavily into guided storytelling before the user could explore the desktop for themselves.",
+        "It made the portfolio feel more like a slide deck than a system people could discover at their own pace.",
+        "I kept the notes because the content thinking was useful, but the interaction model was wrong for this product."
+      ]
+    },
+    {
+      "id": "reading-dashboard",
+      "type": "image",
+      "name": "Reading Dashboard.png",
+      "icon": "/portfolio/blog1.png",
+      "src": "/portfolio/blog1.png",
+      "windowTitle": "Reading Dashboard.png",
+      "deletedAt": "2026-03-14",
+      "summary": "A content-heavy dashboard concept that was elegant, but too specific to one product direction for the main portfolio shell.",
+      "tags": ["Dashboard", "Archive"]
+    },
+    {
+      "id": "why-i-keep-an-archive",
+      "type": "text",
+      "name": "Why I Keep an Archive.txt",
+      "icon": "/portfolio/txt.png",
+      "windowTitle": "Why I Keep an Archive.txt",
+      "deletedAt": "2026-03-21",
+      "summary": "A short note on why I keep failed directions around instead of deleting them completely.",
+      "tags": ["Process", "Notes"],
+      "content": [
+        "I like keeping the directions that did not ship because they still explain the taste behind the final decisions.",
+        "An archive turns discarded work into evidence of iteration rather than invisible effort.",
+        "For a portfolio, that matters because process is often just as important as the finished screen."
+      ]
+    }
+  ]
+}

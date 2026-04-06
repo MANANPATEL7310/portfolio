@@ -17,6 +17,14 @@ export function ProjectFilesPane({
   onSelectFile,
   onOpenFile,
 }: ProjectFilesPaneProps) {
+  if (project.files.length === 0) {
+    return (
+      <div className="flex h-full items-center justify-center px-8 text-center text-sm text-black/45 dark:text-white/45">
+        This folder is currently empty.
+      </div>
+    );
+  }
+
   return (
     <div className="grid flex-1 grid-cols-2 gap-x-16 gap-y-10 overflow-auto px-10 py-12 lg:px-20">
       {project.files.map((file) => (

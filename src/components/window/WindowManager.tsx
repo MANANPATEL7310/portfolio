@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from 'framer-motion';
 
-import { getProjectFile, parseWindowId } from "@/lib/dataService";
+import { getProjectFile, getTrashItem, parseWindowId } from "@/lib/dataService";
 import { useWindowStore } from '@/store/useWindowStore';
 import { WindowFrame } from './WindowFrame';
 
@@ -26,6 +26,15 @@ const ProjectNoteApp = dynamic(() => import("@/features/projects/ProjectNoteApp"
   loading: () => <WindowFallback />,
 });
 const ProjectPreviewApp = dynamic(() => import("@/features/projects/ProjectPreviewApp").then((mod) => mod.ProjectPreviewApp), {
+  loading: () => <WindowFallback />,
+});
+const TrashApp = dynamic(() => import("@/features/trash/TrashApp").then((mod) => mod.TrashApp), {
+  loading: () => <WindowFallback />,
+});
+const TrashPreviewApp = dynamic(() => import("@/features/trash/TrashPreviewApp").then((mod) => mod.TrashPreviewApp), {
+  loading: () => <WindowFallback />,
+});
+const TrashNoteApp = dynamic(() => import("@/features/trash/TrashNoteApp").then((mod) => mod.TrashNoteApp), {
   loading: () => <WindowFallback />,
 });
 const ResumeApp = dynamic(() => import("@/features/resume/ResumeApp").then((mod) => mod.ResumeApp), {
@@ -64,9 +73,22 @@ function renderWindowContent(windowId: string) {
       : <ProjectNoteApp projectId={parsed.projectId} fileId={parsed.fileId} />;
   }
 
+  if (parsed.kind === "trash-file") {
+    const item = getTrashItem(parsed.itemId);
+    if (!item) {
+      return <WindowFallback />;
+    }
+
+    return item?.type === "image"
+      ? <TrashPreviewApp itemId={parsed.itemId} />
+      : <TrashNoteApp itemId={parsed.itemId} />;
+  }
+
   switch (parsed.appId) {
     case "projects":
       return <ProjectsApp windowId={windowId} />;
+    case "trash":
+      return <TrashApp />;
     case "resume":
       return <ResumeApp />;
     case "photos":

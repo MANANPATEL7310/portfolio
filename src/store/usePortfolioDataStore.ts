@@ -7,12 +7,14 @@ import {
   getProjects,
   getSettings,
   getSocials,
+  getTrash,
   type BlogPost,
   type GalleryImage,
   type ProfileData,
   type ProjectData,
   type SettingsData,
   type SocialLinks,
+  type TrashData,
 } from "@/lib/dataService";
 
 interface PortfolioDataState {
@@ -21,6 +23,7 @@ interface PortfolioDataState {
   socials: SocialLinks;
   profile: ProfileData;
   gallery: GalleryImage[];
+  trash: TrashData;
   settings: SettingsData;
 }
 
@@ -30,5 +33,6 @@ export const usePortfolioDataStore = create<PortfolioDataState>(() => ({
   socials: getSocials(),
   profile: getProfile(),
   gallery: getGallery(),
+  trash: getTrash(),
   settings: getSettings(),
 }));

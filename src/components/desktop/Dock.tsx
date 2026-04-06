@@ -32,11 +32,20 @@ export function Dock() {
                 windowState.id === 'resume'
             );
 
+          const isTrashFamily =
+            app.id === 'trash' &&
+            openWindows.some(
+              (windowState) =>
+                windowState.id === 'trash' ||
+                windowState.id.startsWith('trash-file:'),
+            );
+
           const isOpen =
-            app.id !== 'trash' &&
-            (isFinderFamily || openWindows.some((windowState) => windowState.id === app.id));
+            isTrashFamily ||
+            (app.id !== 'trash' &&
+              (isFinderFamily || openWindows.some((windowState) => windowState.id === app.id)));
           const icon =
-            app.id === 'trash' && openWindows.length > 0 ? '/portfolio/trash-2.png' : app.icon;
+            app.id === 'trash' && isTrashFamily ? '/portfolio/trash-2.png' : app.icon;
 
           return (
             <DockItem
@@ -45,9 +54,7 @@ export function Dock() {
               icon={icon}
               isOpen={isOpen}
               onClick={() => {
-                if (app.id !== 'trash') {
-                  openWindow(app.id, app.title, { viewMode: app.openMode });
-                }
+                openWindow(app.id, app.title, { viewMode: app.openMode });
               }}
             />
           );

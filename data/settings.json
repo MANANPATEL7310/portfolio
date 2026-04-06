@@ -23,13 +23,15 @@
     "contact": { "width": 740, "height": 420, "x": 610, "y": 270 },
     "blog": { "width": 1100, "height": 580, "x": 420, "y": 250 },
     "terminal": { "width": 770, "height": 420, "x": 610, "y": 285 },
+    "trash": { "width": 980, "height": 620, "x": 250, "y": 150 },
     "projectFolder": { "width": 980, "height": 650, "x": 220, "y": 150 },
     "projectFile": { "width": 500, "height": 430, "x": 910, "y": 270 },
-    "projectPreview": { "width": 1050, "height": 620, "x": 130, "y": 170 }
+    "projectPreview": { "width": 1050, "height": 620, "x": 130, "y": 170 },
+    "trashFile": { "width": 540, "height": 440, "x": 900, "y": 260 },
+    "trashPreview": { "width": 1050, "height": 620, "x": 130, "y": 170 }
   },
   "menuItems": [
     { "id": "projects", "label": "Projects", "title": "Projects Showcase", "openMode": "showcase" },
-    { "id": "photos", "label": "Testimonials", "title": "Photos" },
     { "id": "contact", "label": "Contact", "title": "Contact Me" },
     { "id": "resume", "label": "Resume", "title": "Resume.pdf" }
   ],
@@ -39,7 +41,7 @@
     { "id": "photos", "label": "Photos", "title": "Photos", "icon": "/portfolio/photos.png" },
     { "id": "about", "label": "About", "title": "About Me", "icon": "/portfolio/contact.png" },
     { "id": "terminal", "label": "Terminal", "title": "Tech Stack", "icon": "/portfolio/terminal.png" },
-    { "id": "trash", "label": "Trash", "icon": "/portfolio/trash.png" }
+    { "id": "trash", "label": "Trash", "title": "Scrapped Ideas", "icon": "/portfolio/trash.png" }
   ],
   "desktopItems": [
     {
