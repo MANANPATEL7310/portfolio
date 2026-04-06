@@ -34,6 +34,9 @@ export function BrowserApp({ windowId }: { windowId: string }) {
   const addressInputRef = useRef<HTMLInputElement>(null);
   const [addressValue, setAddressValue] = useState('');
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const browserUrl = browserSession?.url;
+  const browserStatus = browserSession?.status;
+  const browserReloadKey = browserSession?.reloadKey;
 
   useEffect(() => {
     ensureBrowserSession(windowId, BROWSER_HOME_URL, settings.browser.homeTitle);
@@ -69,17 +72,20 @@ export function BrowserApp({ windowId }: { windowId: string }) {
   }, [browserSession, currentUrl, parsedUrl.kind, selectedBlog, setBrowserTitle, settings.browser.homeTitle, windowId]);
 
   useEffect(() => {
-    if (!browserSession || parsedUrl.kind !== 'external') {
+    if (!browserUrl || parsedUrl.kind !== 'external') {
       return;
     }
 
-    setBrowserStatus(windowId, 'loading');
+    if (browserStatus === 'ready' || browserStatus === 'blocked') {
+      return;
+    }
+
     const timer = window.setTimeout(() => {
       setBrowserStatus(windowId, 'blocked');
     }, 4200);
 
     return () => window.clearTimeout(timer);
-  }, [browserSession, parsedUrl.kind, setBrowserStatus, windowId]);
+  }, [browserReloadKey, browserStatus, browserUrl, parsedUrl.kind, setBrowserStatus, windowId]);
 
   if (!browserSession) {
     return (
@@ -397,6 +403,8 @@ function BrowserWebView({
   status: 'loading' | 'ready' | 'blocked' | 'external-only';
   onReady: () => void;
 }) {
+  const [hasLoadedFrame, setHasLoadedFrame] = useState(status === 'ready');
+
   return (
     <div className="relative h-full bg-white dark:bg-[#111218]">
       {status === 'blocked' ? (
@@ -437,9 +445,12 @@ function BrowserWebView({
             className="h-full w-full border-0"
             sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
             referrerPolicy="strict-origin-when-cross-origin"
-            onLoad={onReady}
+            onLoad={() => {
+              setHasLoadedFrame(true);
+              onReady();
+            }}
           />
-          {status === 'loading' ? (
+          {status === 'loading' && !hasLoadedFrame ? (
             <div className="absolute inset-0 flex items-center justify-center bg-white/72 backdrop-blur-sm dark:bg-[#111218]/74">
               <div className="rounded-full border border-black/8 bg-white px-4 py-2 text-sm font-medium text-black/62 shadow-md dark:border-white/10 dark:bg-[#1f1f22] dark:text-white/72">
                 Loading page...

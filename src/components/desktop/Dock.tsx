@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { getProjectById, getProjectFile, getTrashItem, parseWindowId } from '@/lib/dataService';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
@@ -17,6 +17,8 @@ export function Dock() {
   const windows = useWindowStore((state) => state.windows);
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
   const openWindows = Object.values(windows);
+  const hasMaximizedWindow = openWindows.some((windowState) => windowState.isMaximized && !windowState.isMinimized);
+  const [isDockRevealed, setIsDockRevealed] = useState(false);
   const browserWindows = useMemo(
     () =>
       openWindows
@@ -107,12 +109,31 @@ export function Dock() {
   }, [openWindows, pinnedDockIds, projects, trash.items]);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-[9999] flex justify-center">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[9999] h-28">
+      {hasMaximizedWindow ? (
+        <div
+          className="pointer-events-auto absolute inset-x-0 bottom-0 h-6"
+          onPointerEnter={() => setIsDockRevealed(true)}
+          aria-hidden="true"
+        />
+      ) : null}
       <div
-        className={`desktop-shadow pointer-events-auto flex items-end gap-1 rounded-[1.7rem] px-5 pb-3 pt-3 backdrop-blur-2xl ${
+        onPointerEnter={() => {
+          if (hasMaximizedWindow) {
+            setIsDockRevealed(true);
+          }
+        }}
+        onPointerLeave={() => {
+          if (hasMaximizedWindow) {
+            setIsDockRevealed(false);
+          }
+        }}
+        className={`desktop-shadow pointer-events-auto absolute left-1/2 bottom-6 flex -translate-x-1/2 items-end gap-1 rounded-[1.7rem] px-5 pb-3 pt-3 backdrop-blur-2xl transition-transform duration-300 ease-out ${
           theme === 'light'
             ? 'border border-white/35 bg-[rgba(173,194,255,0.32)]'
             : 'border border-white/20 bg-white/12'
+        } ${
+          hasMaximizedWindow && !isDockRevealed ? 'translate-y-[96px]' : 'translate-y-0'
         }`}
       >
         {primaryDockApps.map((app) => {
