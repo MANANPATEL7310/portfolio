@@ -16,7 +16,7 @@
     { "id": "ocean", "label": "Ocean", "src": "/wallpapers/ocean.png" }
   ],
   "windowDefaults": {
-    "projects": { "width": 1110, "height": 665, "x": 80, "y": 110 },
+    "projects": { "width": 1280, "height": 760, "x": 60, "y": 90 },
     "resume": { "width": 540, "height": 740, "x": 940, "y": 70 },
     "photos": { "width": 1110, "height": 620, "x": 250, "y": 150 },
     "about": { "width": 800, "height": 470, "x": 420, "y": 240 },
@@ -24,7 +24,7 @@
     "blog": { "width": 1100, "height": 580, "x": 420, "y": 250 },
     "terminal": { "width": 770, "height": 420, "x": 610, "y": 285 },
     "trash": { "width": 980, "height": 620, "x": 250, "y": 150 },
-    "projectFolder": { "width": 980, "height": 650, "x": 220, "y": 150 },
+    "projectFolder": { "width": 1120, "height": 720, "x": 150, "y": 120 },
     "projectFile": { "width": 500, "height": 430, "x": 910, "y": 270 },
     "projectPreview": { "width": 1050, "height": 620, "x": 130, "y": 170 },
     "trashFile": { "width": 540, "height": 440, "x": 900, "y": 260 },

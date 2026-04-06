@@ -18,14 +18,14 @@ export function ProjectsOverviewPane({
   onOpenProject,
 }: ProjectsOverviewPaneProps) {
   return (
-    <div className="grid grid-cols-1 gap-y-12 px-10 py-12 sm:grid-cols-2 sm:px-16 lg:px-24">
+    <div className="grid auto-rows-max grid-cols-[repeat(auto-fit,minmax(170px,170px))] justify-start gap-x-10 gap-y-9 px-8 py-8 sm:px-10 lg:px-12">
       {projects.map((project) => (
         <button
           key={project.id}
           onClick={() => onSelectProject(project.id)}
           onDoubleClick={() => onOpenProject(project.id)}
-          className={`group flex flex-col items-center justify-self-center gap-3 rounded-2xl px-4 py-3 text-center transition ${
-            selectedProjectId === project.id ? 'bg-black/[0.04] dark:bg-white/6' : ''
+          className={`group flex w-[170px] flex-col items-center gap-3 rounded-2xl px-3 py-3 text-center transition ${
+            selectedProjectId === project.id ? 'bg-black/[0.04] shadow-sm dark:bg-white/6' : ''
           }`}
         >
           <Image
@@ -33,10 +33,10 @@ export function ProjectsOverviewPane({
             alt={project.titleBar}
             width={112}
             height={112}
-            className="w-28 transition duration-200 group-hover:scale-105"
+            className="w-28 transition duration-200 group-hover:scale-[1.04]"
             sizes="112px"
           />
-          <span className="text-[20px] text-[#18181b] dark:text-white/92">{project.desktopLabel}</span>
+          <span className="text-[17px] leading-6 text-[#18181b] dark:text-white/92">{project.desktopLabel}</span>
         </button>
       ))}
     </div>

@@ -1,5 +1,8 @@
 'use client';
 
+import { useMemo } from 'react';
+
+import { getProjectById, getProjectFile, getTrashItem, parseWindowId } from '@/lib/dataService';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 import { useWindowStore } from '@/store/useWindowStore';
@@ -7,10 +10,84 @@ import { DockItem } from '@/components/ui/DockItem';
 
 export function Dock() {
   const dockApps = usePortfolioDataStore((state) => state.settings.dockApps);
+  const projects = usePortfolioDataStore((state) => state.projects);
+  const trash = usePortfolioDataStore((state) => state.trash);
   const openWindow = useWindowStore((state) => state.openWindow);
   const windows = useWindowStore((state) => state.windows);
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
   const openWindows = Object.values(windows);
+  const pinnedDockIds = useMemo(() => new Set(dockApps.map((app) => app.id)), [dockApps]);
+  const primaryDockApps = dockApps.filter((app) => app.id !== 'trash');
+  const trashDockApp = dockApps.find((app) => app.id === 'trash');
+
+  const transientDockItems = useMemo(() => {
+    return openWindows.flatMap((windowState) => {
+      const parsed = parseWindowId(windowState.id);
+
+      if (parsed.kind === 'project') {
+        const project = projects.find((entry) => entry.id === parsed.projectId) ?? getProjectById(parsed.projectId);
+        if (!project) {
+          return [];
+        }
+
+        return [{
+          id: windowState.id,
+          label: project.folderLabel,
+          title: windowState.title,
+          icon: project.icon,
+        }];
+      }
+
+      if (parsed.kind === 'project-file') {
+        const file = getProjectFile(parsed.projectId, parsed.fileId);
+        if (!file) {
+          return [];
+        }
+
+        return [{
+          id: windowState.id,
+          label: file.name,
+          title: windowState.title,
+          icon: file.type === 'image' && file.src ? file.src : file.icon,
+        }];
+      }
+
+      if (parsed.kind === 'trash-file') {
+        const item = trash.items.find((entry) => entry.id === parsed.itemId) ?? getTrashItem(parsed.itemId);
+        if (!item) {
+          return [];
+        }
+
+        return [{
+          id: windowState.id,
+          label: item.name,
+          title: windowState.title,
+          icon: item.type === 'image' && item.src ? item.src : item.icon,
+        }];
+      }
+
+      if (!pinnedDockIds.has(parsed.appId)) {
+        const fallbackIcons: Partial<Record<typeof parsed.appId, string>> = {
+          resume: '/portfolio/pdf.png',
+          contact: '/portfolio/contact.png',
+        };
+
+        const fallbackIcon = fallbackIcons[parsed.appId];
+        if (!fallbackIcon) {
+          return [];
+        }
+
+        return [{
+          id: windowState.id,
+          label: windowState.title,
+          title: windowState.title,
+          icon: fallbackIcon,
+        }];
+      }
+
+      return [];
+    });
+  }, [openWindows, pinnedDockIds, projects, trash.items]);
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-6 z-[9999] flex justify-center">
@@ -21,7 +98,7 @@ export function Dock() {
             : 'border border-white/20 bg-white/12'
         }`}
       >
-        {dockApps.map((app) => {
+        {primaryDockApps.map((app) => {
           const isFinderFamily =
             app.id === 'projects' &&
             openWindows.some(
@@ -32,26 +109,14 @@ export function Dock() {
                 windowState.id === 'resume'
             );
 
-          const isTrashFamily =
-            app.id === 'trash' &&
-            openWindows.some(
-              (windowState) =>
-                windowState.id === 'trash' ||
-                windowState.id.startsWith('trash-file:'),
-            );
-
           const isOpen =
-            isTrashFamily ||
-            (app.id !== 'trash' &&
-              (isFinderFamily || openWindows.some((windowState) => windowState.id === app.id)));
-          const icon =
-            app.id === 'trash' && isTrashFamily ? '/portfolio/trash-2.png' : app.icon;
+            isFinderFamily || openWindows.some((windowState) => windowState.id === app.id);
 
           return (
             <DockItem
               key={`${app.id}-${app.label}`}
               label={app.label}
-              icon={icon}
+              icon={app.icon}
               isOpen={isOpen}
               onClick={() => {
                 openWindow(app.id, app.title, { viewMode: app.openMode });
@@ -59,6 +124,47 @@ export function Dock() {
             />
           );
         })}
+
+        {transientDockItems.length > 0 ? (
+          <div className={`mx-2 h-12 w-px self-center ${theme === 'light' ? 'bg-black/10' : 'bg-white/14'}`} />
+        ) : null}
+
+        {transientDockItems.map((item) => (
+          <DockItem
+            key={item.id}
+            label={item.label}
+            icon={item.icon}
+            isOpen
+            onClick={() => openWindow(item.id, item.title)}
+          />
+        ))}
+
+        {trashDockApp ? (
+          <>
+            <div className={`mx-2 h-12 w-px self-center ${theme === 'light' ? 'bg-black/10' : 'bg-white/14'}`} />
+            <DockItem
+              key={`${trashDockApp.id}-${trashDockApp.label}`}
+              label={trashDockApp.label}
+              icon={
+                openWindows.some(
+                  (windowState) =>
+                    windowState.id === 'trash' ||
+                    windowState.id.startsWith('trash-file:'),
+                )
+                  ? '/portfolio/trash-2.png'
+                  : trashDockApp.icon
+              }
+              isOpen={openWindows.some(
+                (windowState) =>
+                  windowState.id === 'trash' ||
+                  windowState.id.startsWith('trash-file:'),
+              )}
+              onClick={() => {
+                openWindow(trashDockApp.id, trashDockApp.title, { viewMode: trashDockApp.openMode });
+              }}
+            />
+          </>
+        ) : null}
       </div>
     </div>
   );

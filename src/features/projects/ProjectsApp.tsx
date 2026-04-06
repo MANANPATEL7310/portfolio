@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Code2, ExternalLink, FolderOpen, Grid2X2, List, Search, type LucideIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Grid2X2, List, Search } from 'lucide-react';
 
 import { Sidebar, type SidebarSection } from '@/components/ui/Sidebar';
 import { getProjectFileWindowId, getSidebars } from '@/lib/dataService';
@@ -13,6 +11,7 @@ import { AboutContentPane } from '@/features/about/AboutContentPane';
 import { TrashContentPane } from '@/features/trash/TrashContentPane';
 import { ProjectFilesPane } from './ProjectFilesPane';
 import { ProjectsOverviewPane } from './ProjectsOverviewPane';
+import { ProjectShowcaseCard } from './ProjectShowcaseCard';
 import { useFinderNavigation } from './useFinderNavigation';
 
 export function ProjectsApp({ windowId }: { windowId: string }) {
@@ -244,60 +243,23 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
               No projects yet.
             </div>
           ) : viewMode === 'showcase' ? (
-            <div className="grid gap-5 px-8 py-8 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mx-auto grid max-w-[1600px] gap-7 px-8 py-8 lg:grid-cols-2 xl:px-10 xl:py-9">
               {projects.map((project) => {
                 const active = showcaseProject?.id === project.id;
 
                 return (
-                  <motion.article
+                  <ProjectShowcaseCard
                     key={project.id}
-                    whileHover={{ y: -6, scale: 1.01 }}
-                    onClick={() => {
+                    project={project}
+                    active={active}
+                    onSelect={() => {
                       setSelectedProjectId(project.id);
                       setSelectedFileId(null);
                     }}
-                    onDoubleClick={() => openLiveProject(project.id)}
-                    className={`group relative overflow-hidden rounded-[1.7rem] border text-left shadow-[0_20px_60px_rgba(15,23,42,0.08)] transition ${
-                      active
-                        ? 'border-blue-400/60 ring-2 ring-blue-400/30'
-                        : 'border-black/8 dark:border-white/10'
-                    }`}
-                  >
-                    <div className="relative h-48 bg-black/[0.03] dark:bg-white/6">
-                      <Image
-                        src={project.thumbnail || project.icon}
-                        alt={project.name}
-                        fill
-                        className="object-cover"
-                        sizes="(min-width: 1280px) 24vw, (min-width: 768px) 40vw, 100vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent opacity-0 transition group-hover:opacity-100" />
-                      <div className="absolute inset-x-4 bottom-4 flex translate-y-3 gap-2 opacity-0 transition duration-200 group-hover:translate-y-0 group-hover:opacity-100">
-                        <ActionPill onClick={() => openLiveProject(project.id)} label="Open Project" icon={ExternalLink} />
-                        <ActionPill onClick={() => openGithub(project.id)} label="View Code" icon={Code2} />
-                        <ActionPill onClick={() => openFinderProject(project.id)} label="Details" icon={FolderOpen} />
-                      </div>
-                    </div>
-                    <div className="space-y-3 p-5">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <h2 className="text-[22px] font-semibold text-[#18181b] dark:text-white">{project.name}</h2>
-                          <p className="mt-2 text-[15px] leading-6 text-black/68 dark:text-white/62">{project.description}</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                          <motion.span
-                            key={tag}
-                            whileHover={{ scale: 1.05 }}
-                            className="rounded-full bg-black/[0.05] px-3 py-1 text-xs font-medium text-black/65 dark:bg-white/8 dark:text-white/65"
-                          >
-                            {tag}
-                          </motion.span>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.article>
+                    onOpenProject={() => openLiveProject(project.id)}
+                    onOpenGithub={() => openGithub(project.id)}
+                    onOpenDetails={() => openFinderProject(project.id)}
+                  />
                 );
               })}
             </div>
@@ -330,28 +292,5 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
         </div>
       </div>
     </div>
-  );
-}
-
-function ActionPill({
-  onClick,
-  label,
-  icon: Icon,
-}: {
-  onClick: () => void;
-  label: string;
-  icon: LucideIcon;
-}) {
-  return (
-    <button
-      onClick={(event) => {
-        event.stopPropagation();
-        onClick();
-      }}
-      className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-xs font-semibold text-[#171717] shadow-lg transition hover:bg-white"
-    >
-      <Icon className="h-3.5 w-3.5" />
-      {label}
-    </button>
   );
 }

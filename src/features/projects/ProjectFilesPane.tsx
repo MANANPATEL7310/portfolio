@@ -19,14 +19,25 @@ export function ProjectFilesPane({
 }: ProjectFilesPaneProps) {
   if (project.files.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center px-8 text-center text-sm text-black/45 dark:text-white/45">
-        This folder is currently empty.
+      <div className="flex h-full flex-col items-center justify-center px-8 text-center">
+        <Image
+          src={project.icon}
+          alt={`${project.name} folder`}
+          width={88}
+          height={88}
+          className="mb-5 w-20 opacity-90"
+          sizes="80px"
+        />
+        <p className="text-base font-medium text-black/58 dark:text-white/55">This folder is currently empty.</p>
+        <p className="mt-2 max-w-md text-sm leading-6 text-black/40 dark:text-white/38">
+          Project files will appear here when you add notes, previews, case studies, or links.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="grid flex-1 grid-cols-2 gap-x-16 gap-y-10 overflow-auto px-10 py-12 lg:px-20">
+    <div className="grid auto-rows-max grid-cols-[repeat(auto-fit,minmax(160px,170px))] justify-start gap-x-9 gap-y-8 overflow-auto px-8 py-8 sm:px-10 lg:px-12">
       {project.files.map((file) => (
         <button
           key={file.id}
@@ -37,7 +48,7 @@ export function ProjectFilesPane({
             }
           }}
           onDoubleClick={() => onOpenFile(file.id)}
-          className={`group flex flex-col items-center gap-3 rounded-2xl px-4 py-3 text-center text-[17px] text-[#1b1b1d] transition dark:text-white/92 ${
+          className={`group flex w-[170px] flex-col items-center gap-3 rounded-2xl px-3 py-3 text-center text-[16px] text-[#1b1b1d] transition dark:text-white/92 ${
             selectedFileId === file.id ? "bg-black/[0.04] dark:bg-white/6" : ""
           }`}
         >
@@ -53,7 +64,7 @@ export function ProjectFilesPane({
               sizes="96px"
             />
           </div>
-          <span>{file.name}</span>
+          <span className="leading-6">{file.name}</span>
         </button>
       ))}
     </div>
