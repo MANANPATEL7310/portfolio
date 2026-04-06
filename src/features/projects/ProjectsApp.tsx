@@ -12,8 +12,7 @@ import { useWindowStore } from '@/store/useWindowStore';
 import { AboutContentPane } from '@/features/about/AboutContentPane';
 import { ProjectFilesPane } from './ProjectFilesPane';
 import { ProjectsOverviewPane } from './ProjectsOverviewPane';
-
-type FinderPane = 'root' | 'project' | 'about' | 'trash';
+import { useFinderNavigation } from './useFinderNavigation';
 
 export function ProjectsApp({ windowId }: { windowId: string }) {
   const projects = usePortfolioDataStore((state) => state.projects);
@@ -22,17 +21,25 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
   const openWindow = useWindowStore((state) => state.openWindow);
   const setWindowTitle = useWindowStore((state) => state.setWindowTitle);
   const setWindowViewMode = useWindowStore((state) => state.setWindowViewMode);
-  const [activePane, setActivePane] = useState<FinderPane>('root');
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [aboutSectionId, setAboutSectionId] = useState(profile.aboutSections[0]?.id ?? null);
+  const { currentLocation, navigate, goBack, goForward, canGoBack, canGoForward } = useFinderNavigation({
+    pane: 'root',
+  });
 
   const viewMode = currentWindow?.viewMode ?? 'finder';
   const sidebarData = getSidebars();
   const finderRootTitle = sidebarData.finder.items[0]?.action?.title ?? 'Work';
+  const activePane = currentLocation.pane;
+  const effectiveSelectedProjectId = currentLocation.projectId ?? selectedProjectId;
   const selectedProject = useMemo(
-    () => (selectedProjectId ? projects.find((project) => project.id === selectedProjectId) ?? null : null),
-    [projects, selectedProjectId],
+    () => {
+      return effectiveSelectedProjectId
+        ? projects.find((project) => project.id === effectiveSelectedProjectId) ?? null
+        : null;
+    },
+    [effectiveSelectedProjectId, projects],
   );
   const showcaseProject = selectedProject ?? projects[0] ?? null;
   const activeFileId =
@@ -77,9 +84,12 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
 
   const openFinderProject = (projectId: string) => {
     setWindowViewMode(windowId, 'finder');
-    setActivePane('project');
     setSelectedProjectId(projectId);
     setSelectedFileId(null);
+    navigate({
+      pane: 'project',
+      projectId,
+    });
   };
 
   const handleOpenProjectFile = (projectId: string, fileId: string) => {
@@ -112,21 +122,21 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
       onClick: () => {
         if (item.id === 'projects') {
           setWindowViewMode(windowId, 'finder');
-          setActivePane('root');
           setSelectedProjectId(null);
           setSelectedFileId(null);
+          navigate({ pane: 'root' });
           return;
         }
 
         if (item.id === 'about') {
           setWindowViewMode(windowId, 'finder');
-          setActivePane('about');
+          navigate({ pane: 'about' });
           return;
         }
 
         if (item.id === 'trash') {
           setWindowViewMode(windowId, 'finder');
-          setActivePane('trash');
+          navigate({ pane: 'trash' });
           return;
         }
 
@@ -166,8 +176,30 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex h-16 items-center justify-between border-b border-black/6 px-6 dark:border-white/10">
           <div className="flex items-center gap-4 text-black/35 dark:text-white/45">
-            <ChevronLeft className="h-6 w-6" />
-            <ChevronRight className="h-6 w-6" />
+            <button
+              onClick={() => {
+                if (viewMode === 'finder') {
+                  goBack();
+                }
+              }}
+              disabled={viewMode !== 'finder' || !canGoBack}
+              className="rounded-md p-1 transition hover:bg-black/[0.04] disabled:pointer-events-none disabled:opacity-35 dark:hover:bg-white/6"
+              aria-label="Go back"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button
+              onClick={() => {
+                if (viewMode === 'finder') {
+                  goForward();
+                }
+              }}
+              disabled={viewMode !== 'finder' || !canGoForward}
+              className="rounded-md p-1 transition hover:bg-black/[0.04] disabled:pointer-events-none disabled:opacity-35 dark:hover:bg-white/6"
+              aria-label="Go forward"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
             <span className="ml-2 text-[22px] font-semibold text-[#2c2c2f] dark:text-white">
               {headerTitle}
             </span>
@@ -288,9 +320,8 @@ export function ProjectsApp({ windowId }: { windowId: string }) {
           ) : (
             <ProjectsOverviewPane
               projects={projects}
-              selectedProjectId={selectedProjectId}
+              selectedProjectId={effectiveSelectedProjectId}
               onSelectProject={(projectId) => {
-                setActivePane('root');
                 setSelectedProjectId(projectId);
                 setSelectedFileId(null);
               }}
