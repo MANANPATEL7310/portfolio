@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from "next/image";
 
+import { getDesktopGridPosition, getDesktopViewport } from '@/lib/desktopGrid';
 import { getWallpaper } from '@/lib/dataService';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
@@ -17,6 +18,7 @@ import { WindowManager } from '../window/WindowManager';
 
 export function Desktop() {
   const constraintsRef = useRef<HTMLDivElement>(null);
+  const [viewport, setViewport] = useState(() => getDesktopViewport());
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
   const currentWallpaperId = useSystemStore((state) => state.wallpaper);
   const currentWallpaper = getWallpaper(currentWallpaperId);
@@ -31,17 +33,20 @@ export function Desktop() {
   const clampWindowsToViewport = useWindowStore((state) => state.clampWindowsToViewport);
 
   const desktopItems = useMemo(
-    () => [
-      ...desktopSettings,
-      ...projects.map((project) => ({
-        id: `project:${project.id}`,
-        label: project.desktopLabel,
-        title: project.titleBar,
-        icon: project.icon,
-        desktopPosition: project.desktopPosition,
+    () =>
+      [
+        ...desktopSettings,
+        ...projects.map((project) => ({
+          id: `project:${project.id}`,
+          label: project.desktopLabel,
+          title: project.titleBar,
+          icon: project.icon,
+        })),
+      ].map((item, index) => ({
+        ...item,
+        desktopPosition: getDesktopGridPosition(index, viewport),
       })),
-    ],
-    [desktopSettings, projects],
+    [desktopSettings, projects, viewport],
   );
 
   useEffect(() => {
@@ -52,6 +57,7 @@ export function Desktop() {
     clampWindowsToViewport();
 
     const handleResize = () => {
+      setViewport(getDesktopViewport());
       clampWindowsToViewport();
     };
 

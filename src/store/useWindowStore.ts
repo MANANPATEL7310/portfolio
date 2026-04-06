@@ -13,6 +13,7 @@ export const MIN_WINDOW_HEIGHT = 300;
 const DEFAULT_WINDOW_WIDTH = 600;
 const DEFAULT_WINDOW_HEIGHT = 420;
 const WINDOW_STORAGE_KEY = "macos-portfolio.windows";
+const DESKTOP_LAYOUT_VERSION = 2;
 
 export interface WindowPosition {
   x: number;
@@ -49,6 +50,7 @@ interface WindowStore {
   windows: Record<string, WindowState>;
   activeWindowId: string | null;
   desktopIconPositions: Record<string, WindowPosition>;
+  desktopLayoutVersion: number;
   nextZIndex: number;
   hasHydrated: boolean;
   openWindow: (id: string, title?: string, options?: OpenWindowOptions) => void;
@@ -62,6 +64,7 @@ interface WindowStore {
   updateWindowSize: (id: string, size: WindowSize) => void;
   clampWindowsToViewport: () => void;
   setDesktopIconPosition: (id: string, position: WindowPosition) => void;
+  resetDesktopIconPositions: () => void;
   setHasHydrated: (value: boolean) => void;
 }
 
@@ -152,6 +155,7 @@ export const useWindowStore = create<WindowStore>()(
       windows: {},
       activeWindowId: null,
       desktopIconPositions: {},
+      desktopLayoutVersion: DESKTOP_LAYOUT_VERSION,
       nextZIndex: 100,
       hasHydrated: false,
 
@@ -464,6 +468,12 @@ export const useWindowStore = create<WindowStore>()(
           },
         })),
 
+      resetDesktopIconPositions: () =>
+        set({
+          desktopIconPositions: {},
+          desktopLayoutVersion: DESKTOP_LAYOUT_VERSION,
+        }),
+
       setHasHydrated: (value) => set({ hasHydrated: value }),
     }),
     {
@@ -474,6 +484,7 @@ export const useWindowStore = create<WindowStore>()(
         windows: state.windows,
         activeWindowId: state.activeWindowId,
         desktopIconPositions: state.desktopIconPositions,
+        desktopLayoutVersion: state.desktopLayoutVersion,
         nextZIndex: state.nextZIndex,
       }),
       onRehydrateStorage: () => (state) => {
@@ -482,6 +493,9 @@ export const useWindowStore = create<WindowStore>()(
         }
 
         window.requestAnimationFrame(() => {
+          if (state.desktopLayoutVersion !== DESKTOP_LAYOUT_VERSION) {
+            state.resetDesktopIconPositions();
+          }
           state.setHasHydrated(true);
           state.clampWindowsToViewport();
         });

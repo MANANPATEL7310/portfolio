@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Image, { type StaticImageData } from "next/image";
 import { useEffect, useState } from 'react';
 
+import { snapDesktopPosition } from '@/lib/desktopGrid';
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 import { useWindowStore } from '@/store/useWindowStore';
 
@@ -30,30 +31,31 @@ export function DesktopIcon({
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
   const selectedDesktopItemId = useSystemStore((state) => state.selectedDesktopItemId);
   const selectDesktopItem = useSystemStore((state) => state.selectDesktopItem);
+  const isFolderIcon = typeof icon === 'string' && icon.includes('folder');
   
-  // Responsive sizing based on screen size
-  const [iconSize, setIconSize] = useState(80);
-  const [containerWidth, setContainerWidth] = useState(176);
-  const [textSize, setTextSize] = useState('18px');
+  const [iconSize, setIconSize] = useState(76);
+  const [containerWidth, setContainerWidth] = useState(148);
+  const [textSize, setTextSize] = useState('15px');
+  const [imageSize, setImageSize] = useState(92);
   
   useEffect(() => {
     const updateSizes = () => {
       const screenWidth = window.innerWidth;
       if (screenWidth < 640) {
-        // Mobile
-        setIconSize(60);
-        setContainerWidth(140);
-        setTextSize('14px');
+        setIconSize(58);
+        setContainerWidth(118);
+        setTextSize('13px');
+        setImageSize(74);
       } else if (screenWidth < 1024) {
-        // Tablet
-        setIconSize(70);
-        setContainerWidth(160);
-        setTextSize('16px');
+        setIconSize(68);
+        setContainerWidth(132);
+        setTextSize('14px');
+        setImageSize(82);
       } else {
-        // Desktop
-        setIconSize(80);
-        setContainerWidth(176);
-        setTextSize('18px');
+        setIconSize(76);
+        setContainerWidth(148);
+        setTextSize('15px');
+        setImageSize(92);
       }
     };
     
@@ -69,17 +71,20 @@ export function DesktopIcon({
     }
 
     const rect = target.getBoundingClientRect();
-    setDesktopIconPosition(id, {
+    const snappedPosition = snapDesktopPosition({
       x: Math.round(rect.left),
       y: Math.round(rect.top),
+    });
+
+    setDesktopIconPosition(id, {
+      x: snappedPosition.x,
+      y: snappedPosition.y,
     });
   };
 
   const positionStyle = savedPosition
     ? { left: savedPosition.x, top: savedPosition.y }
-    : desktopPosition.x < 0
-      ? { right: Math.abs(desktopPosition.x), top: desktopPosition.y }
-      : { left: desktopPosition.x, top: desktopPosition.y };
+    : { left: desktopPosition.x, top: desktopPosition.y };
 
   return (
     <motion.button
@@ -98,7 +103,7 @@ export function DesktopIcon({
       }}
       onDragEnd={handleDragEnd}
       whileDrag={{ scale: 1.05, zIndex: 200 }}
-      className={`absolute z-[8] flex cursor-default flex-col items-center gap-3 rounded-2xl px-3 py-2 text-center select-none transition ${
+      className={`absolute z-[8] flex cursor-default flex-col items-center gap-1.5 rounded-[18px] px-2 py-1.5 text-center select-none transition ${
         selectedDesktopItemId === id ? "bg-white/16 ring-1 ring-white/28 backdrop-blur-md" : ""
       }`}
       style={{
@@ -109,22 +114,34 @@ export function DesktopIcon({
       <motion.div
         whileHover={{ scale: 1.08 }}
         transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-        className="group-hover:drop-shadow-[0_0_18px_rgba(255,255,255,0.22)] transition-all"
+        className="transition-all group-hover:drop-shadow-[0_0_18px_rgba(255,255,255,0.18)]"
       >
-        <Image src={icon} alt={label} width={iconSize} height={iconSize} className="drop-shadow-2xl" sizes={`${iconSize}px`} style={{ width: `${iconSize * 0.8}px`, height: `${iconSize * 0.8}px` }} />
+        <Image
+          src={icon}
+          alt={label}
+          width={isFolderIcon ? imageSize : iconSize}
+          height={iconSize}
+          className="object-contain drop-shadow-[0_12px_22px_rgba(7,20,56,0.24)]"
+          sizes={`${isFolderIcon ? imageSize : iconSize}px`}
+          style={{
+            width: `${isFolderIcon ? imageSize : iconSize}px`,
+            height: `${iconSize}px`,
+            imageRendering: 'auto',
+          }}
+        />
       </motion.div>
 
-      <div className="px-2 py-0.5 text-center">
+      <div className="px-1 text-center">
         <span
-          className={`font-medium leading-[1.12] drop-shadow-md ${
+          className={`font-medium leading-[1.22] drop-shadow-md ${
             theme === 'dark' ? 'text-white' : 'text-slate-900'
           }`}
           style={{
             fontSize: textSize,
             textShadow:
               theme === 'dark'
-                ? '0 2px 6px rgba(0,0,0,0.8)'
-                : '0 2px 6px rgba(255,255,255,0.35)',
+                ? '0 2px 10px rgba(0,0,0,0.68)'
+                : '0 2px 6px rgba(255,255,255,0.3)',
           }}
         >
           {label}
