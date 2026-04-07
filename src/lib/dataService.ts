@@ -230,6 +230,7 @@ export interface BrowserSettings {
   homeTitle: string;
   addressPlaceholder: string;
   profile: "safari";
+  externalStartUrl: string;
   bookmarks: BrowserBookmark[];
 }
 

@@ -14,13 +14,14 @@
     { "id": "wave", "label": "Wave", "type": "static", "src": "/wallpapers/wave.png", "posterSrc": "/wallpapers/wave.png" },
     { "id": "aurora", "label": "Aurora", "type": "static", "src": "/wallpapers/aurora.png", "posterSrc": "/wallpapers/aurora.png" },
     { "id": "ocean", "label": "Ocean", "type": "static", "src": "/wallpapers/ocean.png", "posterSrc": "/wallpapers/ocean.png" },
-    { "id": "aurora-drift", "label": "Aurora Drift", "type": "animated", "posterSrc": "/wallpapers/aurora.png", "renderer": "aurora-drift" },
-    { "id": "glass-wave", "label": "Glass Wave", "type": "animated", "posterSrc": "/wallpapers/wave.png", "renderer": "glass-wave" }
+    { "id": "aurora-drift", "label": "Aurora Depth", "type": "animated", "posterSrc": "/wallpapers/aurora.png", "renderer": "aurora-drift" },
+    { "id": "glass-wave", "label": "Glass Horizon", "type": "animated", "posterSrc": "/wallpapers/wave.png", "renderer": "glass-wave" }
   ],
   "browser": {
     "homeTitle": "Start Page",
     "addressPlaceholder": "Search or enter website name",
     "profile": "safari",
+    "externalStartUrl": "about:blank",
     "bookmarks": [
       {
         "id": "projects-showcase",

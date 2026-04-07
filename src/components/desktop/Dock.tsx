@@ -3,29 +3,23 @@
 import { useMemo, useState } from 'react';
 
 import { getProjectById, getProjectFile, getTrashItem, parseWindowId } from '@/lib/dataService';
+import { launchExternalBrowser } from '@/lib/openInBrowser';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 import { useWindowStore } from '@/store/useWindowStore';
 import { DockItem } from '@/components/ui/DockItem';
 
 export function Dock() {
-  const dockApps = usePortfolioDataStore((state) => state.settings.dockApps);
+  const settings = usePortfolioDataStore((state) => state.settings);
+  const dockApps = settings.dockApps;
   const projects = usePortfolioDataStore((state) => state.projects);
   const trash = usePortfolioDataStore((state) => state.trash);
   const openWindow = useWindowStore((state) => state.openWindow);
-  const openBrowserWindow = useWindowStore((state) => state.openBrowserWindow);
   const windows = useWindowStore((state) => state.windows);
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
   const openWindows = Object.values(windows);
   const hasMaximizedWindow = openWindows.some((windowState) => windowState.isMaximized && !windowState.isMinimized);
   const [isDockRevealed, setIsDockRevealed] = useState(false);
-  const browserWindows = useMemo(
-    () =>
-      openWindows
-        .filter((windowState) => windowState.id.startsWith('browser:') || windowState.id === 'blog')
-        .sort((left, right) => right.zIndex - left.zIndex),
-    [openWindows],
-  );
   const pinnedDockIds = useMemo(() => new Set(dockApps.map((app) => app.id)), [dockApps]);
   const primaryDockApps = dockApps.filter((app) => app.id !== 'trash');
   const trashDockApp = dockApps.find((app) => app.id === 'trash');
@@ -45,15 +39,6 @@ export function Dock() {
           label: project.folderLabel,
           title: windowState.title,
           icon: project.icon,
-        }];
-      }
-
-      if (parsed.kind === 'browser' || windowState.id === 'blog') {
-        return [{
-          id: windowState.id,
-          label: windowState.title,
-          title: windowState.title,
-          icon: '/portfolio/safari.png',
         }];
       }
 
@@ -83,6 +68,10 @@ export function Dock() {
           title: windowState.title,
           icon: item.type === 'image' && item.src ? item.src : item.icon,
         }];
+      }
+
+      if (parsed.kind !== 'app') {
+        return [];
       }
 
       if (!pinnedDockIds.has(parsed.appId)) {
@@ -147,12 +136,8 @@ export function Dock() {
                 windowState.id === 'resume'
             );
 
-          const isBrowserFamily =
-            app.id === 'browser' &&
-            browserWindows.length > 0;
-
           const isOpen =
-            isFinderFamily || isBrowserFamily || openWindows.some((windowState) => windowState.id === app.id);
+            isFinderFamily || openWindows.some((windowState) => windowState.id === app.id);
 
           return (
             <DockItem
@@ -162,13 +147,7 @@ export function Dock() {
               isOpen={isOpen}
               onClick={() => {
                 if (app.id === 'browser') {
-                  const latestBrowserWindow = browserWindows[0];
-                  if (latestBrowserWindow) {
-                    openWindow(latestBrowserWindow.id, latestBrowserWindow.title);
-                    return;
-                  }
-
-                  openBrowserWindow();
+                  launchExternalBrowser(settings.browser.externalStartUrl);
                   return;
                 }
 

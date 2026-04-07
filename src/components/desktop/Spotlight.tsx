@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search } from "lucide-react";
 
+import { launchExternalBrowser } from '@/lib/openInBrowser';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { useSystemStore } from '@/store/useSystemStore';
 import { useWindowStore } from '@/store/useWindowStore';
@@ -27,8 +28,9 @@ export function Spotlight() {
   const { isSpotlightOpen, closeSpotlight } = useSystemStore();
   const openWindow = useWindowStore((state) => state.openWindow);
   const projects = usePortfolioDataStore((state) => state.projects);
-  const menuItems = usePortfolioDataStore((state) => state.settings.menuItems);
-  const dockApps = usePortfolioDataStore((state) => state.settings.dockApps);
+  const settings = usePortfolioDataStore((state) => state.settings);
+  const menuItems = settings.menuItems;
+  const dockApps = settings.dockApps;
 
   const spotlightItems = useMemo(() => {
     const baseItems = [...menuItems, ...dockApps.filter((item) => item.id !== "trash")].reduce<
@@ -84,6 +86,12 @@ export function Spotlight() {
   const openSelected = (index: number) => {
     const target = results[index];
     if (!target) {
+      return;
+    }
+
+    if (target.id === 'browser') {
+      launchExternalBrowser(settings.browser.externalStartUrl);
+      closeSpotlight();
       return;
     }
 

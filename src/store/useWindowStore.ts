@@ -806,9 +806,9 @@ export const useWindowStore = create<WindowStore>()(
           if (state.desktopLayoutVersion !== DESKTOP_LAYOUT_VERSION) {
             state.resetDesktopIconPositions();
           }
-          if (state.windows.blog && !state.browserSessions.blog) {
-            state.ensureBrowserSession("blog", BROWSER_HOME_URL, getDefaultWindowTitle("blog"));
-          }
+          Object.keys(state.windows)
+            .filter((windowId) => windowId === "blog" || windowId.startsWith("browser:"))
+            .forEach((windowId) => state.closeWindow(windowId));
           state.setHasHydrated(true);
           state.clampWindowsToViewport();
         });
