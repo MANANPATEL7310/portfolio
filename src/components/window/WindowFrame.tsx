@@ -112,14 +112,14 @@ export const WindowFrame = memo(function WindowFrame({
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{
         opacity: isMinimized ? 0 : 1,
-        scale: isMinimized ? 0.82 : 1,
-        y: isMinimized ? 120 : 0,
-        filter: isMinimized ? 'blur(6px)' : 'blur(0px)',
+        scale: isMinimized ? 0.1 : 1,
+        y: isMinimized ? 300 : 0,
+        filter: isMinimized ? 'blur(8px)' : 'blur(0px)',
       }}
       transition={{
-        opacity: { duration: isMinimized ? 0.18 : 0.22, ease: 'easeOut' },
-        scale: { type: 'spring', stiffness: 250, damping: 28 },
-        y: { type: 'spring', stiffness: 230, damping: 28 },
+        opacity: { duration: isMinimized ? 0.2 : 0.3, ease: 'easeOut', delay: isMinimized ? 0.1 : 0 },
+        scale: { type: 'spring', stiffness: 220, damping: 28 },
+        y: { type: 'spring', stiffness: 220, damping: 28 },
         filter: { duration: 0.2, ease: 'easeOut' },
       }}
       exit={{ opacity: 0, scale: 0.85, y: 28 }}

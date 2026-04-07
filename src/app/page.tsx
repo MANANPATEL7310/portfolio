@@ -12,7 +12,7 @@ export default function Home() {
     <>
       {isBooting && <BootScreen onComplete={() => setIsBooting(false)} />}
       <div className="hidden lg:block">
-        <Desktop />
+        <Desktop enableHeroIntro={!isBooting} />
       </div>
       <div className="lg:hidden">
         <MobilePortfolio />

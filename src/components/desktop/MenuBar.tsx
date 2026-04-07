@@ -110,7 +110,7 @@ export function MenuBar() {
             title="Appearance"
             whileHover={{ scale: 1.15 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-          >
+        >
             <SlidersHorizontal className="h-4 w-4" />
           </motion.button>
           <ThemeDropdown isOpen={isThemeOpen} onClose={() => setIsThemeOpen(false)} />

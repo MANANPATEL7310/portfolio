@@ -15,8 +15,10 @@ import { Spotlight } from './Spotlight';
 import { WelcomeText } from './WelcomeText';
 import { WallpaperRenderer } from './WallpaperRenderer';
 import { WindowManager } from '../window/WindowManager';
+import { ContextMenu } from './ContextMenu';
+import { useContextMenuStore } from '@/store/useContextMenuStore';
 
-export function Desktop() {
+export function Desktop({ enableHeroIntro = false }: { enableHeroIntro?: boolean }) {
   const constraintsRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState(() => getDesktopViewport());
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
@@ -31,6 +33,17 @@ export function Desktop() {
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
   const closeWindow = useWindowStore((state) => state.closeWindow);
   const clampWindowsToViewport = useWindowStore((state) => state.clampWindowsToViewport);
+  const openContextMenu = useContextMenuStore((state) => state.open);
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    openContextMenu({ x: e.clientX, y: e.clientY }, [
+      { id: "change-wallpaper", label: "Change Wallpaper" },
+      { id: "new-folder", label: "New Folder", disabled: true },
+      { id: "div-1", label: "", isDivider: true },
+      { id: "get-info", label: "Get Info", disabled: true },
+    ]);
+  };
 
   const desktopItems = useMemo(
     () =>
@@ -99,6 +112,7 @@ export function Desktop() {
     <div
       ref={constraintsRef}
       onClick={() => clearDesktopSelection()}
+      onContextMenu={handleContextMenu}
       className="selection-glow relative h-screen w-screen overflow-hidden bg-slate-950 text-foreground"
     >
       <WallpaperRenderer wallpaper={currentWallpaper} theme={theme} />
@@ -106,7 +120,7 @@ export function Desktop() {
       <div className={`pointer-events-none absolute inset-0 z-[2] ${theme === "light" ? "bg-white/24" : "bg-slate-950/12"}`} />
 
       <MenuBar />
-      <WelcomeText />
+      <WelcomeText enableAutoIntro={enableHeroIntro} theme={theme} />
 
       {desktopItems.map((shortcut) => (
         <DesktopIcon
@@ -119,6 +133,7 @@ export function Desktop() {
       <WindowManager constraintsRef={constraintsRef} />
       <Spotlight />
       <Dock />
+      <ContextMenu />
     </div>
   );
 }

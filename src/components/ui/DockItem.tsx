@@ -8,11 +8,12 @@ interface DockItemProps {
   icon: string;
   isOpen?: boolean;
   onClick?: () => void;
+  onContextMenu?: (e: React.MouseEvent) => void;
 }
 
-export function DockItem({ label, icon, isOpen = false, onClick }: DockItemProps) {
+export function DockItem({ label, icon, isOpen = false, onClick, onContextMenu }: DockItemProps) {
   return (
-    <div className="group relative flex cursor-pointer flex-col items-center px-2">
+    <div className="group relative flex cursor-pointer flex-col items-center px-2" onContextMenu={onContextMenu}>
       <div className="pointer-events-none absolute -top-14 mb-2 rounded-xl bg-black/80 px-3 py-1.5 text-xs text-white opacity-0 shadow-xl transition duration-200 group-hover:opacity-100">
         {label}
       </div>

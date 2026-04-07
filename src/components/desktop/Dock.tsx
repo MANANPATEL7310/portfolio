@@ -7,6 +7,7 @@ import { launchExternalBrowser } from '@/lib/openInBrowser';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
 import { getResolvedTheme, useSystemStore } from '@/store/useSystemStore';
 import { useWindowStore } from '@/store/useWindowStore';
+import { useContextMenuStore } from '@/store/useContextMenuStore';
 import { DockItem } from '@/components/ui/DockItem';
 
 export function Dock() {
@@ -15,8 +16,24 @@ export function Dock() {
   const projects = usePortfolioDataStore((state) => state.projects);
   const trash = usePortfolioDataStore((state) => state.trash);
   const openWindow = useWindowStore((state) => state.openWindow);
+  const closeWindow = useWindowStore((state) => state.closeWindow);
+  const toggleMinimizeWindow = useWindowStore((state) => state.toggleMinimizeWindow);
   const windows = useWindowStore((state) => state.windows);
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
+  const openContextMenu = useContextMenuStore((state) => state.open);
+
+  const handleDockContextMenu = (e: React.MouseEvent, appId: string, isOpen: boolean) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    openContextMenu({ x: e.clientX, y: e.clientY - 120 }, [
+      { id: `open-${appId}`, label: "Open", action: () => openWindow(appId) },
+      { id: `minimize-${appId}`, label: "Toggle Minimize", disabled: !isOpen, action: () => toggleMinimizeWindow(appId) },
+      { id: `div-${appId}`, label: "", isDivider: true },
+      { id: `quit-${appId}`, label: "Quit", disabled: !isOpen, action: () => closeWindow(appId) },
+    ]);
+  };
+
   const openWindows = Object.values(windows);
   const hasMaximizedWindow = openWindows.some((windowState) => windowState.isMaximized && !windowState.isMinimized);
   const [isDockRevealed, setIsDockRevealed] = useState(false);
@@ -153,6 +170,7 @@ export function Dock() {
 
                 openWindow(app.id, app.title, { viewMode: app.openMode });
               }}
+              onContextMenu={(e) => handleDockContextMenu(e, app.id, isOpen)}
             />
           );
         })}
@@ -168,6 +186,7 @@ export function Dock() {
             icon={item.icon}
             isOpen
             onClick={() => openWindow(item.id, item.title)}
+            onContextMenu={(e) => handleDockContextMenu(e, item.id, true)}
           />
         ))}
 
@@ -194,6 +213,11 @@ export function Dock() {
               onClick={() => {
                 openWindow(trashDockApp.id, trashDockApp.title, { viewMode: trashDockApp.openMode });
               }}
+              onContextMenu={(e) => handleDockContextMenu(e, trashDockApp.id, openWindows.some(
+                (windowState) =>
+                  windowState.id === 'trash' ||
+                  windowState.id.startsWith('trash-file:'),
+              ))}
             />
           </>
         ) : null}
