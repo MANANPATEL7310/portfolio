@@ -146,15 +146,25 @@ export const WindowFrame = memo(function WindowFrame({
         transformOrigin: 'center bottom',
         willChange: 'transform, opacity',
       }}
+      onClick={(event) => event.stopPropagation()}
       className={twMerge(
         clsx(
-          "window-surface desktop-shadow absolute flex flex-col overflow-hidden rounded-[1.55rem] pointer-events-auto transition-[border-radius,width,height] duration-300 ease-out min-w-[400px] min-h-[300px]",
-          isActive ? "opacity-100" : "opacity-95 saturate-[0.82]",
+          "window-surface absolute flex flex-col overflow-hidden rounded-[1.55rem] pointer-events-auto transition-[border-radius,width,height,box-shadow,filter,opacity,transform] duration-300 ease-out min-w-[400px] min-h-[300px]",
+          isActive
+            ? "desktop-shadow opacity-100 saturate-100 brightness-100"
+            : "shadow-[0_18px_44px_rgba(3,8,20,0.18)] opacity-[0.94] saturate-[0.82] brightness-[0.98] scale-[0.996]",
           isMaximized ? "rounded-[1.2rem]" : "",
         ),
       )}
     >
-      <div className="window-toolbar flex h-12 w-full items-center justify-center border-b border-white/10 px-4">
+      <div
+        className={clsx(
+          "window-toolbar flex h-12 w-full items-center justify-center border-b px-4 transition-colors duration-200",
+          isActive
+            ? "border-white/10"
+            : "border-black/6 dark:border-white/6",
+        )}
+      >
         <div className="absolute left-4 z-20">
           <TrafficLights
             onClose={() => closeWindow(id)}
@@ -172,7 +182,12 @@ export const WindowFrame = memo(function WindowFrame({
           className="absolute inset-x-0 top-0 h-12 cursor-grab active:cursor-grabbing"
         />
         {showTitle ? (
-          <span className="pointer-events-none text-[15px] font-semibold text-slate-700 dark:text-white/78">
+          <span
+            className={clsx(
+              "pointer-events-none text-[15px] font-semibold transition-colors duration-200",
+              isActive ? "text-slate-700 dark:text-white/78" : "text-slate-500 dark:text-white/48",
+            )}
+          >
             {title}
           </span>
         ) : null}
@@ -182,6 +197,7 @@ export const WindowFrame = memo(function WindowFrame({
         className={twMerge(
           clsx(
             "min-h-0 min-w-0 flex-1 overflow-hidden rounded-b-[1.4rem] bg-[rgba(15,15,18,0.18)] transition-opacity duration-200",
+            !isActive && "backdrop-saturate-[0.9]",
             isMinimized ? "opacity-0" : "opacity-100",
             contentClassName,
           ),

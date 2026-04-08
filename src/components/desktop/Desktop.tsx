@@ -32,8 +32,10 @@ export function Desktop({ enableHeroIntro = false }: { enableHeroIntro?: boolean
   const desktopSettings = usePortfolioDataStore((state) => state.settings.desktopItems);
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
   const closeWindow = useWindowStore((state) => state.closeWindow);
+  const clearActiveWindow = useWindowStore((state) => state.clearActiveWindow);
   const clampWindowsToViewport = useWindowStore((state) => state.clampWindowsToViewport);
   const openContextMenu = useContextMenuStore((state) => state.open);
+  const closeContextMenu = useContextMenuStore((state) => state.close);
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -108,10 +110,21 @@ export function Desktop({ enableHeroIntro = false }: { enableHeroIntro?: boolean
     return () => window.removeEventListener('keydown', handleEscape);
   }, [activeWindowId, clearDesktopSelection, closeSpotlight, closeWindow, isSpotlightOpen]);
 
+  const handleDesktopPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    clearDesktopSelection();
+    closeSpotlight();
+    closeContextMenu();
+    clearActiveWindow();
+  };
+
   return (
     <div
       ref={constraintsRef}
-      onClick={() => clearDesktopSelection()}
+      onPointerDown={handleDesktopPointerDown}
       onContextMenu={handleContextMenu}
       className="selection-glow relative h-screen w-screen overflow-hidden bg-slate-950 text-foreground"
     >

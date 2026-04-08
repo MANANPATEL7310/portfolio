@@ -88,6 +88,7 @@ interface WindowStore {
   setBrowserStatus: (windowId: string, status: BrowserStatus) => void;
   setBrowserTitle: (windowId: string, title: string) => void;
   closeWindow: (id: string) => void;
+  clearActiveWindow: () => void;
   toggleMinimizeWindow: (id: string) => void;
   toggleMaximizeWindow: (id: string) => void;
   bringToFront: (id: string) => void;
@@ -511,6 +512,17 @@ export const useWindowStore = create<WindowStore>()(
             windows: nextWindows,
             browserSessions: nextBrowserSessions,
             activeWindowId: getTopWindowId(nextWindows),
+          };
+        }),
+
+      clearActiveWindow: () =>
+        set((state) => {
+          if (state.activeWindowId === null) {
+            return state;
+          }
+
+          return {
+            activeWindowId: null,
           };
         }),
 
