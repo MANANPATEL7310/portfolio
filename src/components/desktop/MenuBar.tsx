@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from "next/image";
 import { motion } from 'framer-motion';
 import { CircleUserRound, Search, Settings, SlidersHorizontal, Wifi } from "lucide-react";
@@ -13,6 +13,7 @@ import { ThemeDropdown } from './ThemeDropdown';
 export function MenuBar() {
   const [time, setTime] = useState('');
   const [isThemeOpen, setIsThemeOpen] = useState(false);
+  const themeMenuRef = useRef<HTMLDivElement>(null);
   const profile = usePortfolioDataStore((state) => state.profile);
   const menuItems = usePortfolioDataStore((state) => state.settings.menuItems);
   const openWindow = useWindowStore((state) => state.openWindow);
@@ -37,6 +38,32 @@ export function MenuBar() {
     const id = setInterval(update, 1000);
     return () => clearInterval(id);
   }, []);
+
+  useEffect(() => {
+    if (!isThemeOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (themeMenuRef.current && !themeMenuRef.current.contains(event.target as Node)) {
+        setIsThemeOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsThemeOpen(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isThemeOpen]);
 
   return (
     <div className={`fixed inset-x-0 top-0 z-[9999] flex h-12 items-center justify-between px-6 text-sm font-medium backdrop-blur-2xl ${theme === "light" ? "border-b border-black/8 text-[#131313]" : "border-b border-white/10 text-white"}`}>
@@ -103,14 +130,14 @@ export function MenuBar() {
         >
           <Settings className="h-4 w-4" />
         </motion.button>
-        <div className="relative">
+        <div ref={themeMenuRef} className="relative">
           <motion.button
             onClick={() => setIsThemeOpen((value) => !value)}
             className={`relative ${theme === "light" ? "hover:text-black" : "hover:text-white"}`}
             title="Appearance"
             whileHover={{ scale: 1.15 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-        >
+          >
             <SlidersHorizontal className="h-4 w-4" />
           </motion.button>
           <ThemeDropdown isOpen={isThemeOpen} onClose={() => setIsThemeOpen(false)} />
