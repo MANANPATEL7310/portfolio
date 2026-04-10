@@ -57,6 +57,7 @@
     "projects": { "width": 1280, "height": 760, "x": 60, "y": 90 },
     "browser": { "width": 1180, "height": 760, "x": 110, "y": 90 },
     "resume": { "width": 540, "height": 740, "x": 940, "y": 70 },
+    "education": { "width": 760, "height": 520, "x": 560, "y": 180 },
     "photos": { "width": 1110, "height": 620, "x": 250, "y": 150 },
     "about": { "width": 800, "height": 470, "x": 420, "y": 240 },
     "contact": { "width": 740, "height": 420, "x": 610, "y": 270 },
@@ -80,7 +81,7 @@
     { "id": "about", "label": "About Me", "title": "About Me", "icon": "/portfolio/finder.png" },
     { "id": "contact", "label": "Contact Me", "title": "Contact Me", "icon": "/portfolio/contact.png" },
     { "id": "photos", "label": "Activities", "title": "Activities", "icon": "/portfolio/photos.png" },
-    { "id": "resume", "label": "Education", "title": "Education", "icon": "/assets/Files/Text.png", "iconSize": "compact" }
+    { "id": "education", "label": "Education", "title": "Education", "icon": "/assets/Files/Text.png", "iconSize": "compact" }
   ],
   "desktopItems": [
     {

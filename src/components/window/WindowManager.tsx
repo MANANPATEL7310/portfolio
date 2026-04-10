@@ -43,6 +43,9 @@ const TrashNoteApp = dynamic(() => import("@/features/trash/TrashNoteApp").then(
 const ResumeApp = dynamic(() => import("@/features/resume/ResumeApp").then((mod) => mod.ResumeApp), {
   loading: () => <WindowFallback />,
 });
+const EducationApp = dynamic(() => import("@/features/education/EducationApp").then((mod) => mod.EducationApp), {
+  loading: () => <WindowFallback />,
+});
 const TestimonialsApp = dynamic(() => import("@/features/photos/TestimonialsApp").then((mod) => mod.TestimonialsApp), {
   loading: () => <WindowFallback />,
 });
@@ -97,6 +100,8 @@ function renderWindowContent(windowId: string) {
       return <TrashApp />;
     case "resume":
       return <ResumeApp />;
+    case "education":
+      return <EducationApp />;
     case "photos":
       return <TestimonialsApp />;
     case "about":

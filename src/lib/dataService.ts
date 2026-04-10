@@ -14,6 +14,7 @@ export type WindowId =
   | "projects"
   | "browser"
   | "resume"
+  | "education"
   | "photos"
   | "about"
   | "contact"
