@@ -75,12 +75,12 @@
     { "id": "resume", "label": "Resume", "title": "Resume.pdf" }
   ],
   "dockApps": [
-    { "id": "projects", "label": "Finder", "title": "Work", "icon": "/portfolio/finder.png", "openMode": "finder" },
-    { "id": "browser", "label": "Safari", "title": "Start Page", "icon": "/portfolio/safari.png" },
-    { "id": "photos", "label": "Photos", "title": "Photos", "icon": "/portfolio/photos.png" },
-    { "id": "about", "label": "About", "title": "About Me", "icon": "/portfolio/contact.png" },
-    { "id": "terminal", "label": "Terminal", "title": "Tech Stack", "icon": "/portfolio/terminal.png" },
-    { "id": "trash", "label": "Trash", "title": "Scrapped Ideas", "icon": "/portfolio/trash.png" }
+    { "id": "projects", "label": "Projects", "title": "Projects", "icon": "/portfolio/safari.png", "openMode": "finder" },
+    { "id": "terminal", "label": "Skills", "title": "Skills", "icon": "/portfolio/terminal.png" },
+    { "id": "about", "label": "About Me", "title": "About Me", "icon": "/portfolio/finder.png" },
+    { "id": "contact", "label": "Contact Me", "title": "Contact Me", "icon": "/portfolio/contact.png" },
+    { "id": "photos", "label": "Activities", "title": "Activities", "icon": "/portfolio/photos.png" },
+    { "id": "resume", "label": "Education", "title": "Education", "icon": "/assets/Files/Text.png", "iconSize": "compact" }
   ],
   "desktopItems": [
     {

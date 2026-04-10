@@ -161,6 +161,7 @@ export function Dock() {
               key={`${app.id}-${app.label}`}
               label={app.label}
               icon={app.icon}
+              iconSize={app.iconSize}
               isOpen={isOpen}
               onClick={() => {
                 if (app.id === 'browser') {

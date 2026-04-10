@@ -184,6 +184,7 @@ export interface DockAppSetting {
   label: string;
   title?: string;
   icon: string;
+  iconSize?: "standard" | "compact";
   openMode?: WindowViewMode;
 }
 
