@@ -1,6 +1,6 @@
 'use client';
 
-import { BROWSER_HOME_URL, isInternalBrowserUrl, isNativeExternalProtocol, normalizeBrowserUrl } from './browser';
+import { isInternalBrowserUrl, isNativeExternalProtocol, normalizeBrowserUrl } from './browser';
 
 export function launchExternalBrowser(startUrl = 'about:blank') {
   if (typeof window === 'undefined') {
@@ -16,12 +16,12 @@ export function openInBrowser(url: string, options?: { title?: string }) {
 
   if (typeof window !== 'undefined') {
     if (isNativeExternalProtocol(normalizedUrl)) {
-      window.location.href = normalizedUrl;
+      window.open(normalizedUrl, '_blank', 'noopener,noreferrer');
       return;
     }
 
     if (isInternalBrowserUrl(normalizedUrl)) {
-      launchExternalBrowser(normalizedUrl === BROWSER_HOME_URL ? 'about:blank' : '/');
+      launchExternalBrowser('/');
       return;
     }
 

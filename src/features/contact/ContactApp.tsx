@@ -61,21 +61,12 @@ export function ContactApp() {
 
           <div className="mt-10 grid gap-4 md:grid-cols-2">
             {actions.map((action) => {
-              const external = action.href.startsWith('http');
-
               return (
                 <motion.button
                   key={action.id}
                   type="button"
                   onClick={() => {
-                    if (external) {
-                      openInBrowser(action.href, { title: action.label });
-                      return;
-                    }
-
-                    if (typeof window !== 'undefined') {
-                      window.location.href = action.href;
-                    }
+                    openInBrowser(action.href, { title: action.label });
                   }}
                   whileHover={{ y: -3, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}

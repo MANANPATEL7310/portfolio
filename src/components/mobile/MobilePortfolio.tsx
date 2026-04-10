@@ -144,8 +144,8 @@ export function MobilePortfolio() {
               <a
                 key={action.id}
                 href={socials[action.id]}
-                target={socials[action.id].startsWith("http") ? "_blank" : undefined}
-                rel={socials[action.id].startsWith("http") ? "noreferrer" : undefined}
+                target="_blank"
+                rel="noreferrer"
                 className="rounded-2xl bg-white/10 px-4 py-4 text-sm font-semibold text-white"
               >
                 <span className="flex items-center justify-between">
