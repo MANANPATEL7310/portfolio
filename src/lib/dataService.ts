@@ -88,31 +88,9 @@ export interface AboutSection {
   content: string[];
 }
 
-export interface ResumeExperience {
-  company: string;
-  period: string;
-  description: string;
-}
-
-export interface ResumeEducation {
-  school: string;
-  period: string;
-  degree: string;
-}
-
 export interface ResumeData {
   viewerTitle: string;
-  pageCount: number;
-  zoomLevels: number[];
-  identity: {
-    name: string;
-    headline: string[];
-  };
-  profile: string;
-  contact: string[];
-  experience: ResumeExperience[];
-  skills: string[];
-  education: ResumeEducation[];
+  fileSrc: string;
 }
 
 export interface TerminalCommand {

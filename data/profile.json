@@ -75,53 +75,8 @@
     }
   ],
   "resume": {
-    "viewerTitle": "Resume.pdf",
-    "pageCount": 2,
-    "zoomLevels": [75, 100, 125, 150],
-    "identity": {
-      "name": "Ian Hansson",
-      "headline": ["Graphic Designer", "UI/UX Engineer", "Developer"]
-    },
-    "profile": "Enthusiastic and creative graphic designer with a passion for translating ideas into visually compelling designs. With experience in both print and digital mediums, I thrive on bringing concepts to life through innovative and impactful visuals.",
-    "contact": ["816-555-0146", "ian_hansson", "hansson@example.com", "www.example.com"],
-    "experience": [
-      {
-        "company": "Adatum Corporation",
-        "period": "20XX - Present",
-        "description": "Developed and evolved brand identities, crafted compelling collateral, oversaw end-to-end project lifecycles, and contributed to award-winning campaigns."
-      },
-      {
-        "company": "Proseware, Inc.",
-        "period": "20XX - 20XX",
-        "description": "Collaborated across disciplines on typography systems, product visuals, and motion assets that improved clarity and presentation quality."
-      },
-      {
-        "company": "Relecloud",
-        "period": "20XX - 20XX",
-        "description": "Built campaigns and design explorations that strengthened visual consistency and helped turn complex concepts into clear experiences."
-      }
-    ],
-    "skills": [
-      "Design software",
-      "Typography",
-      "UI/UX design",
-      "Print design",
-      "Project management",
-      "Creative problem solving",
-      "Communication skills"
-    ],
-    "education": [
-      {
-        "school": "Graphic Design Institute",
-        "period": "20XX - 20XX",
-        "degree": "Master of Fine Arts, Graphic Design"
-      },
-      {
-        "school": "Jasper University",
-        "period": "20XX - 20XX",
-        "degree": "Bachelor of Arts, Graphic Design"
-      }
-    ]
+    "viewerTitle": "Manan_resume.pdf",
+    "fileSrc": "/portfolio/Manan_resume.pdf"
   },
   "terminal": {
     "prompt": "@manan %",
