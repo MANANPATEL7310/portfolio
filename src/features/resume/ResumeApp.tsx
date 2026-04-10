@@ -89,7 +89,6 @@ export function ResumeApp() {
             src={viewerSrc}
             title={resume.viewerTitle}
             className="h-full w-full border-0 bg-white"
-            sandbox="allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
           />
         </div>
       </div>

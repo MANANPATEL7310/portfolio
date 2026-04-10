@@ -56,7 +56,7 @@
   "windowDefaults": {
     "projects": { "width": 1280, "height": 760, "x": 60, "y": 90 },
     "browser": { "width": 1180, "height": 760, "x": 110, "y": 90 },
-    "resume": { "width": 540, "height": 740, "x": 940, "y": 70 },
+    "resume": { "width": 780, "height": 840, "x": 420, "y": 56 },
     "education": { "width": 760, "height": 520, "x": 560, "y": 180 },
     "photos": { "width": 1110, "height": 620, "x": 250, "y": 150 },
     "about": { "width": 800, "height": 470, "x": 420, "y": 240 },
