@@ -12,12 +12,14 @@ export interface DesktopGridMetrics {
   maxColumns: number;
 }
 
+export const DEFAULT_DESKTOP_VIEWPORT: DesktopViewport = {
+  width: 1440,
+  height: 900,
+};
+
 export function getDesktopViewport(): DesktopViewport {
   if (typeof window === 'undefined') {
-    return {
-      width: 1440,
-      height: 900,
-    };
+    return DEFAULT_DESKTOP_VIEWPORT;
   }
 
   return {

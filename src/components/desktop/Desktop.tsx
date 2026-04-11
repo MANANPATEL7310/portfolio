@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { getDesktopGridPosition, getDesktopViewport } from '@/lib/desktopGrid';
+import { DEFAULT_DESKTOP_VIEWPORT, getDesktopGridPosition, getDesktopViewport } from '@/lib/desktopGrid';
 import { getWallpaper } from '@/lib/dataService';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { usePortfolioDataStore } from '@/store/usePortfolioDataStore';
@@ -20,7 +20,7 @@ import { useContextMenuStore } from '@/store/useContextMenuStore';
 
 export function Desktop({ enableHeroIntro = false }: { enableHeroIntro?: boolean }) {
   const constraintsRef = useRef<HTMLDivElement>(null);
-  const [viewport, setViewport] = useState(() => getDesktopViewport());
+  const [viewport, setViewport] = useState(DEFAULT_DESKTOP_VIEWPORT);
   const theme = useSystemStore((state) => getResolvedTheme(state.theme, state.systemTheme));
   const currentWallpaperId = useSystemStore((state) => state.wallpaper);
   const currentWallpaper = getWallpaper(currentWallpaperId);
@@ -69,7 +69,12 @@ export function Desktop({ enableHeroIntro = false }: { enableHeroIntro?: boolean
   }, [theme]);
 
   useEffect(() => {
-    clampWindowsToViewport();
+    const syncViewport = () => {
+      setViewport(getDesktopViewport());
+      clampWindowsToViewport();
+    };
+
+    const frameId = window.requestAnimationFrame(syncViewport);
 
     const handleResize = () => {
       setViewport(getDesktopViewport());
@@ -77,7 +82,10 @@ export function Desktop({ enableHeroIntro = false }: { enableHeroIntro?: boolean
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [clampWindowsToViewport]);
 
   useKeyboardShortcut(['Meta', 'k'], toggleSpotlight);
