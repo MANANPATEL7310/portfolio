@@ -32,7 +32,6 @@ export default function RootLayout({
     const root = document.documentElement;
     root.classList.toggle('dark', theme === 'dark');
     root.style.colorScheme = theme;
-    document.body && (document.body.dataset.theme = theme);
   } catch (error) {
     const root = document.documentElement;
     root.classList.remove('dark');
