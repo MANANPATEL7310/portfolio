@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { MapPin, Circle, ArrowDownRight } from "lucide-react";
 import { profile } from "../data/portfolioData";
 import { useTypewriter } from "../hooks/useTypewriter";
+import HeroName from "./HeroName";
 
 export default function HeroSection() {
   const { typed, done } = useTypewriter(profile.greeting, { speed: 42 });
@@ -35,8 +36,9 @@ export default function HeroSection() {
           transition={{ delay: 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-gradient-neon font-mono text-step-6 font-bold leading-tight sm:text-step-7"
           data-glitch
+          aria-label={profile.name}
         >
-          {profile.name}
+          <HeroName name={profile.name} />
         </motion.h1>
 
         {/* Typed greeting line */}

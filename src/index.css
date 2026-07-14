@@ -357,6 +357,252 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   HERO TITLE — cinematic "system boot / signal stabilized" reveal
+   (see HeroName.tsx). The WHOLE WORD behaves as one object: it flickers +
+   micro-vibrates, thin slices crack and snap back, an emerald sweep restores
+   clarity, then it locks perfectly sharp. All rules here are scoped to
+   transient, aria-hidden overlay spans that mount for ~1s per run then unmount;
+   the resting title is never affected. HeroName.tsx re-triggers the reveal on a
+   slow interval (it's the person's name) by remounting this subtree. None of
+   these animations loop on their own; reduced-motion below neutralises them.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Whole-word flicker between low opacity and full brightness (several times in
+   the first ~0.5s) with a 1–3px vibration, damping to stable full brightness.
+   Glow fluctuates via drop-shadow, then settles to none. */
+.hero-boot {
+  white-space: pre;
+  animation: hero-boot 0.92s linear both;
+  will-change: transform, opacity, filter;
+}
+@keyframes hero-boot {
+  0% {
+    opacity: 0.25;
+    transform: translate(2px, -1px);
+    filter: drop-shadow(0 0 2px rgba(0, 255, 136, 0.3));
+  }
+  6% {
+    opacity: 0.9;
+    transform: translate(-2px, 1px);
+  }
+  12% {
+    opacity: 0.3;
+    transform: translate(1px, 1px);
+  }
+  19% {
+    opacity: 1;
+    transform: translate(-1px, -1px);
+    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+  }
+  27% {
+    opacity: 0.5;
+    transform: translate(2px, 0);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(-1px, 1px);
+  }
+  43% {
+    opacity: 0.75;
+    transform: translate(1px, 0);
+  }
+  52% {
+    opacity: 1;
+    transform: translate(0, 0);
+    filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.4));
+  }
+  70% {
+    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.45));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+    filter: none;
+  }
+}
+
+/* Full-word ghost copies — a couple of offset duplicates that collapse inward
+   and fade, so the display reads as "trying to stabilize". Screen blend keeps
+   them additive, never muddy. */
+.hero-ghost2 {
+  white-space: pre;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+.hero-ghost2--a {
+  animation: hero-ghost2a 0.6s var(--ease-entrance) both;
+}
+.hero-ghost2--b {
+  animation: hero-ghost2b 0.6s var(--ease-entrance) both;
+}
+@keyframes hero-ghost2a {
+  0% {
+    transform: translate(-3px, -1px);
+    opacity: 0.4;
+  }
+  70% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+@keyframes hero-ghost2b {
+  0% {
+    transform: translate(3px, 1px);
+    opacity: 0.35;
+  }
+  70% {
+    opacity: 0.16;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+/* Thin horizontal slices that shift a few px then instantly snap back — a
+   digital signal breaking and reconnecting across different parts of the word.
+   clip-path isolates each band; steps() makes the shift/snap crisp, not smooth.
+   All three fade out well before the sweep completes. */
+.hero-slice {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: pre;
+  will-change: transform, opacity;
+}
+.hero-slice--1 {
+  clip-path: inset(6% 0 78% 0);
+  animation: hero-slice1 0.55s steps(1, end) both;
+}
+.hero-slice--2 {
+  clip-path: inset(44% 0 40% 0);
+  animation: hero-slice2 0.55s steps(1, end) 0.06s both;
+}
+.hero-slice--3 {
+  clip-path: inset(74% 0 8% 0);
+  animation: hero-slice3 0.55s steps(1, end) 0.03s both;
+}
+@keyframes hero-slice1 {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  12% {
+    transform: translateX(-5px);
+    opacity: 0.95;
+  }
+  18% {
+    transform: translateX(0);
+    opacity: 0.9;
+  }
+  34% {
+    transform: translateX(4px);
+    opacity: 0.85;
+  }
+  40% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+@keyframes hero-slice2 {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  16% {
+    transform: translateX(5px);
+    opacity: 0.9;
+  }
+  22% {
+    transform: translateX(0);
+    opacity: 0.85;
+  }
+  38% {
+    transform: translateX(-4px);
+    opacity: 0.8;
+  }
+  44% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+@keyframes hero-slice3 {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  14% {
+    transform: translateX(-4px);
+    opacity: 0.9;
+  }
+  20% {
+    transform: translateX(0);
+    opacity: 0.85;
+  }
+  40% {
+    transform: translateX(3px);
+    opacity: 0.8;
+  }
+  46% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+
+/* Emerald energy sweep restoring clarity left→right through a moving mask band
+   over a lit copy of the word. Leaves no trail — fades at both ends. */
+.hero-sweep {
+  white-space: pre;
+  -webkit-text-fill-color: #eafff4;
+  color: #eafff4;
+  text-shadow: 0 0 14px rgba(0, 255, 136, 0.85), 0 0 5px rgba(0, 229, 255, 0.5);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 42%,
+    #000 58%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 42%,
+    #000 58%,
+    transparent 100%
+  );
+  -webkit-mask-size: 55% 100%;
+  mask-size: 55% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: hero-sweep 0.6s var(--ease-hover) 0.32s both;
+  will-change: -webkit-mask-position, mask-position, opacity;
+}
+@keyframes hero-sweep {
+  0% {
+    -webkit-mask-position: -55% 0;
+    mask-position: -55% 0;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    -webkit-mask-position: 155% 0;
+    mask-position: 155% 0;
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    REDUCED MOTION — freeze ambient animation, keep content legible
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
