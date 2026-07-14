@@ -7,9 +7,8 @@ import EducationSection from "./components/EducationSection";
 import CertificatesSection from "./components/CertificatesSection";
 import ContactSection from "./components/ContactSection";
 
-import BinaryRain from "./components/background/BinaryRain";
-import CyberChainNetwork from "./components/background/CyberChainNetwork";
-import HexGrid from "./components/background/HexGrid";
+import SystemBackground from "./components/background/system/SystemBackground";
+import SystemLabels from "./components/background/SystemLabels";
 import ScanlineOverlay from "./components/background/ScanlineOverlay";
 import GrainOverlay from "./components/background/GrainOverlay";
 import GlitchController from "./components/background/GlitchController";
@@ -31,20 +30,27 @@ export default function App() {
       <GlitchController />
 
       {/* ── Ambient background layers ─────────────────────────────────────
-          Composed once, fixed behind all content, non-interactive.       */}
+          The unified "AI Cyber-Defense OS" engine (fog, hex streams, neural
+          network, security grid, particles, AI core, scan beam, ripples) runs
+          on a single canvas inside <SystemBackground />. Depth gradient,
+          vignette, scanlines and floating labels sit around it. Composed once,
+          fixed behind all content, non-interactive.                         */}
       <div
         className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
         aria-hidden="true"
       >
-        {/* Base radial depth gradient */}
+        {/* Base radial depth gradient (Layer 1) */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,#0A0A0A_0%,#030303_60%)]" />
-        <HexGrid />
-        <CyberChainNetwork />
-        <BinaryRain />
+        {/* Unified procedural engine — Layers 2–6, 8, 9, 11, 12 */}
+        <SystemBackground />
+        {/* Scanlines + slow green fog blooms (Layer 16) */}
         <ScanlineOverlay />
         {/* Vignette to keep edges dark and center readable */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(3,3,3,0.85)_100%)]" />
       </div>
+
+      {/* Floating system telemetry labels (Layer 7) — DOM, above canvas bg */}
+      <SystemLabels />
 
       {/* Grain / film-noise texture — always on, above bg, below content */}
       <GrainOverlay />
