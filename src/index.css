@@ -325,14 +325,35 @@
   }
 }
 
-/* Boot-sequence scanline wipe */
-@keyframes boot-wipe {
+/* Navbar light-beam landing — the target section's border pulses a glow on
+   "impact", then settles back to its resting state. Driven by <NavBeam />. */
+@keyframes section-land {
   0% {
-    transform: translateY(-100%);
+    box-shadow: 0 0 0 1px rgba(0, 255, 136, 0), 0 0 0 0 rgba(0, 255, 136, 0);
+  }
+  22% {
+    box-shadow: 0 0 0 1px rgba(0, 255, 136, 0.7),
+      0 0 44px 4px rgba(0, 255, 136, 0.35);
+  }
+  60% {
+    box-shadow: 0 0 0 1px rgba(0, 255, 136, 0.3),
+      0 0 22px 2px rgba(0, 255, 136, 0.16);
   }
   100% {
-    transform: translateY(100%);
+    box-shadow: 0 0 0 1px rgba(0, 255, 136, 0), 0 0 0 0 rgba(0, 255, 136, 0);
   }
+}
+.section-landing {
+  border-radius: 1rem;
+  animation: section-land 750ms var(--ease-hover) 1;
+}
+
+/* Reduced-motion fallback: a single static border highlight, no beam or pulse.
+   Static box-shadow (no animation) so it still shows when motion is reduced. */
+.section-flash {
+  border-radius: 1rem;
+  box-shadow: 0 0 0 1px rgba(0, 255, 136, 0.7),
+    0 0 30px 2px rgba(0, 255, 136, 0.28);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

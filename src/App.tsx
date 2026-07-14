@@ -8,25 +8,24 @@ import CertificatesSection from "./components/CertificatesSection";
 import ContactSection from "./components/ContactSection";
 
 import BinaryRain from "./components/background/BinaryRain";
-import NetworkNodes from "./components/background/NetworkNodes";
-import ParticleField from "./components/background/ParticleField";
+import CyberChainNetwork from "./components/background/CyberChainNetwork";
 import HexGrid from "./components/background/HexGrid";
 import ScanlineOverlay from "./components/background/ScanlineOverlay";
 import GrainOverlay from "./components/background/GrainOverlay";
 import GlitchController from "./components/background/GlitchController";
 
-import BootSequence from "./components/BootSequence";
+import NavBeam from "./components/NavBeam";
 import CustomCursor from "./components/CustomCursor";
 import CircuitDivider from "./components/ui/CircuitDivider";
 
 export default function App() {
   return (
     <div className="relative min-h-screen bg-base-900 text-content-primary">
-      {/* Boot-sequence micro-intro (first load only) */}
-      <BootSequence />
-
       {/* Desktop-only custom crosshair/reticle cursor */}
       <CustomCursor />
+
+      {/* Navbar → section "light beam" navigation flourish (nav clicks only) */}
+      <NavBeam />
 
       {/* Rare glitch micro-distortions on [data-glitch] elements */}
       <GlitchController />
@@ -40,9 +39,8 @@ export default function App() {
         {/* Base radial depth gradient */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,#0A0A0A_0%,#030303_60%)]" />
         <HexGrid />
-        <NetworkNodes />
+        <CyberChainNetwork />
         <BinaryRain />
-        <ParticleField />
         <ScanlineOverlay />
         {/* Vignette to keep edges dark and center readable */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(3,3,3,0.85)_100%)]" />

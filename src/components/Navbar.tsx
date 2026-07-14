@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, FileDown, Terminal } from "lucide-react";
 import { navLinks, profile } from "../data/portfolioData";
 import { useScrollSpy } from "../hooks/useScrollSpy";
+import { triggerNavBeam } from "../lib/navBeam";
 
 const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
 
@@ -10,9 +11,17 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const active = useScrollSpy(sectionIds);
 
-  const handleNav = (href: string) => {
+  // Nav clicks fire the "light beam" flourish (NavBeam) AND scroll concurrently
+  // — the beam rides along with the scroll rather than blocking it. `origin` is
+  // the clicked element, so the beam launches from its on-screen position.
+  const handleNav = (
+    href: string,
+    origin?: EventTarget & Element
+  ) => {
     setOpen(false);
-    const el = document.getElementById(href.replace("#", ""));
+    const id = href.replace("#", "");
+    if (origin) triggerNavBeam(origin, id);
+    const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -21,7 +30,7 @@ export default function Navbar() {
       <nav className="glass mx-auto mt-3 flex max-w-6xl items-center justify-between gap-4 rounded-xl px-4 py-3 sm:px-6">
         {/* Terminal prompt brand */}
         <button
-          onClick={() => handleNav("#about")}
+          onClick={(e) => handleNav("#about", e.currentTarget)}
           className="group flex items-center gap-2 font-mono text-step-1 text-content-primary/90 transition-colors hover:text-neon-green"
           aria-label={`${profile.handle} — back to top`}
           data-glitch
@@ -42,7 +51,7 @@ export default function Navbar() {
             return (
               <li key={link.href}>
                 <button
-                  onClick={() => handleNav(link.href)}
+                  onClick={(e) => handleNav(link.href, e.currentTarget)}
                   aria-current={isActive ? "true" : undefined}
                   className={`relative rounded-lg px-3 py-1.5 font-mono text-step-1 transition-colors duration-300 ease-hover ${
                     isActive
@@ -73,7 +82,7 @@ export default function Navbar() {
             onClick={(e) => {
               if (!profile.resumeUrl) {
                 e.preventDefault();
-                handleNav("#contact");
+                handleNav("#contact", e.currentTarget);
               }
             }}
             target={profile.resumeUrl ? "_blank" : undefined}
@@ -111,7 +120,7 @@ export default function Navbar() {
                 return (
                   <li key={link.href}>
                     <button
-                      onClick={() => handleNav(link.href)}
+                      onClick={(e) => handleNav(link.href, e.currentTarget)}
                       className={`w-full rounded-lg px-3 py-2.5 text-left font-mono text-step-1 transition-colors ${
                         isActive
                           ? "bg-neon-green/10 text-neon-green"
@@ -130,7 +139,7 @@ export default function Navbar() {
                   onClick={(e) => {
                     if (!profile.resumeUrl) {
                       e.preventDefault();
-                      handleNav("#contact");
+                      handleNav("#contact", e.currentTarget);
                     }
                   }}
                   target={profile.resumeUrl ? "_blank" : undefined}
