@@ -2,20 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS — "AI Security Operations Center"
+   Single source of truth for color, elevation, glass, motion, and type scale.
+   Never hardcode these values inline in components.
+   ═══════════════════════════════════════════════════════════════════════════ */
 @layer base {
   :root {
     color-scheme: dark;
+
+    /* ── Backgrounds ─────────────────────────────────────────── */
+    --bg-void: #030303;
+    --bg-base: #0a0a0a;
+    --bg-elevated: #101312;
+
+    /* ── Accents ─────────────────────────────────────────────── */
+    --accent-primary: #00ff88; /* emerald neon — CTAs, active states */
+    --accent-secondary: #7cff4f; /* soft lime — hover/secondary */
+    --accent-tertiary: #00e5ff; /* cyan — data/network visuals only */
+
+    /* ── Text ────────────────────────────────────────────────── */
+    --text-primary: #f2f5f3; /* near-white body copy */
+    --text-secondary: #8b9c95; /* muted gray-green metadata */
+
+    /* ── Borders ─────────────────────────────────────────────── */
+    --border-glow: rgba(0, 255, 136, 0.18);
+    --border-glow-hover: rgba(0, 255, 136, 0.45);
+
+    /* ── Layered elevation (real depth, not flat box-shadow) ─── */
+    --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-glow);
+    --elevation-2: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 24px rgba(0, 255, 136, 0.06),
+      0 0 0 1px var(--border-glow);
+    --elevation-3: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 48px rgba(0, 255, 136, 0.1),
+      0 0 0 1px var(--border-glow-hover);
+
+    /* ── Motion easing ───────────────────────────────────────── */
+    --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1); /* expo-out */
+    --ease-hover: cubic-bezier(0.65, 0, 0.35, 1);
+
+    /* ── Glass ───────────────────────────────────────────────── */
+    --glass-bg: rgba(10, 10, 10, 0.55);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   html {
     scroll-behavior: smooth;
-    /* Fixed navbar offset for anchor jumps */
     scroll-padding-top: 6rem;
   }
 
   body {
-    @apply bg-base-900 font-sans text-white antialiased;
-    background-color: #030303;
+    @apply font-sans antialiased;
+    background-color: var(--bg-void);
+    color: var(--text-primary);
+  }
+
+  /* Hide the native cursor on precise-pointer desktops — the custom
+     crosshair cursor takes over. Touch devices keep normal behavior. */
+  @media (hover: hover) and (pointer: fine) {
+    body.custom-cursor-active {
+      cursor: none;
+    }
+    body.custom-cursor-active a,
+    body.custom-cursor-active button,
+    body.custom-cursor-active [role="button"],
+    body.custom-cursor-active input,
+    body.custom-cursor-active textarea {
+      cursor: none;
+    }
   }
 
   /* Neon selection */
@@ -29,18 +82,17 @@
     width: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #030303;
+    background: var(--bg-void);
   }
   ::-webkit-scrollbar-thumb {
     background: rgba(0, 255, 136, 0.25);
     border-radius: 9999px;
-    border: 2px solid #030303;
+    border: 2px solid var(--bg-void);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 255, 136, 0.45);
+    background: var(--border-glow-hover);
   }
 
-  /* Keyboard focus visibility on the dark theme */
   :focus-visible {
     outline: 2px solid rgba(0, 255, 136, 0.7);
     outline-offset: 2px;
@@ -48,8 +100,117 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMPONENT UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
 @layer components {
-  /* Slow-drifting green fog / light bloom used by ScanlineOverlay */
+  /* ── Glass panel ─────────────────────────────────────────────
+     The inner top highlight is the single detail that separates
+     "premium glass" from a blurred div. */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid var(--border-glow);
+    box-shadow: var(--elevation-1), var(--glass-highlight);
+  }
+
+  .glass-hover {
+    transition:
+      box-shadow 0.4s var(--ease-hover),
+      border-color 0.4s var(--ease-hover),
+      transform 0.4s var(--ease-hover);
+  }
+  .glass-hover:hover {
+    border-color: var(--border-glow-hover);
+    box-shadow: var(--elevation-3), var(--glass-highlight);
+  }
+
+  /* Elevation helpers */
+  .elev-1 {
+    box-shadow: var(--elevation-1), var(--glass-highlight);
+  }
+  .elev-2 {
+    box-shadow: var(--elevation-2), var(--glass-highlight);
+  }
+  .elev-3 {
+    box-shadow: var(--elevation-3), var(--glass-highlight);
+  }
+
+  /* ── Gradient text (hero name only — used once) ─────────────── */
+  .text-gradient-neon {
+    background: linear-gradient(135deg, #00ff88, #7cff4f);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── Reticle / sweep button ──────────────────────────────────
+     A thin border-light sweeps the perimeter on hover, like a
+     targeting reticle activating. */
+  .btn-reticle {
+    position: relative;
+    isolation: isolate;
+    transition:
+      transform 0.35s var(--ease-hover),
+      box-shadow 0.35s var(--ease-hover),
+      background-color 0.35s var(--ease-hover),
+      border-color 0.35s var(--ease-hover);
+  }
+  .btn-reticle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--reticle-angle, 0deg),
+      transparent 0deg,
+      transparent 250deg,
+      var(--accent-secondary) 300deg,
+      var(--accent-primary) 340deg,
+      transparent 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-hover);
+    pointer-events: none;
+  }
+  .btn-reticle:hover {
+    transform: scale(1.02);
+  }
+  .btn-reticle:hover::before {
+    opacity: 1;
+    animation: reticle-sweep 1.2s linear infinite;
+  }
+
+  /* ── Left-to-right underline draw for links ─────────────────── */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: var(--accent-primary);
+    box-shadow: 0 0 6px rgba(0, 255, 136, 0.6);
+    transition: transform 0.3s var(--ease-hover);
+  }
+  .link-underline:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* ── Slow-drifting green fog / light bloom ──────────────────── */
   .bg-bloom {
     background:
       radial-gradient(
@@ -69,23 +230,111 @@
       );
     animation: bloom-drift 24s ease-in-out infinite alternate;
   }
+}
 
-  @keyframes bloom-drift {
-    0% {
-      transform: translate3d(0, 0, 0) scale(1);
-      opacity: 0.9;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      transform: translate3d(-3%, 2%, 0) scale(1.08);
-      opacity: 0.85;
-    }
+/* ═══════════════════════════════════════════════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════════ */
+@property --reticle-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes reticle-sweep {
+  to {
+    --reticle-angle: 360deg;
   }
 }
 
-/* Respect reduced-motion: freeze ambient CSS animations */
+@keyframes bloom-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-3%, 2%, 0) scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+/* Gentle "breathing" glow for key elements (primary CTA, active nav) */
+@keyframes breathe {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.35));
+    opacity: 0.85;
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(0, 255, 136, 0.55));
+    opacity: 1;
+  }
+}
+.animate-breathe {
+  animation: breathe 5s ease-in-out infinite;
+}
+
+/* Rare glitch micro-distortion — a brief RGB-split flicker */
+@keyframes glitch-flicker {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    filter: none;
+    opacity: 1;
+  }
+  20% {
+    transform: translate(-1px, 0);
+    filter: drop-shadow(1px 0 0 rgba(0, 229, 255, 0.7))
+      drop-shadow(-1px 0 0 rgba(255, 0, 90, 0.6));
+  }
+  40% {
+    transform: translate(1px, 0);
+    filter: drop-shadow(-1px 0 0 rgba(0, 229, 255, 0.7))
+      drop-shadow(1px 0 0 rgba(255, 0, 90, 0.6));
+  }
+  60% {
+    transform: translate(0, 1px);
+    filter: drop-shadow(1px 0 0 rgba(0, 229, 255, 0.6));
+  }
+}
+.glitch-active {
+  animation: glitch-flicker 110ms steps(2, end) 1;
+}
+
+/* Circuit-divider pulse traveling along the line */
+@keyframes divider-pulse {
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* Boot-sequence scanline wipe */
+@keyframes boot-wipe {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — freeze ambient animation, keep content legible
+   ═══════════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

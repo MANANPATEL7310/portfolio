@@ -18,17 +18,18 @@ export default function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <nav className="mx-auto mt-3 flex max-w-6xl items-center justify-between gap-4 rounded-xl border border-neon-green/15 bg-base-800/70 px-4 py-3 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)] sm:px-6">
+      <nav className="glass mx-auto mt-3 flex max-w-6xl items-center justify-between gap-4 rounded-xl px-4 py-3 sm:px-6">
         {/* Terminal prompt brand */}
         <button
           onClick={() => handleNav("#about")}
-          className="group flex items-center gap-2 font-mono text-sm text-white/90 transition-colors hover:text-neon-green"
+          className="group flex items-center gap-2 font-mono text-step-1 text-content-primary/90 transition-colors hover:text-neon-green"
           aria-label={`${profile.handle} — back to top`}
+          data-glitch
         >
           <Terminal className="h-4 w-4 text-neon-green" aria-hidden="true" />
           <span className="hidden sm:inline">
             {profile.handle}
-            <span className="text-white/40">:~$</span>
+            <span className="text-content-secondary/60">:~$</span>
           </span>
           <span className="sm:hidden">{profile.handle.split("@")[0]}$</span>
         </button>
@@ -43,21 +44,22 @@ export default function Navbar() {
                 <button
                   onClick={() => handleNav(link.href)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`relative rounded-md px-3 py-1.5 font-mono text-sm transition-colors ${
+                  className={`relative rounded-lg px-3 py-1.5 font-mono text-step-1 transition-colors duration-300 ease-hover ${
                     isActive
                       ? "text-neon-green"
-                      : "text-white/60 hover:text-white"
+                      : "text-content-secondary hover:text-content-primary"
                   }`}
                 >
-                  <span className="text-neon-green/40">#</span>
-                  {link.label}
+                  {/* Sliding glowing pill that animates between links */}
                   {isActive && (
                     <motion.span
                       layoutId="nav-active"
-                      className="absolute inset-x-1 -bottom-0.5 h-px bg-neon-green shadow-neon"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      className="absolute inset-0 -z-10 rounded-lg border border-neon-green/40 bg-neon-green/10 shadow-neon"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
                     />
                   )}
+                  <span className="text-neon-green/40">#</span>
+                  {link.label}
                 </button>
               </li>
             );
@@ -76,14 +78,14 @@ export default function Navbar() {
             }}
             target={profile.resumeUrl ? "_blank" : undefined}
             rel={profile.resumeUrl ? "noreferrer" : undefined}
-            className="hidden items-center gap-1.5 rounded-md border border-neon-green/40 bg-neon-green/10 px-3 py-1.5 font-mono text-xs font-medium text-neon-green transition-all hover:bg-neon-green/20 hover:shadow-neon sm:flex"
+            className="btn-reticle hidden items-center gap-1.5 rounded-lg border border-neon-green/40 bg-neon-green/10 px-3 py-1.5 font-mono text-step-0 font-medium text-neon-green hover:bg-neon-green/20 hover:shadow-neon sm:flex"
           >
             <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
             resume
           </a>
           <button
             onClick={() => setOpen((v) => !v)}
-            className="rounded-md p-1.5 text-white/80 transition-colors hover:text-neon-green md:hidden"
+            className="rounded-lg p-1.5 text-content-primary/80 transition-colors hover:text-neon-green md:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
           >
@@ -99,8 +101,8 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="mx-auto mt-2 max-w-6xl overflow-hidden rounded-xl border border-neon-green/15 bg-base-800/95 p-2 backdrop-blur-md md:hidden"
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="glass mx-auto mt-2 max-w-6xl overflow-hidden rounded-xl p-2 md:hidden"
           >
             <ul className="flex flex-col">
               {navLinks.map((link) => {
@@ -110,10 +112,10 @@ export default function Navbar() {
                   <li key={link.href}>
                     <button
                       onClick={() => handleNav(link.href)}
-                      className={`w-full rounded-md px-3 py-2.5 text-left font-mono text-sm transition-colors ${
+                      className={`w-full rounded-lg px-3 py-2.5 text-left font-mono text-step-1 transition-colors ${
                         isActive
                           ? "bg-neon-green/10 text-neon-green"
-                          : "text-white/70 hover:bg-white/5 hover:text-white"
+                          : "text-content-primary/70 hover:bg-white/5 hover:text-content-primary"
                       }`}
                     >
                       <span className="text-neon-green/40">#</span>
@@ -133,7 +135,7 @@ export default function Navbar() {
                   }}
                   target={profile.resumeUrl ? "_blank" : undefined}
                   rel={profile.resumeUrl ? "noreferrer" : undefined}
-                  className="mt-1 flex items-center gap-2 rounded-md border border-neon-green/40 bg-neon-green/10 px-3 py-2.5 font-mono text-sm text-neon-green"
+                  className="mt-1 flex items-center gap-2 rounded-lg border border-neon-green/40 bg-neon-green/10 px-3 py-2.5 font-mono text-step-1 text-neon-green"
                 >
                   <FileDown className="h-4 w-4" aria-hidden="true" />
                   resume

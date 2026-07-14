@@ -12,10 +12,25 @@ import NetworkNodes from "./components/background/NetworkNodes";
 import ParticleField from "./components/background/ParticleField";
 import HexGrid from "./components/background/HexGrid";
 import ScanlineOverlay from "./components/background/ScanlineOverlay";
+import GrainOverlay from "./components/background/GrainOverlay";
+import GlitchController from "./components/background/GlitchController";
+
+import BootSequence from "./components/BootSequence";
+import CustomCursor from "./components/CustomCursor";
+import CircuitDivider from "./components/ui/CircuitDivider";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen bg-base-900 text-white">
+    <div className="relative min-h-screen bg-base-900 text-content-primary">
+      {/* Boot-sequence micro-intro (first load only) */}
+      <BootSequence />
+
+      {/* Desktop-only custom crosshair/reticle cursor */}
+      <CustomCursor />
+
+      {/* Rare glitch micro-distortions on [data-glitch] elements */}
+      <GlitchController />
+
       {/* ── Ambient background layers ─────────────────────────────────────
           Composed once, fixed behind all content, non-interactive.       */}
       <div
@@ -33,16 +48,24 @@ export default function App() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(3,3,3,0.85)_100%)]" />
       </div>
 
+      {/* Grain / film-noise texture — always on, above bg, below content */}
+      <GrainOverlay />
+
       {/* ── Foreground content ───────────────────────────────────────────── */}
       <div className="relative z-10">
         <Navbar />
         <main>
           <HeroSection />
           <AboutSection />
+          <CircuitDivider />
           <ProjectsSection />
+          <CircuitDivider />
           <SkillsSection />
+          <CircuitDivider />
           <EducationSection />
+          <CircuitDivider />
           <CertificatesSection />
+          <CircuitDivider />
           <ContactSection />
         </main>
       </div>

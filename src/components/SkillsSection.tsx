@@ -54,7 +54,7 @@ export default function SkillsSection() {
   return (
     <SectionShell id="skills" command="$ tree ~/skills" title="Skills">
       {/* Skill tree */}
-      <div className="rounded-xl border border-white/10 bg-base-800/40 p-5 font-mono text-sm backdrop-blur-sm sm:p-6">
+      <div className="glass rounded-xl p-5 font-mono text-step-1 shadow-elev-1 sm:p-6">
         <div className="text-neon-green/80">skills/</div>
         <div className="mt-2 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map(([category, items], ci) => {
@@ -65,7 +65,7 @@ export default function SkillsSection() {
                 initial={{ opacity: 0, x: -12 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.4, delay: ci * 0.06 }}
+                transition={{ duration: 0.5, delay: ci * 0.06, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="text-neon-lime">
                   <span className="text-white/30">
@@ -97,7 +97,7 @@ export default function SkillsSection() {
 
       {/* GitHub stats row */}
       <div className="mt-6">
-        <div className="mb-3 font-mono text-sm text-neon-green/80">
+        <div className="mb-3 font-mono text-step-1 uppercase tracking-[0.15em] text-neon-green/80">
           $ git log --stat --global
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -107,17 +107,17 @@ export default function SkillsSection() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.45, delay: i * 0.1 }}
-              className="flex items-center gap-4 rounded-xl border border-white/10 bg-base-800/50 p-5 backdrop-blur-sm transition-colors hover:border-neon-green/30"
+              transition={{ duration: 0.55, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="glass glass-hover flex items-center gap-4 rounded-xl p-5 shadow-elev-1"
             >
               <div className="grid h-11 w-11 place-items-center rounded-lg border border-neon-green/30 bg-neon-green/10">
                 <s.Icon className="h-5 w-5 text-neon-green" aria-hidden="true" />
               </div>
               <div>
-                <div className="font-mono text-2xl font-bold text-white">
+                <div className="font-mono text-step-4 font-bold text-content-primary">
                   <AnimatedCounter target={s.value} />
                 </div>
-                <div className="font-mono text-xs uppercase tracking-wider text-white/45">
+                <div className="font-mono text-step-0 uppercase tracking-[0.15em] text-content-secondary">
                   {s.label}
                 </div>
               </div>
