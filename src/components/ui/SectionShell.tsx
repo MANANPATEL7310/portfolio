@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import ScrambleText from "./ScrambleText";
 
 interface SectionShellProps {
   id: string;
@@ -51,9 +52,10 @@ export default function SectionShell({
 export function SectionHeader({ command }: { command: string }) {
   return (
     <div className="mb-9 flex items-center gap-3" data-glitch>
-      <span className="select-none font-mono text-step-1 uppercase tracking-[0.15em] text-neon-green/80">
-        {command}
-      </span>
+      <ScrambleText
+        text={command}
+        className="select-none font-mono text-step-1 uppercase tracking-[0.15em] text-neon-green/80"
+      />
       <span className="h-px flex-1 bg-gradient-to-r from-neon-green/30 to-transparent" />
     </div>
   );

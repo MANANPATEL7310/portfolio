@@ -4,17 +4,25 @@ import { useEffect, useState } from "react";
  * Tracks which section is currently in view and returns its id.
  * Drives the active nav-link highlight (scroll-spy behavior).
  *
+ * The active section is the one crossing a reference line partway down the
+ * viewport (not just under the navbar). Sections carry large top padding, so a
+ * near-top line would flip to the next section while its *content* is still
+ * off-screen — reading as "one step ahead". A line at ~42% of the viewport
+ * height flips only once the incoming section actually dominates the screen, so
+ * the highlight stays in sync with what you're looking at.
+ *
  * @param sectionIds  ordered list of section element ids (without the leading #)
- * @param offset      px offset from the top to account for the fixed navbar
+ * @param lineRatio   fraction of viewport height for the reference line (0..1)
  */
-export function useScrollSpy(sectionIds: string[], offset = 120): string {
+export function useScrollSpy(sectionIds: string[], lineRatio = 0.42): string {
   const [activeId, setActiveId] = useState<string>(sectionIds[0] ?? "");
 
   useEffect(() => {
     if (sectionIds.length === 0) return;
 
     const handler = () => {
-      const scrollPos = window.scrollY + offset;
+      // Reference line partway down the viewport, in document coordinates.
+      const line = window.scrollY + window.innerHeight * lineRatio;
 
       // If we're at the very bottom, force-activate the last section so the
       // final nav link highlights even when the section is short.
@@ -29,7 +37,7 @@ export function useScrollSpy(sectionIds: string[], offset = 120): string {
       let current = sectionIds[0];
       for (const id of sectionIds) {
         const el = document.getElementById(id);
-        if (el && el.offsetTop <= scrollPos) {
+        if (el && el.getBoundingClientRect().top + window.scrollY <= line) {
           current = id;
         }
       }
@@ -43,7 +51,7 @@ export function useScrollSpy(sectionIds: string[], offset = 120): string {
       window.removeEventListener("scroll", handler);
       window.removeEventListener("resize", handler);
     };
-  }, [sectionIds, offset]);
+  }, [sectionIds, lineRatio]);
 
   return activeId;
 }
