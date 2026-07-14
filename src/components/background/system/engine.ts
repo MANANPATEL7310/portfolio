@@ -29,6 +29,7 @@ const PARALLAX: Record<string, number> = {
   aicore: 0.08,
   particles: 0.1,
   hexstreams: 0.12,
+  binary: 0.14,
   grid: 0.15,
   neural: 0.2,
   ripples: 0, // ripples are screen-anchored to the click point

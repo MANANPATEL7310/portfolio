@@ -4,6 +4,7 @@ import { detectTier } from "./quality";
 import type { Layer } from "./types";
 import { createFogLayer } from "./layers/fog";
 import { createHexStreamsLayer } from "./layers/hexStreams";
+import { createBinaryStreamsLayer } from "./layers/binaryStreams";
 import { createNeuralNetworkLayer } from "./layers/neuralNetwork";
 import { createSecurityGridLayer } from "./layers/securityGrid";
 import { createParticlesLayer } from "./layers/particles";
@@ -49,7 +50,8 @@ export default function SystemBackground() {
       createFogLayer(), // L2
       createAiCoreLayer(), // L11 (faint, deep centre)
       createParticlesLayer(), // L12 + cursor bend
-      createHexStreamsLayer(), // L3
+      createHexStreamsLayer(), // L3 (drift up)
+      createBinaryStreamsLayer(), // sparse 0/1 columns (fall down)
       createSecurityGridLayer(), // L5 (cursor grid)
       createNeuralNetworkLayer(), // L4 + L8
       createScanBeamLayer(), // L9
