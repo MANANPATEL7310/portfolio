@@ -361,10 +361,10 @@
    (see HeroName.tsx). The WHOLE WORD behaves as one object: it flickers +
    micro-vibrates, thin slices crack and snap back, an emerald sweep restores
    clarity, then it locks perfectly sharp. All rules here are scoped to
-   transient, aria-hidden overlay spans that mount for ~1s per run then unmount;
-   the resting title is never affected. HeroName.tsx re-triggers the reveal on a
-   slow interval (it's the person's name) by remounting this subtree. None of
-   these animations loop on their own; reduced-motion below neutralises them.
+   transient, aria-hidden overlay spans that mount for ~1s then unmount; the
+   resting title is never affected. The reveal plays ONCE per page load (see
+   HeroName.tsx). None of these animations loop on their own; reduced-motion
+   below neutralises them.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Whole-word flicker between low opacity and full brightness (several times in

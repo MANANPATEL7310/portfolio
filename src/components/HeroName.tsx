@@ -7,9 +7,7 @@ import { useReducedMotion } from "framer-motion";
  * military title intros, toned down to a premium engineering-interface feel.
  *
  * It changes nothing about the resting title: font, size, gradient, spacing and
- * position are inherited untouched from the parent <h1>. At rest the DOM is the
- * exact original gradient text. The reveal only overlays transient, aria-hidden
- * copies for ~1s per run, then unmounts so the text is perfectly static.
+ * position are inherited untouched from the parent <h1>.
  *
  * The WHOLE WORD behaves as one object (not per-letter):
  *  • starts ~25% visible; a couple of offset ghost copies try to stabilize
@@ -18,64 +16,52 @@ import { useReducedMotion } from "framer-motion";
  *  • an emerald sweep restores clarity left→right
  *  • ghosts collapse, cracks vanish, glow settles, vibration stops — locked.
  *
- * Because it's the person's NAME (a primary element), the reveal re-plays once
- * on a slow, theme-matched interval (a few seconds' gap) — not a continuous
- * loop and never flashing after a run settles. Each replay remounts the overlay
- * subtree via an incrementing `key`, which cleanly restarts the CSS animations.
+ * ONE-SHOT by design, with a guaranteed-stable ending: the component moves
+ * through three phases —
+ *   "idle" (plain name, waiting for first viewport entry)
+ *   "run"  (the ~1s overlay reveal)
+ *   "done" (renders NOTHING but the plain name string, permanently)
+ * Once "done", there is no state, overlay, or style left that could ever hide
+ * or move the title again until the page is refreshed.
  *
- * Fully skipped under prefers-reduced-motion (renders only the static title),
- * and it won't replay while the tab is hidden.
+ * Fully skipped under prefers-reduced-motion (plain title only).
  */
 
-/** How long one reveal run lasts before it settles + unmounts (ms). */
+/** How long the reveal runs before it settles (ms). */
 const REVEAL_MS = 1000;
-/** Delay after mount before the first reveal, so the h1 entrance lands first. */
+/** Delay after first visibility, so the h1's entrance lands first. */
 const FIRST_DELAY_MS = 650;
-/** Base gap between replays (ms); a little randomness keeps it non-mechanical. */
-const REPLAY_GAP_MS = 100;
+
+type Phase = "idle" | "run" | "done";
 
 export default function HeroName({ name }: { name: string }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
-  const [runId, setRunId] = useState(0); // increments per reveal → remounts FX
-  const [running, setRunning] = useState(false);
+  const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
-    if (reduced) return; // static title, no reveal ever
+    if (reduced) {
+      setPhase("done"); // permanent plain title, no reveal ever
+      return;
+    }
 
     const el = ref.current;
     if (!el) return;
 
-    let cancelled = false;
     let startTimer = 0;
     let endTimer = 0;
-    let gapTimer = 0;
-
-    const runOnce = () => {
-      if (cancelled) return;
-      // Don't animate an unseen tab; poll back shortly instead.
-      if (document.hidden) {
-        gapTimer = window.setTimeout(runOnce, 1500);
-        return;
-      }
-      setRunId((id) => id + 1);
-      setRunning(true);
-      endTimer = window.setTimeout(() => {
-        if (cancelled) return;
-        setRunning(false);
-        const jitter = Math.random() * 500; // 0.5–1.0s between plays
-        gapTimer = window.setTimeout(runOnce, REPLAY_GAP_MS + jitter);
-      }, REVEAL_MS);
-    };
-
     let started = false;
+
     const begin = () => {
       if (started) return;
       started = true;
-      startTimer = window.setTimeout(runOnce, FIRST_DELAY_MS);
+      startTimer = window.setTimeout(() => {
+        setPhase("run");
+        endTimer = window.setTimeout(() => setPhase("done"), REVEAL_MS);
+      }, FIRST_DELAY_MS);
     };
 
-    // Kick off the first reveal when the hero first enters the viewport.
+    // Play once, the first time the hero enters the viewport.
     const io = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -88,13 +74,17 @@ export default function HeroName({ name }: { name: string }) {
     io.observe(el);
 
     return () => {
-      cancelled = true;
       io.disconnect();
       window.clearTimeout(startTimer);
       window.clearTimeout(endTimer);
-      window.clearTimeout(gapTimer);
     };
   }, [reduced]);
+
+  // After the one-shot reveal (or under reduced motion): the name is rendered
+  // as a completely normal static string — nothing else, forever.
+  if (phase === "done") {
+    return <>{name}</>;
+  }
 
   return (
     <span
@@ -102,14 +92,12 @@ export default function HeroName({ name }: { name: string }) {
       className="relative inline-block align-baseline"
       style={{ whiteSpace: "pre" }}
     >
-      {/* Base pristine gradient title (inherits from the <h1>). Hidden only
-          while a reveal runs; at rest it's the exact original title. The swap is
-          seamless because the overlay ends perfectly aligned + full brightness. */}
-      <span style={{ opacity: running ? 0 : 1 }}>{name}</span>
+      {/* Base title, visible while idle; hidden only during the ~1s run (the
+          overlay's boot copy takes its place, perfectly aligned). */}
+      <span style={{ opacity: phase === "run" ? 0 : 1 }}>{name}</span>
 
-      {running && (
+      {phase === "run" && (
         <span
-          key={runId}
           aria-hidden="true"
           className="pointer-events-none absolute left-0 top-0"
           style={{ whiteSpace: "pre" }}

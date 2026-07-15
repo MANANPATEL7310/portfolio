@@ -9,7 +9,6 @@ import { createNeuralNetworkLayer } from "./layers/neuralNetwork";
 import { createSecurityGridLayer } from "./layers/securityGrid";
 import { createParticlesLayer } from "./layers/particles";
 import { createAiCoreLayer } from "./layers/aiCore";
-import { createScanBeamLayer } from "./layers/scanBeam";
 import { createRipplesLayer } from "./layers/ripples";
 
 /**
@@ -21,7 +20,7 @@ import { createRipplesLayer } from "./layers/ripples";
  *   • honouring prefers-reduced-motion (one static, calm frame).
  *
  * Every heavy procedural layer from the brief (fog, hex streams, neural net,
- * security grid, particle field, AI core, scan beam, click ripples) is composed
+ * security grid, particle field, AI core, click ripples) is composed
  * here into that one loop, back-to-front. The remaining layers (depth gradient,
  * grain, scanlines, UI glitch, floating labels) are cheaper DOM/CSS siblings
  * handled elsewhere in the tree.
@@ -54,7 +53,6 @@ export default function SystemBackground() {
       createBinaryStreamsLayer(), // sparse 0/1 columns (fall down)
       createSecurityGridLayer(), // L5 (cursor grid)
       createNeuralNetworkLayer(), // L4 + L8
-      createScanBeamLayer(), // L9
       createRipplesLayer(), // L6 clicks
     ];
 

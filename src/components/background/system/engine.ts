@@ -33,7 +33,6 @@ const PARALLAX: Record<string, number> = {
   grid: 0.15,
   neural: 0.2,
   ripples: 0, // ripples are screen-anchored to the click point
-  scanbeam: 0, // beam sweeps the physical viewport
 };
 
 export class Engine {
