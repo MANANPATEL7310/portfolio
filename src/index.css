@@ -57,17 +57,25 @@
   }
 
   /* Hide the native cursor on precise-pointer desktops — the custom
-     crosshair cursor takes over. Touch devices keep normal behavior. */
+     dot + ring takes over. On links/buttons the native hand pointer
+     comes back so clickability is obvious. Touch devices keep normal
+     behavior. */
   @media (hover: hover) and (pointer: fine) {
     body.custom-cursor-active {
       cursor: none;
     }
     body.custom-cursor-active a,
+    body.custom-cursor-active a *,
     body.custom-cursor-active button,
+    body.custom-cursor-active button *,
     body.custom-cursor-active [role="button"],
+    body.custom-cursor-active select,
+    body.custom-cursor-active [data-cursor="interactive"] {
+      cursor: pointer !important;
+    }
     body.custom-cursor-active input,
     body.custom-cursor-active textarea {
-      cursor: none;
+      cursor: text !important;
     }
   }
 

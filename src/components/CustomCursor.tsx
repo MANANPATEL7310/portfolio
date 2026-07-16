@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Desktop-only custom cursor: a small crosshair dot that snaps into a bracket
- * "[ ]" reticle when hovering interactive elements. Uses a lagging spring so the
- * ring trails the dot slightly for a weighty, precise feel. Never shown on
- * touch/coarse pointers or under prefers-reduced-motion — the OS cursor stays.
+ * Desktop-only custom cursor: a neon dot inside a trailing ring. Over
+ * interactive elements both fade out and the native hand pointer takes over.
+ * Never shown on touch/coarse pointers or under prefers-reduced-motion —
+ * the OS cursor stays.
  */
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -77,41 +77,23 @@ export default function CustomCursor() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[70]">
-      {/* Center dot */}
+      {/* Center dot — fades out over interactive elements where the
+          native hand pointer takes over as the precise pointer */}
       <div
         ref={dotRef}
-        className="fixed left-0 top-0 h-1.5 w-1.5 rounded-full bg-neon-green"
+        className={`fixed left-0 top-0 h-1.5 w-1.5 rounded-full bg-neon-green transition-opacity duration-150 ${
+          hovering ? "!opacity-0" : ""
+        }`}
         style={{ boxShadow: "0 0 8px rgba(0,255,136,0.8)" }}
       />
-      {/* Reticle ring — morphs from a circle to a bracket frame on hover */}
-      <div
-        ref={ringRef}
-        className="fixed left-0 top-0 grid place-items-center transition-[width,height,opacity] duration-200 ease-hover"
-        style={{
-          width: hovering ? 40 : 26,
-          height: hovering ? 40 : 26,
-        }}
-      >
-        {hovering ? (
-          <CursorBrackets />
-        ) : (
-          <div className="h-full w-full rounded-full border border-neon-green/50" />
-        )}
+      {/* Ring — hidden over interactive elements (hand pointer only) */}
+      <div ref={ringRef} className="fixed left-0 top-0 h-[26px] w-[26px]">
+        <div
+          className={`h-full w-full rounded-full border border-neon-green/50 transition-opacity duration-150 ${
+            hovering ? "opacity-0" : "opacity-100"
+          }`}
+        />
       </div>
-    </div>
-  );
-}
-
-/** Four corner brackets forming a targeting reticle. */
-function CursorBrackets() {
-  const corner =
-    "absolute h-2.5 w-2.5 border-neon-green transition-all duration-200";
-  return (
-    <div className="relative h-full w-full">
-      <span className={`${corner} left-0 top-0 border-l border-t`} />
-      <span className={`${corner} right-0 top-0 border-r border-t`} />
-      <span className={`${corner} bottom-0 left-0 border-b border-l`} />
-      <span className={`${corner} bottom-0 right-0 border-b border-r`} />
     </div>
   );
 }
