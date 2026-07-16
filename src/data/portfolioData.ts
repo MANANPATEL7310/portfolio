@@ -82,11 +82,9 @@ export interface Project {
   id: string;
   name: string;
   type: string;
-  role: string;
   description: string;
-  problem: string;
-  solution: string;
-  features: string[];
+  /** Path to the project thumbnail, e.g. "/projects/snapcast.png" (drop images into public/projects/). */
+  image: string;
   stack: string[];
   liveUrl: string;
   githubUrl: string;
@@ -97,18 +95,9 @@ export const projects: Project[] = [
     id: "snapcast",
     name: "SnapCast",
     type: "Full-stack creator platform",
-    role: "Designed and developed the product end to end",
     description:
       "A creator-focused platform for recording, sharing, and managing short video content with a fast, motion-rich interface.",
-    problem:
-      "Creators need a frictionless way to capture and publish short-form clips without wrestling with heavy, complicated tooling.",
-    solution:
-      "Built a streamlined record → upload → share flow with a polished UI, thoughtful state management, and a full-stack backend handling storage and metadata.",
-    features: [
-      "Creator workflow thinking",
-      "Motion-rich UX",
-      "Full-stack product structure",
-    ],
+    image: "/projects/snapcast.png",
     stack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL"],
     liveUrl: "https://snapcast.vercel.app",
     githubUrl: "https://github.com/manan/snapcast",
@@ -117,18 +106,9 @@ export const projects: Project[] = [
     id: "converso",
     name: "Converso",
     type: "Real-time conversation app",
-    role: "Built frontend and backend, designed the real-time layer",
     description:
       "A real-time conversational app that keeps interactions fluid, responsive, and pleasant to use across devices.",
-    problem:
-      "Most chat-style experiences feel laggy or clunky, breaking the sense of a natural back-and-forth conversation.",
-    solution:
-      "Engineered a responsive real-time layer with optimistic UI updates and clean session handling, wrapped in an accessible, distraction-free interface.",
-    features: [
-      "Real-time interaction design",
-      "Optimistic UI updates",
-      "Responsive across devices",
-    ],
+    image: "/projects/converso.png",
     stack: ["React", "TypeScript", "Node.js", "MongoDB"],
     liveUrl: "https://converso.vercel.app",
     githubUrl: "https://github.com/manan/converso",
@@ -137,18 +117,9 @@ export const projects: Project[] = [
     id: "prepwise",
     name: "PrepWise",
     type: "Interview / learning prep tool",
-    role: "Owned product direction and full-stack implementation",
     description:
       "A preparation tool that helps users practice and track progress toward interviews and skill goals in a structured way.",
-    problem:
-      "Prep is often scattered across notes, docs, and random resources with no clear sense of progress.",
-    solution:
-      "Created a structured prep experience with organized modules and progress tracking, backed by a clean data model and a focused, encouraging UI.",
-    features: [
-      "Structured learning flow",
-      "Progress tracking",
-      "Focused, distraction-free UI",
-    ],
+    image: "/projects/prepwise.png",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL"],
     liveUrl: "https://prepwise.vercel.app",
     githubUrl: "https://github.com/manan/prepwise",
@@ -157,18 +128,9 @@ export const projects: Project[] = [
     id: "bookwise",
     name: "Bookwise",
     type: "Library management platform",
-    role: "Designed schema, built full-stack features and admin flows",
     description:
       "A library management platform for browsing, borrowing, and administering a catalog of books with a modern reading-forward UI.",
-    problem:
-      "Traditional library systems are dated, hard to navigate, and give admins little visibility or control.",
-    solution:
-      "Built a modern catalog with borrowing flows, an admin dashboard, and a normalized relational schema — all wrapped in a clean, book-first interface.",
-    features: [
-      "Relational data modeling",
-      "Admin dashboard & flows",
-      "Modern reading-forward UI",
-    ],
+    image: "/projects/bookwise.png",
     stack: ["Next.js", "TypeScript", "PostgreSQL", "Tailwind CSS"],
     liveUrl: "https://bookwise.vercel.app",
     githubUrl: "https://github.com/manan/bookwise",

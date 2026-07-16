@@ -9,7 +9,7 @@ export default function ProjectsSection() {
         <span className="text-neon-green">total {projects.length}</span> —
         selected full-stack builds, shipped end to end.
       </div>
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((project, i) => (
           <ProjectCard key={project.id} project={project} index={i} />
         ))}
