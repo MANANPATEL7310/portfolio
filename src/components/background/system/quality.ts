@@ -26,7 +26,7 @@ export function detectTier(): QualityTier {
     return {
       name: "mobile",
       density: 0.5,
-      dprCap: Math.min(dpr, 1.5),
+      dprCap: 1,
       aiCore: cores >= 6 && mem >= 4,
       fog: true,
       glitch: false,
@@ -36,7 +36,7 @@ export function detectTier(): QualityTier {
     return {
       name: "low",
       density: 0.7,
-      dprCap: Math.min(dpr, 2),
+      dprCap: 1,
       aiCore: true,
       fog: true,
       glitch: true,
@@ -46,7 +46,7 @@ export function detectTier(): QualityTier {
     return {
       name: "medium",
       density: 0.85,
-      dprCap: Math.min(dpr, 2),
+      dprCap: Math.min(dpr, 1.5),
       aiCore: true,
       fog: true,
       glitch: true,
@@ -55,7 +55,7 @@ export function detectTier(): QualityTier {
   return {
     name: "high",
     density: 1,
-    dprCap: Math.min(dpr, 2),
+    dprCap: Math.min(dpr, 1.5),
     aiCore: true,
     fog: true,
     glitch: true,
@@ -88,8 +88,8 @@ export class FpsGovernor {
     }
 
     const prev = this.tier.density;
-    if (this.avg > 22 && this.tier.density > this.floor) {
-      // Sustained < ~45fps → shed 15% of density.
+    if (this.avg > 18 && this.tier.density > this.floor) {
+      // Sustained < ~55fps → shed 15% of density.
       this.tier.density = Math.max(this.floor, this.tier.density - 0.15);
       this.cooldown = 90; // ~1.5s before reassessing
     } else if (this.avg < 15 && this.tier.density < 1) {
