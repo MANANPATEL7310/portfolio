@@ -43,7 +43,7 @@ export const profile: Profile = {
   availability: "Open to internships & collaboration",
   stage: "Student Developer",
   // Drop a real link here later and the navbar CTA turns into a working download.
-  resumeUrl: "",
+  resumeUrl: "/Manan_resume.pdf",
   metrics: [
     { label: "Projects", value: "4 Full-Stack Builds" },
     { label: "Learning Now", value: "AI/ML Fundamentals" },
@@ -92,57 +92,78 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "snapcast",
-    name: "SnapCast",
-    type: "Full-stack creator platform",
+    id: "wanderlust",
+    name: "Wanderlust",
+    type: "Vacation rental platform",
     description:
-      "A creator-focused platform for recording, sharing, and managing short video content with a fast, motion-rich interface.",
-    image: "/projects/snapcast.png",
-    stack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL"],
-    liveUrl: "https://snapcast.vercel.app",
-    githubUrl: "https://github.com/manan/snapcast",
+      "A full-stack Airbnb clone that allows users to discover, book, and host unique accommodations worldwide with robust filtering and detailed listings.",
+    image: "/projects/wanderlust.png",
+    stack: ["Node.js", "Express", "MongoDB", "Bootstrap", "EJS"],
+    liveUrl: "https://wanderlust-rk9p.onrender.com/",
+    githubUrl: "https://github.com/manan/wanderlust",
+  },
+
+  {
+    id: "stock-trading-platform",
+    name: "Stock Trading Platform",
+    type: "Stock trading platform",
+    description:
+      "A comprehensive trading and investment platform clone with real-time stock data, portfolio management, and a clean, responsive user interface.",
+    image: "/projects/stocktrading.png",
+    stack: ["React", "Node.js", "Express", "MongoDB"],
+    liveUrl: "https://stock-trading-plateform.onrender.com",
+    githubUrl: "https://github.com/manan/stock-trading-platform",
   },
   {
-    id: "converso",
-    name: "Converso",
-    type: "Real-time conversation app",
+    id: "convox",
+    name: "ConvoX",
+    type: "Real-time communication app",
     description:
-      "A real-time conversational app that keeps interactions fluid, responsive, and pleasant to use across devices.",
-    image: "/projects/converso.png",
-    stack: ["React", "TypeScript", "Node.js", "MongoDB"],
-    liveUrl: "https://converso.vercel.app",
-    githubUrl: "https://github.com/manan/converso",
-  },
-  {
-    id: "prepwise",
-    name: "PrepWise",
-    type: "Interview / learning prep tool",
-    description:
-      "A preparation tool that helps users practice and track progress toward interviews and skill goals in a structured way.",
-    image: "/projects/prepwise.png",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL"],
-    liveUrl: "https://prepwise.vercel.app",
-    githubUrl: "https://github.com/manan/prepwise",
-  },
-  {
-    id: "bookwise",
-    name: "Bookwise",
-    type: "Library management platform",
-    description:
-      "A library management platform for browsing, borrowing, and administering a catalog of books with a modern reading-forward UI.",
-    image: "/projects/bookwise.png",
-    stack: ["Next.js", "TypeScript", "PostgreSQL", "Tailwind CSS"],
-    liveUrl: "https://bookwise.vercel.app",
-    githubUrl: "https://github.com/manan/bookwise",
-  },
+      "A real-time video and chat platform featuring HD video calls, screen sharing, end-to-end encryption, and a polished user interface.",
+    image: "/projects/convox.png",
+    stack: ["React", "TypeScript", "WebRTC", "Socket.io", "Tailwind CSS"],
+    liveUrl: "https://convo-x-gray.vercel.app/",
+    githubUrl: "https://github.com/manan/convox",
+  }
 ];
 
-export const skills: Record<string, string[]> = {
-  Frontend: ["React", "Next.js", "TypeScript"],
-  Styling: ["Tailwind CSS", "CSS", "Responsive UI"],
-  Backend: ["Node.js", "Express", "REST APIs"],
-  Database: ["MongoDB", "PostgreSQL"],
-  Workflow: ["Git", "GitHub", "Deployment"],
+export interface SkillCategory {
+  [subBranch: string]: string[];
+}
+
+export const skills: Record<string, SkillCategory> = {
+  "Web Dev": {
+    Frontend: ["React", "Next.js", "Tailwind CSS"],
+    Backend: ["Node.js", "Express", "REST APIs"],
+    Database: ["PostgreSQL", "MongoDB"],
+    "Extra Tools": ["Git", "GitHub", "Postman"],
+  },
+  "AI-ML": {
+    ML: ["Scikit-Learn", "Pandas", "NumPy"],
+    DL: ["TensorFlow", "PyTorch"],
+    "ML Tools": ["Jupyter", "Hugging Face"],
+    "Agentic AI / Automation": ["LangChain", "OpenAI API"],
+  },
+  Languages: {
+    Web: ["TypeScript", "JavaScript"],
+    Systems: ["C"],
+    General: ["Python", "Java"],
+  },
+  "Computer Science": {
+    Core: ["Operating Systems", "DBMS", "Computer Networks"],
+  },
+};
+
+export interface DsaStats {
+  platform: string;
+  profileUrl: string;
+  problemsSolved: number;
+}
+
+export const dsaStats: DsaStats = {
+  platform: "LeetCode",
+  profileUrl: "https://leetcode.com/MANAN7310/",
+  problemsSolved: 200,
 };
 
 export interface GithubStats {

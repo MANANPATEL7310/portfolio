@@ -29,7 +29,7 @@ export default function SectionShell({
     <section
       id={id}
       aria-label={title}
-      className={`relative mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-20 sm:px-8 md:py-28 ${className}`}
+      className={`relative mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-8 sm:px-8 md:py-12 ${className}`}
     >
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -51,12 +51,12 @@ export default function SectionShell({
  */
 export function SectionHeader({ command }: { command: string }) {
   return (
-    <div className="mb-9 flex items-center gap-3" data-glitch>
+    <div className="mb-12 flex items-center gap-4" data-glitch>
       <ScrambleText
         text={command}
-        className="select-none font-mono text-step-1 uppercase tracking-[0.15em] text-neon-green/80"
+        className="select-none font-mono text-step-2 sm:text-step-3 font-bold uppercase tracking-[0.12em] text-neon-green drop-shadow-[0_0_12px_rgba(0,255,170,0.6)]"
       />
-      <span className="h-px flex-1 bg-gradient-to-r from-neon-green/30 to-transparent" />
+      <span className="h-px flex-1 bg-gradient-to-r from-neon-green/60 via-neon-green/20 to-transparent shadow-[0_0_8px_rgba(0,255,170,0.4)]" />
     </div>
   );
 }

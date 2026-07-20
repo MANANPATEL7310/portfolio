@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { GitFork, Star, Activity } from "lucide-react";
-import { skills, githubStats } from "../data/portfolioData";
+import { GitFork, Activity } from "lucide-react";
+import { githubStats } from "../data/portfolioData";
 import SectionShell from "./ui/SectionShell";
+import SkillsBentoGrid from "./ui/SkillsBentoGrid";
 
 /** Counts up to `target` once scrolled into view. */
 function AnimatedCounter({ target }: { target: number }) {
@@ -37,11 +38,8 @@ function AnimatedCounter({ target }: { target: number }) {
   return <span ref={ref}>{value.toLocaleString()}</span>;
 }
 
-const categories = Object.entries(skills);
-
 const statItems = [
   { key: "repos", label: "repositories", value: githubStats.repos, Icon: GitFork },
-  { key: "stars", label: "stars earned", value: githubStats.stars, Icon: Star },
   {
     key: "contributions",
     label: "contributions",
@@ -53,54 +51,15 @@ const statItems = [
 export default function SkillsSection() {
   return (
     <SectionShell id="skills" command="$ tree ~/skills" title="Skills">
-      {/* Skill tree */}
-      <div className="glass rounded-xl p-5 font-mono text-step-1 shadow-elev-1 sm:p-6">
-        <div className="text-neon-green/80">skills/</div>
-        <div className="mt-2 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map(([category, items], ci) => {
-            const lastCat = ci === categories.length - 1;
-            return (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: ci * 0.06, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <div className="text-neon-lime">
-                  <span className="text-white/30">
-                    {lastCat ? "└──" : "├──"}
-                  </span>{" "}
-                  {category}/
-                </div>
-                <ul className="mt-1">
-                  {items.map((item, ii) => {
-                    const lastItem = ii === items.length - 1;
-                    return (
-                      <li key={item} className="text-white/75">
-                        <span className="text-white/20">
-                          {lastCat ? "    " : "│   "}
-                          {lastItem ? "└── " : "├── "}
-                        </span>
-                        <span className="transition-colors hover:text-neon-green">
-                          {item}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
+      {/* Bento grid of skill cards */}
+      <SkillsBentoGrid />
 
       {/* GitHub stats row */}
       <div className="mt-6">
         <div className="mb-3 font-mono text-step-1 uppercase tracking-[0.15em] text-neon-green/80">
           $ git log --stat --global
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {statItems.map((s, i) => (
             <motion.div
               key={s.key}

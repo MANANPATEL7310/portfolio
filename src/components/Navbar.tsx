@@ -7,6 +7,8 @@ import { triggerNavBeam } from "../lib/navBeam";
 
 const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
 
+
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const active = useScrollSpy(sectionIds);
@@ -141,10 +143,11 @@ export default function Navbar() {
                       e.preventDefault();
                       handleNav("#contact", e.currentTarget);
                     }
+                    setOpen(false);
                   }}
                   target={profile.resumeUrl ? "_blank" : undefined}
                   rel={profile.resumeUrl ? "noreferrer" : undefined}
-                  className="mt-1 flex items-center gap-2 rounded-lg border border-neon-green/40 bg-neon-green/10 px-3 py-2.5 font-mono text-step-1 text-neon-green"
+                  className="mt-1 flex w-full items-center gap-2 rounded-lg border border-neon-green/40 bg-neon-green/10 px-3 py-2.5 font-mono text-step-1 text-neon-green"
                 >
                   <FileDown className="h-4 w-4" aria-hidden="true" />
                   resume

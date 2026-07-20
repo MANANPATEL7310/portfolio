@@ -61,15 +61,10 @@ export default function App() {
         <main>
           <HeroSection />
           <AboutSection />
-          <CircuitDivider />
           <ProjectsSection />
-          <CircuitDivider />
           <SkillsSection />
-          <CircuitDivider />
           <EducationSection />
-          <CircuitDivider />
           <CertificatesSection />
-          <CircuitDivider />
           <ContactSection />
         </main>
       </div>
