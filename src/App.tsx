@@ -15,7 +15,6 @@ import GlitchController from "./components/background/GlitchController";
 
 import NavBeam from "./components/NavBeam";
 import CustomCursor from "./components/CustomCursor";
-import CircuitDivider from "./components/ui/CircuitDivider";
 
 export default function App() {
   return (

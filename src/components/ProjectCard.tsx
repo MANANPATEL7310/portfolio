@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import type { Project } from "../data/portfolioData";
 import { useTilt } from "../hooks/useTilt";
+import { getTechIcon } from "../utils/techIcons";
 
 interface ProjectCardProps {
   project: Project;
@@ -90,8 +91,9 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                 {project.stack.map((tech) => (
                   <span
                     key={tech}
-                    className="rounded-lg border border-neon-green/25 bg-neon-green/5 px-2.5 py-1 font-mono text-[11px] text-neon-green/90"
+                    className="flex items-center rounded-lg border border-neon-green/25 bg-neon-green/5 px-2.5 py-1 font-mono text-[11px] text-neon-green/90"
                   >
+                    {getTechIcon(tech)}
                     {tech}
                   </span>
                 ))}
